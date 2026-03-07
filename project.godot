@@ -15,6 +15,10 @@ run/main_scene="res://scenes/node_2d.tscn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Config="*uid://bswyhxi7j5xj1"
+
 [editor_plugins]
 
 enabled=PackedStringArray("res://addons/gut/plugin.cfg")
