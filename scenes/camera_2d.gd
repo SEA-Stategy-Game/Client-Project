@@ -25,4 +25,4 @@ func _input(event):
 	# --- DRAG MOVEMENT ---
 	if event is InputEventMouseMotion and dragging:
 		# Multiply by zoom so drag speed feels consistent
-		position -= event.relative * zoom.x
+		position -= event.relative * zoom.x *2
