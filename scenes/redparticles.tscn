@@ -1,0 +1,28 @@
+[gd_scene format=3 uid="uid://cmyknh4oo3wac"]
+
+[ext_resource type="Script" uid="uid://dgfvyymyossyf" path="res://scenes/particles.gd" id="1_xmlf0"]
+
+[sub_resource type="Curve" id="Curve_ynjm5"]
+_data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
+point_count = 2
+
+[sub_resource type="Gradient" id="Gradient_xmlf0"]
+offsets = PackedFloat32Array(0.48655257, 1)
+colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[node name="CPUParticles2D" type="CPUParticles2D" unique_id=1430565050]
+self_modulate = Color(1.0039216, 0, 0.15765029, 1)
+position = Vector2(-2, 0)
+emitting = false
+amount = 50
+lifetime = 0.5
+one_shot = true
+explosiveness = 1.0
+spread = 180.0
+gravity = Vector2(0, 0)
+initial_velocity_min = 0.5
+initial_velocity_max = 500.0
+scale_amount_max = 20.0
+scale_amount_curve = SubResource("Curve_ynjm5")
+color_ramp = SubResource("Gradient_xmlf0")
+script = ExtResource("1_xmlf0")
