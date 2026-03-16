@@ -10,7 +10,7 @@ extends TileMapLayer
 ]
 
 @export var forest_threshold: float = 0.3
-@export var noise_scale: float = 0.05
+@export var noise_scale: float = 0.1
 @export var temporary_tile: Vector2i = Vector2i(1, 1)
 @export var duration: float = 5.0
 

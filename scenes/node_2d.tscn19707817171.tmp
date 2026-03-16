@@ -286,11 +286,10 @@ script = ExtResource("19_qv8l0")
 reference_layer = NodePath("../Grass")
 duration = 2.0
 
-[node name="Rocks" type="TileMapLayer" parent="." unique_id=1886317999 node_paths=PackedStringArray("reference_layer", "tree_layer")]
+[node name="TileMapLayer" type="TileMapLayer" parent="." unique_id=1886317999 node_paths=PackedStringArray("reference_layer")]
 tile_set = SubResource("TileSet_ey6mn")
 script = ExtResource("5_k6u5g")
 reference_layer = NodePath("../Grass")
-tree_layer = NodePath("../Trees")
 
 [node name="RedSpawner" type="Area2D" parent="." unique_id=1834761837]
 position = Vector2(-937, -944)
