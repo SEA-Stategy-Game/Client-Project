@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://dpyeeos83tggl"
-path="res://.godot/imported/yellowUnit.png-6419ec2c2b9f88ff695edde17708d973.ctex"
+uid="uid://bv34d84kvhsyw"
+path="res://.godot/imported/unitEnemy.png-26eca3f4d1c5a2ac6be46757c17fba06.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/yellowUnit.png"
-dest_files=["res://.godot/imported/yellowUnit.png-6419ec2c2b9f88ff695edde17708d973.ctex"]
+source_file="res://assets/unitEnemy.png"
+dest_files=["res://.godot/imported/unitEnemy.png-26eca3f4d1c5a2ac6be46757c17fba06.ctex"]
 
 [params]
 

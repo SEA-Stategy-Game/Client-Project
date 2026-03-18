@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8lytnqmgpgnw"
-path="res://.godot/imported/yellowSpawner.png-7f0cb4211458cd8d7e8f874b82d3f60e.ctex"
+uid="uid://dopisv6iitly4"
+path="res://.godot/imported/New Piskel (2).png-2a2ca539d3a4f4c35544aeeab3e7a3b9.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/yellowSpawner.png"
-dest_files=["res://.godot/imported/yellowSpawner.png-7f0cb4211458cd8d7e8f874b82d3f60e.ctex"]
+source_file="res://assets/New Piskel (2).png"
+dest_files=["res://.godot/imported/New Piskel (2).png-2a2ca539d3a4f4c35544aeeab3e7a3b9.ctex"]
 
 [params]
 
