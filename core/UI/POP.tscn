@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://8mnf5bvrt6td"]
 
-[ext_resource type="Script" uid="uid://ty5lte13pjoc" path="res://UI/pop.gd" id="1_r7dmh"]
-[ext_resource type="Texture2D" uid="uid://bddjglotcr720" path="res://Assets/MiniWorldSprites/Nature/PineTrees.png" id="2_b2ib3"]
+[ext_resource type="Script" uid="uid://eh0o1db21hnp" path="res://core/UI/pop.gd" id="1_r7dmh"]
+[ext_resource type="Texture2D" uid="uid://byi6oqipr8ncb" path="res://assets/Trees.png" id="2_b2ib3"]
+
 
 [node name="POP" type="Label" unique_id=1337718129]
 offset_left = -20.0

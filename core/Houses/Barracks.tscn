@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://c5ee63xefwvh6"]
 
-[ext_resource type="Texture2D" uid="uid://bmx026ol75xsu" path="res://Assets/MiniWorldSprites/Buildings/Wood/Barracks.png" id="1_126bj"]
-[ext_resource type="Script" uid="uid://xf07s84ylbox" path="res://Houses/barracks.gd" id="1_uneb2"]
+[ext_resource type="Script" uid="uid://b8etve00t3js4" path="res://core/Houses/barracks.gd" id="1_uneb2"]
+[ext_resource type="Texture2D" uid="uid://71hsn5kvse4r" path="res://assets/redSpawner.png" id="2_vfhup"]
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_uneb2"]
 size = Vector2(14, 16)
@@ -23,7 +23,7 @@ script = ExtResource("1_uneb2")
 shape = SubResource("RectangleShape2D_uneb2")
 
 [node name="Barracks" type="Sprite2D" parent="." unique_id=263635027]
-texture = ExtResource("1_126bj")
+texture = ExtResource("2_vfhup")
 hframes = 4
 vframes = 5
 

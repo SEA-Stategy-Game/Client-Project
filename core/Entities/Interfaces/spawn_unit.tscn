@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://b18by0m44eqa2"]
 
-[ext_resource type="Script" uid="uid://b5rmwpf2h0div" path="res://Entities/Interfaces/spawn_unit.gd" id="1_6ibif"]
-[ext_resource type="Texture2D" uid="uid://b68isfnk756nx" path="res://Assets/MiniWorldSprites/Characters/Champions/Arthax.png" id="2_t2rsk"]
+[ext_resource type="Script" uid="uid://b5rmwpf2h0div" path="res://core/Entities/Interfaces/spawn_unit.gd" id="1_6ibif"]
+[ext_resource type="Texture2D" uid="uid://dia8dg8knbpvs" path="res://assets/redUnit.png" id="2_wb6vi"]
 
 [node name="SpawnUnit" type="Node2D" unique_id=1950502887]
 script = ExtResource("1_6ibif")
@@ -34,10 +34,10 @@ offset_bottom = 424.0
 text = "No
 "
 
-[node name="Arthax" type="Sprite2D" parent="." unique_id=1966528888]
+[node name="redUnit" type="Sprite2D" parent="." unique_id=1966528888]
 position = Vector2(515, 326)
-scale = Vector2(4, 4)
-texture = ExtResource("2_t2rsk")
+scale = Vector2(10, 10)
+texture = ExtResource("2_wb6vi")
 hframes = 5
 vframes = 8
 

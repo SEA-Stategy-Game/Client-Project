@@ -1,0 +1,100 @@
+[gd_scene format=3 uid="uid://ckavqb25bdaul"]
+
+[ext_resource type="Script" uid="uid://boa5scnw8xkf7" path="res://core/UI/camera_2d.gd" id="1_f3sb7"]
+[ext_resource type="Script" uid="uid://b5alxt6m7vrl3" path="res://core/Logic/TickManager.gd" id="1_rps04"]
+[ext_resource type="Script" uid="uid://d0nhl0c06ortq" path="res://core/world.gd" id="1_tlwt5"]
+[ext_resource type="PackedScene" uid="uid://biykd6njvejpn" path="res://core/Entities/Units/character_body_2d.tscn" id="2_fj7yv"]
+[ext_resource type="PackedScene" uid="uid://biio3e1hn22ty" path="res://core/Entities/Resource/Tree.tscn" id="4_aqk2v"]
+[ext_resource type="Script" uid="uid://c0n1bfx8wnb2a" path="res://core/UI/Minimap.gd" id="4_rbq75"]
+[ext_resource type="PackedScene" uid="uid://c5ee63xefwvh6" path="res://core/Houses/Barracks.tscn" id="7_pkg7o"]
+[ext_resource type="Script" uid="uid://cdtckyldonsay" path="res://core/Entities/Building/barrack.gd" id="8_aavaf"]
+[ext_resource type="PackedScene" uid="uid://cwxsdlngu3cq4" path="res://core/Entities/Resource/Stone.tscn" id="8_gbfbk"]
+[ext_resource type="Script" uid="uid://c71q6vwodg7uk" path="res://core/UI/UI.gd" id="9_rps04"]
+
+[node name="World" type="Node2D" unique_id=777208976]
+script = ExtResource("1_tlwt5")
+
+[node name="TextureRect" type="TextureRect" parent="." unique_id=904408715]
+offset_left = -2942.0
+offset_top = -1883.0
+offset_right = 3009.0
+offset_bottom = 1977.0
+stretch_mode = 1
+
+[node name="Camera2D_CoreDev" type="Camera2D" parent="." unique_id=118205968]
+position = Vector2(12, -41)
+script = ExtResource("1_f3sb7")
+
+[node name="UI" type="CanvasLayer" parent="." unique_id=1388196953]
+script = ExtResource("9_rps04")
+
+[node name="Panel" type="Panel" parent="UI" unique_id=674727322]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Label" type="Label" parent="UI" unique_id=595093388]
+offset_right = 40.0
+offset_bottom = 23.0
+
+[node name="Control" type="Control" parent="UI" unique_id=646480886]
+layout_mode = 3
+anchors_preset = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Panel" type="Panel" parent="UI/Control" unique_id=1670174538]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="UI/Control" unique_id=1559127271]
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="SubViewport" type="SubViewport" parent="UI/Control/SubViewportContainer" unique_id=1877977333]
+handle_input_locally = false
+render_target_update_mode = 4
+script = ExtResource("4_rbq75")
+
+[node name="TextureRect" type="TextureRect" parent="UI/Control/SubViewportContainer/SubViewport" unique_id=39430987]
+offset_right = 40.0
+offset_bottom = 40.0
+
+[node name="Camera2D" type="Camera2D" parent="UI/Control/SubViewportContainer/SubViewport" unique_id=1040305818]
+
+[node name="Units" type="Node2D" parent="UI/Control/SubViewportContainer/SubViewport" unique_id=559241117 groups=["units"]]
+
+[node name="Units" type="Node2D" parent="." unique_id=1851347236 groups=["units"]]
+
+[node name="Unit" parent="Units" unique_id=1684801707 groups=["units"] instance=ExtResource("2_fj7yv")]
+position = Vector2(35.8, -13.199999)
+
+[node name="Unit2" parent="Units" unique_id=1978056199 instance=ExtResource("2_fj7yv")]
+position = Vector2(51, 13)
+
+[node name="Unit3" parent="Units" unique_id=1397362367 instance=ExtResource("2_fj7yv")]
+position = Vector2(-5, 23)
+
+[node name="Unit5" parent="Units" unique_id=544769095 instance=ExtResource("2_fj7yv")]
+position = Vector2(-48.999985, 62)
+
+[node name="Objects" type="Node2D" parent="." unique_id=64952163]
+
+[node name="Tree" parent="Objects" unique_id=707792734 instance=ExtResource("4_aqk2v")]
+position = Vector2(193.99998, 132)
+
+[node name="Houses" type="Node2D" parent="." unique_id=350287105]
+
+[node name="House" parent="Houses" unique_id=334523237 instance=ExtResource("7_pkg7o")]
+script = ExtResource("8_aavaf")
+entity_id = 0
+max_health = 100
+
+[node name="Stone" parent="." unique_id=1921004082 instance=ExtResource("8_gbfbk")]
+position = Vector2(-34, -60)
+
+[node name="Buildings" type="Node2D" parent="." unique_id=1832649490]
+
+[node name="TickManager" type="Node" parent="." unique_id=1491145647]
+script = ExtResource("1_rps04")

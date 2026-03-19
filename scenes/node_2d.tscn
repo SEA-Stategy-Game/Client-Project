@@ -3,7 +3,7 @@
 [ext_resource type="Texture2D" uid="uid://3anxfnlv6pb0" path="res://assets/MapTiles.png" id="1_4dvvg"]
 [ext_resource type="Script" uid="uid://d0nhl0c06ortq" path="res://core/world.gd" id="1_coh8c"]
 [ext_resource type="Texture2D" uid="uid://byi6oqipr8ncb" path="res://assets/Trees.png" id="2_0q20i"]
-[ext_resource type="PackedScene" uid="uid://djf7keuxeyyoh" path="res://core/UI/ui.tscn" id="2_kmyi7"]
+[ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_ey6mn"]
 [ext_resource type="PackedScene" uid="uid://cmyknh4oo3wac" path="res://scenes/redparticles.tscn" id="3_xtx0q"]
 [ext_resource type="Texture2D" uid="uid://71hsn5kvse4r" path="res://assets/redSpawner.png" id="4_hh0fu"]
 [ext_resource type="Texture2D" uid="uid://dwf4wlyrhmn21" path="res://assets/heart pixel art 254x254.png" id="4_hsdmi"]
@@ -20,10 +20,8 @@
 [ext_resource type="PackedScene" uid="uid://chrmho5m7w5fc" path="res://scenes/blueparticles.tscn" id="9_x63s8"]
 [ext_resource type="Texture2D" uid="uid://b5vgnlhlrgh7h" path="res://assets/blueRessources.png" id="10_dubn7"]
 [ext_resource type="Script" uid="uid://cuuesegaxd5tj" path="res://scenes/area_2d.gd" id="11_hsdmi"]
-[ext_resource type="Script" uid="uid://boa5scnw8xkf7" path="res://core/UI/camera_2d.gd" id="12_coh8c"]
 [ext_resource type="Script" uid="uid://cumurpqfwuk5d" path="res://scenes/tree_assigner.gd" id="19_qv8l0"]
 [ext_resource type="Script" uid="uid://b8etve00t3js4" path="res://core/Houses/barracks.gd" id="23_2sxpt"]
-[ext_resource type="Script" uid="uid://dweqb87bqh6d3" path="res://core/Entities/Units/Unit.gd" id="23_ey6mn"]
 
 [sub_resource type="Environment" id="Environment_xtx0q"]
 background_mode = 3
@@ -272,8 +270,6 @@ shader_parameter/flash_value = 0.0
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_2sxpt"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ey6mn"]
-
 [node name="World" type="Node2D" unique_id=85050630]
 script = ExtResource("1_coh8c")
 
@@ -285,9 +281,7 @@ limit_left = -2298
 limit_top = -1697
 limit_right = 2742
 limit_bottom = 1804
-script = ExtResource("12_coh8c")
-
-[node name="UI" parent="." unique_id=1080200729 instance=ExtResource("2_kmyi7")]
+script = ExtResource("2_ey6mn")
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1459764245]
 environment = SubResource("Environment_xtx0q")
@@ -421,39 +415,6 @@ texture = ExtResource("7_08kqv")
 [node name="FlashAnimation" type="AnimationPlayer" parent="blueSpawner/Sprite2D" unique_id=1879188581]
 libraries/ = SubResource("AnimationLibrary_ifa78")
 
-[node name="redUnit" type="Node2D" parent="." unique_id=1204364245]
-
-[node name="Sprite2D" type="Sprite2D" parent="redUnit" unique_id=720643910]
-position = Vector2(-753, -945)
-texture = ExtResource("8_f6ptj")
-
-[node name="redUnit2" type="Node2D" parent="." unique_id=988816079]
-
-[node name="Sprite2D" type="Sprite2D" parent="redUnit2" unique_id=1264110865]
-position = Vector2(-711, -938)
-texture = ExtResource("8_f6ptj")
-
-[node name="redUnit3" type="Node2D" parent="." unique_id=1826795204]
-
-[node name="Sprite2D" type="Sprite2D" parent="redUnit3" unique_id=268742100]
-position = Vector2(-760, -907)
-texture = ExtResource("8_f6ptj")
-
-[node name="redUnit4" type="Node2D" parent="." unique_id=840431937]
-
-[node name="Sprite2D" type="Sprite2D" parent="redUnit4" unique_id=539012681]
-position = Vector2(-712, -905)
-texture = ExtResource("8_f6ptj")
-
-[node name="GreenUnit" type="Sprite2D" parent="." unique_id=2026488352]
-position = Vector2(-778, 159)
-texture = ExtResource("9_3m5ht")
-
-[node name="BlueRessources" type="Sprite2D" parent="." unique_id=2130642019]
-position = Vector2(1508, 1081)
-scale = Vector2(1.453125, 1.453125)
-texture = ExtResource("10_dubn7")
-
 [node name="yellowSpawner" type="Area2D" parent="." unique_id=979165667]
 position = Vector2(1446, -411)
 script = ExtResource("11_hsdmi")
@@ -491,6 +452,35 @@ texture = ExtResource("5_3m5ht")
 [node name="FlashAnimation" type="AnimationPlayer" parent="yellowSpawner/Sprite2D" unique_id=9510185]
 libraries/ = SubResource("AnimationLibrary_ifa78")
 
+[node name="redUnit" type="Node2D" parent="." unique_id=1204364245]
+
+[node name="redUnit2" type="Node2D" parent="." unique_id=988816079]
+
+[node name="Sprite2D" type="Sprite2D" parent="redUnit2" unique_id=1264110865]
+position = Vector2(-711, -938)
+texture = ExtResource("8_f6ptj")
+
+[node name="redUnit3" type="Node2D" parent="." unique_id=1826795204]
+
+[node name="Sprite2D" type="Sprite2D" parent="redUnit3" unique_id=268742100]
+position = Vector2(-760, -907)
+texture = ExtResource("8_f6ptj")
+
+[node name="redUnit4" type="Node2D" parent="." unique_id=840431937]
+
+[node name="Sprite2D" type="Sprite2D" parent="redUnit4" unique_id=539012681]
+position = Vector2(-712, -905)
+texture = ExtResource("8_f6ptj")
+
+[node name="GreenUnit" type="Sprite2D" parent="." unique_id=2026488352]
+position = Vector2(-778, 159)
+texture = ExtResource("9_3m5ht")
+
+[node name="BlueRessources" type="Sprite2D" parent="." unique_id=2130642019]
+position = Vector2(1508, 1081)
+scale = Vector2(1.453125, 1.453125)
+texture = ExtResource("10_dubn7")
+
 [node name="Buildings" type="Node2D" parent="." unique_id=1919368287]
 position = Vector2(1446, -411)
 
@@ -507,10 +497,3 @@ offset_right = 8.0
 offset_bottom = 8.0
 
 [node name="Units" type="Node" parent="." unique_id=854835600]
-
-[node name="Unit" type="CharacterBody2D" parent="Units" unique_id=1344876942]
-script = ExtResource("23_ey6mn")
-metadata/_custom_type_script = "uid://dweqb87bqh6d3"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="Units/Unit" unique_id=95697194]
-shape = SubResource("RectangleShape2D_ey6mn")

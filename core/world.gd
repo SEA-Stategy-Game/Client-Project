@@ -4,9 +4,9 @@ var units = []
 
 func _ready():
 	get_units()
-	Game.spawnUnit(position)
-	if has_node("Camera2D"):
-		$Camera2D.area_selected.connect(_on_area_selected)
+	if has_node("Camera2D_CoreDev"):
+		Game.spawnUnit(position)
+		$Camera2D_CoreDev.area_selected.connect(_on_area_selected)
 
 func get_units():
 	units = null

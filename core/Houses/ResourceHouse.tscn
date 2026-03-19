@@ -1,7 +1,8 @@
 [gd_scene format=3 uid="uid://c5vfgqutjvnae"]
 
-[ext_resource type="Texture2D" uid="uid://cdjnf3236r6ml" path="res://Assets/MiniWorldSprites/Buildings/Wood/Resources.png" id="1_md6p5"]
-[ext_resource type="Script" uid="uid://bpganhfccio4f" path="res://Houses/resource_house.gd" id="1_ya2dm"]
+[ext_resource type="Texture2D" uid="uid://b5vgnlhlrgh7h" path="res://assets/blueRessources.png" id="1_md6p5"]
+[ext_resource type="Script" uid="uid://c3j1r2bxxafjx" path="res://core/Houses/resource_house.gd" id="1_ya2dm"]
+
 
 [sub_resource type="RectangleShape2D" id="RectangleShape2D_p6ibp"]
 size = Vector2(17, 15)

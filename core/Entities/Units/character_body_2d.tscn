@@ -1,10 +1,10 @@
 [gd_scene format=3 uid="uid://biykd6njvejpn"]
 
-[ext_resource type="Script" uid="uid://dweqb87bqh6d3" path="res://Entities/Units/Unit.gd" id="1_ij6vw"]
-[ext_resource type="Texture2D" uid="uid://b68isfnk756nx" path="res://Assets/MiniWorldSprites/Characters/Champions/Arthax.png" id="2_uhwgi"]
+[ext_resource type="Script" uid="uid://dweqb87bqh6d3" path="res://core/Entities/Units/Unit.gd" id="1_ij6vw"]
+[ext_resource type="Texture2D" uid="uid://dia8dg8knbpvs" path="res://assets/redUnit.png" id="2_25o34"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ij6vw"]
-size = Vector2(10, 13)
+[sub_resource type="CircleShape2D" id="CircleShape2D_25o34"]
+radius = 12.0
 
 [sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ij6vw"]
 bg_color = Color(0.6, 0.6, 0.6, 0)
@@ -17,35 +17,11 @@ border_blend = true
 
 [sub_resource type="Animation" id="Animation_ywowy"]
 length = 0.001
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Arthax:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0),
-"transitions": PackedFloat32Array(1),
-"update": 1,
-"values": [1]
-}
 
 [sub_resource type="Animation" id="Animation_r18d6"]
 resource_name = "Walk Down"
 length = 0.6
 loop_mode = 1
-tracks/0/type = "value"
-tracks/0/imported = false
-tracks/0/enabled = true
-tracks/0/path = NodePath("Arthax:frame")
-tracks/0/interp = 1
-tracks/0/loop_wrap = true
-tracks/0/keys = {
-"times": PackedFloat32Array(0, 0.13333334, 0.26666668, 0.4, 0.56666666),
-"transitions": PackedFloat32Array(1, 1, 1, 1, 1),
-"update": 1,
-"values": [0, 3, 2, 3, 4]
-}
 
 [sub_resource type="AnimationLibrary" id="AnimationLibrary_r2g42"]
 _data = {
@@ -58,15 +34,8 @@ script = ExtResource("1_ij6vw")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=186835737 groups=["Unit"]]
 position = Vector2(0, -6.5)
-shape = SubResource("RectangleShape2D_ij6vw")
+shape = SubResource("CircleShape2D_25o34")
 debug_color = Color(0, 0.6, 0.69803923, 0)
-
-[node name="Arthax" type="Sprite2D" parent="." unique_id=1685461738 groups=["Unit"]]
-position = Vector2(0, -7)
-texture = ExtResource("2_uhwgi")
-hframes = 5
-vframes = 8
-frame = 1
 
 [node name="HitBox" type="Panel" parent="." unique_id=1922341203 groups=["Unit"]]
 offset_left = -7.0
@@ -77,5 +46,8 @@ theme_override_styles/panel = SubResource("StyleBoxFlat_ij6vw")
 
 [node name="AnimationPlayer" type="AnimationPlayer" parent="." unique_id=1829869132 groups=["Unit"]]
 libraries/ = SubResource("AnimationLibrary_r2g42")
+
+[node name="Sprite2D" type="Sprite2D" parent="." unique_id=1077846514]
+texture = ExtResource("2_25o34")
 
 [connection signal="input_event" from="." to="." method="_on_input_event"]
