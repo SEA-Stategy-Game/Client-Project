@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://8lytnqmgpgnw"
-path="res://.godot/imported/yellowSpawner.png-7f0cb4211458cd8d7e8f874b82d3f60e.ctex"
+uid="uid://ce0rh6652spyg"
+path="res://.godot/imported/unit.png-4494e44a5d05d9fb4c8c312b0bbaf33d.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/yellowSpawner.png"
-dest_files=["res://.godot/imported/yellowSpawner.png-7f0cb4211458cd8d7e8f874b82d3f60e.ctex"]
+source_file="res://assets/unit.png"
+dest_files=["res://.godot/imported/unit.png-4494e44a5d05d9fb4c8c312b0bbaf33d.ctex"]
 
 [params]
 

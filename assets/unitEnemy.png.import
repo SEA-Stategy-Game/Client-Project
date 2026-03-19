@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://3gwwqujxumdi"
-path="res://.godot/imported/greenSpawner.png-e53a1a124a579d9ac84fe1cbf8c7c9c1.ctex"
+uid="uid://bv34d84kvhsyw"
+path="res://.godot/imported/unitEnemy.png-26eca3f4d1c5a2ac6be46757c17fba06.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/greenSpawner.png"
-dest_files=["res://.godot/imported/greenSpawner.png-e53a1a124a579d9ac84fe1cbf8c7c9c1.ctex"]
+source_file="res://assets/unitEnemy.png"
+dest_files=["res://.godot/imported/unitEnemy.png-26eca3f4d1c5a2ac6be46757c17fba06.ctex"]
 
 [params]
 
