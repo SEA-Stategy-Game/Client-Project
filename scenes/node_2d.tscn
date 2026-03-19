@@ -15,6 +15,7 @@
 [ext_resource type="PackedScene" uid="uid://chrmho5m7w5fc" path="res://scenes/blueparticles.tscn" id="9_x63s8"]
 [ext_resource type="Texture2D" uid="uid://b5vgnlhlrgh7h" path="res://assets/blueRessources.png" id="10_dubn7"]
 [ext_resource type="Script" uid="uid://cuuesegaxd5tj" path="res://scenes/area_2d.gd" id="11_hsdmi"]
+[ext_resource type="Script" uid="uid://c3qc1qfqubab2" path="res://scenes/slide_terminal.gd" id="19_k6u5g"]
 [ext_resource type="Script" uid="uid://cumurpqfwuk5d" path="res://scenes/tree_assigner.gd" id="19_qv8l0"]
 [ext_resource type="Script" uid="uid://ia6fb7ga3yjp" path="res://scenes/movement.gd" id="21_kmyi7"]
 [ext_resource type="Texture2D" uid="uid://ce0rh6652spyg" path="res://assets/unit.png" id="22_kmyi7"]
@@ -597,3 +598,35 @@ shape = SubResource("RectangleShape2D_2sxpt")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Unit" unique_id=2003820084]
 sprite_frames = SubResource("SpriteFrames_mchk4")
 animation = &"run_up"
+
+[node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=1813312778]
+visible = false
+
+[node name="Control" type="Control" parent="CanvasLayer" unique_id=1470457964]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("19_k6u5g")
+
+[node name="ToggleButton" type="Button" parent="CanvasLayer/Control" unique_id=1186840970]
+layout_mode = 0
+offset_left = 20.0
+offset_top = 20.0
+offset_right = 40.0
+offset_bottom = 51.0
+text = "≡"
+
+[node name="EditorPanel" type="PanelContainer" parent="CanvasLayer/Control" unique_id=1033592394]
+layout_mode = 0
+offset_left = 204.0
+offset_top = -100.0
+offset_right = 244.0
+offset_bottom = -60.0
+
+[node name="CodeEdit" type="CodeEdit" parent="CanvasLayer/Control/EditorPanel" unique_id=970474419]
+layout_mode = 2
+
+[connection signal="pressed" from="CanvasLayer/Control/ToggleButton" to="CanvasLayer/Control" method="_on_toggle_button_pressed"]
