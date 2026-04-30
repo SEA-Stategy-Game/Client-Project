@@ -1,6 +1,7 @@
 [gd_scene format=4 uid="uid://4pqund3nukl7"]
 
 [ext_resource type="Texture2D" uid="uid://3anxfnlv6pb0" path="res://assets/MapTiles.png" id="1_4dvvg"]
+[ext_resource type="Script" uid="uid://bnk88hpkhc244" path="res://client.gd" id="1_ey6mn"]
 [ext_resource type="Texture2D" uid="uid://byi6oqipr8ncb" path="res://assets/Trees.png" id="2_0q20i"]
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
 [ext_resource type="Texture2D" uid="uid://dmmhvillaju8m" path="res://assets/New Piskel (1).png" id="2_coh8c"]
@@ -477,7 +478,7 @@ animations = [{
 "speed": 5.0
 }]
 
-[node name="Game" type="Node2D" unique_id=85050630]
+[node name="World" type="Node2D" unique_id=85050630]
 
 [node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1459764245]
 environment = SubResource("Environment_xtx0q")
@@ -651,5 +652,8 @@ shape = SubResource("RectangleShape2D_2sxpt")
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="Unit" unique_id=2003820084]
 sprite_frames = SubResource("SpriteFrames_mchk4")
 animation = &"run_up"
+
+[node name="ClientGateway" type="Node2D" parent="." unique_id=1984569465]
+script = ExtResource("1_ey6mn")
 
 [connection signal="pressed" from="Camera2D/CanvasLayer/Control/ToggleButton" to="Camera2D/CanvasLayer/Control" method="_on_toggle_button_pressed"]
