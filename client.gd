@@ -7,7 +7,7 @@ extends Node
 ## Binds connection lifecycle signals for logging and post-connect logic.
 func _ready():
 	var peer = ENetMultiplayerPeer.new()
-	var err = peer.create_client("127.0.0.1", 12345)
+	var err = peer.create_client("192.168.2.158", 12345)
 	print("create_client result: ", err)  # 0 = OK, anything else is an error
 	multiplayer.multiplayer_peer = peer
 	multiplayer.connected_to_server.connect(func(): _on_connected())
