@@ -1,3 +1,7 @@
 # Godot 4+ specific ignores
 .godot/
 /android/
+
+# DSL compiled output
+dsl/bin/
+dsl/obj/
