@@ -492,12 +492,14 @@ tile_map_data = PackedByteArray("AADR/9H/AAABAAEAAADR/9L/AAABAAEAAADR/9P/AAABAAE
 tile_set = SubResource("TileSet_k6u5g")
 
 [node name="Trees" type="TileMapLayer" parent="." unique_id=147378283 node_paths=PackedStringArray("reference_layer")]
+position = Vector2(-1, 1)
 tile_set = SubResource("TileSet_coh8c")
 script = ExtResource("19_qv8l0")
 reference_layer = NodePath("../Grass")
 duration = 2.0
 
 [node name="Rocks" type="TileMapLayer" parent="." unique_id=1886317999 node_paths=PackedStringArray("reference_layer", "tree_layer")]
+position = Vector2(-1, -4)
 tile_set = SubResource("TileSet_ey6mn")
 script = ExtResource("5_k6u5g")
 reference_layer = NodePath("../Grass")
