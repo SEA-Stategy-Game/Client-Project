@@ -123,6 +123,30 @@ theme_override_styles/pressed = SubResource("StyleBoxFlat_7vrkn")
 theme_override_styles/hover = SubResource("StyleBoxFlat_fu7sn")
 text = "Exit"
 
+[node name="Button3" type="Button" parent="VBoxContainer" unique_id=1138155586]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_colors/font_color = Color(0, 0, 0, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_disabled_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("2_fu7sn")
+theme_override_font_sizes/font_size = 44
+theme_override_styles/normal = SubResource("StyleBoxFlat_rhts7")
+theme_override_styles/pressed = SubResource("StyleBoxFlat_7vrkn")
+theme_override_styles/hover = SubResource("StyleBoxFlat_fu7sn")
+text = "Options
+"
+
 [node name="Label" type="Label" parent="." unique_id=1052593367]
 layout_mode = 1
 anchors_preset = 8
@@ -146,3 +170,4 @@ vertical_alignment = 1
 
 [connection signal="pressed" from="VBoxContainer/Button2" to="." method="_on_start_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button" to="." method="_on_exit_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button3" to="." method="_on_button_3_pressed"]
