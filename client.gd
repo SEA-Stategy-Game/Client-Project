@@ -7,7 +7,7 @@ extends Node
 ## Binds connection lifecycle signals for logging and post-connect logic.
 func _ready():
 	var peer = ENetMultiplayerPeer.new()
-	var err = peer.create_client("192.168.2.158", 12345)
+	var err = peer.create_client("127.0.0.1", 12345)
 	print("create_client result: ", err)  # 0 = OK, anything else is an error
 	multiplayer.multiplayer_peer = peer
 	multiplayer.connected_to_server.connect(func(): _on_connected())
@@ -45,13 +45,16 @@ func on_static_state_requested() -> void:
 ## This function is invoked every tick by broadcasting from the server.
 ## [param state] Dictionary containing the delta world state.
 @rpc("any_peer", "call_remote", "unreliable")
-func receive_state(state: Dictionary):
-	print("receive_state received: ", state)
+func receive_state(data: PackedByteArray):
+	print("test")
+	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
+	var state = JSON.parse_string(decompressed.get_string_from_utf8())
+	print("\nDynamic state from server: ", state)
 
-## Receives the compressed static world state from the 
+## Receives  the compressed static world state from the 
 ## [param data] GZIP-compressed UTF-8 encoded JSON as a PackedByteArray.
 @rpc("any_peer", "call_remote", "unreliable")
 func receive_static_state(data: PackedByteArray):
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
-	print("receive_static_state received: ", state)
+	#print("receive_static_state received: ", state)
