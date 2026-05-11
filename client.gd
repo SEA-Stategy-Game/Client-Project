@@ -46,7 +46,6 @@ func on_static_state_requested() -> void:
 ## [param state] Dictionary containing the delta world state.
 @rpc("any_peer", "call_remote", "unreliable")
 func receive_state(data: PackedByteArray):
-	print("test")
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
 	print("\nDynamic state from server: ", state)
