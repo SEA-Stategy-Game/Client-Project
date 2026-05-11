@@ -2,16 +2,16 @@
 
 importer="texture"
 type="CompressedTexture2D"
-uid="uid://ddovqvgvvvwg8"
-path="res://.godot/imported/billede2.jpeg-44bc17a23c35fee7de282bd05d8bc867.ctex"
+uid="uid://dc2avq0jomil4"
+path="res://.godot/imported/Rock3.png-247280ddd85c7e9d9544c9dae7f86195.ctex"
 metadata={
 "vram_texture": false
 }
 
 [deps]
 
-source_file="res://assets/billede2.jpeg"
-dest_files=["res://.godot/imported/billede2.jpeg-44bc17a23c35fee7de282bd05d8bc867.ctex"]
+source_file="res://assets/Rock3.png"
+dest_files=["res://.godot/imported/Rock3.png-247280ddd85c7e9d9544c9dae7f86195.ctex"]
 
 [params]
 
