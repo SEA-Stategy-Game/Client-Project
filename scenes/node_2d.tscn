@@ -3,6 +3,19 @@
 [ext_resource type="Texture2D" uid="uid://3anxfnlv6pb0" path="res://assets/MapTiles.png" id="1_4dvvg"]
 [ext_resource type="Script" uid="uid://dsrbte245t6uy" path="res://client.gd" id="1_ey6mn"]
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
+[ext_resource type="Texture2D" uid="uid://dmmhvillaju8m" path="res://assets/New Piskel (1).png" id="2_coh8c"]
+[ext_resource type="PackedScene" uid="uid://cmyknh4oo3wac" path="res://scenes/redparticles.tscn" id="3_xtx0q"]
+[ext_resource type="Texture2D" uid="uid://71hsn5kvse4r" path="res://assets/redSpawner.png" id="4_hh0fu"]
+[ext_resource type="Texture2D" uid="uid://dwf4wlyrhmn21" path="res://assets/heart pixel art 254x254.png" id="4_hsdmi"]
+[ext_resource type="Shader" uid="uid://cr7ctovmvkovf" path="res://scenes/node_2d.gdshader" id="4_ifa78"]
+[ext_resource type="Texture2D" uid="uid://xudmoa5ugm72" path="res://assets/Rocks.png" id="4_k6u5g"]
+[ext_resource type="Script" uid="uid://cjgk0scpr8po8" path="res://scenes/rock_assigner.gd" id="5_k6u5g"]
+[ext_resource type="Texture2D" uid="uid://bcld0x60sti0v" path="res://assets/blueSpawner.png" id="7_08kqv"]
+[ext_resource type="PackedScene" uid="uid://di8v3n6qq5mlo" path="res://scenes/enemy_unit.tscn" id="9_0q20i"]
+[ext_resource type="PackedScene" uid="uid://chrmho5m7w5fc" path="res://scenes/blueparticles.tscn" id="9_x63s8"]
+[ext_resource type="Texture2D" uid="uid://b5vgnlhlrgh7h" path="res://assets/blueRessources.png" id="10_dubn7"]
+[ext_resource type="Script" uid="uid://cuuesegaxd5tj" path="res://scenes/area_2d.gd" id="11_hsdmi"]
+[ext_resource type="Script" uid="uid://cumurpqfwuk5d" path="res://scenes/tree_assigner.gd" id="19_qv8l0"]
 [ext_resource type="Script" uid="uid://dhnguyn2kqbld" path="res://scenes/toggle_button.gd" id="16_coh8c"]
 [ext_resource type="FontFile" uid="uid://ciadkpr6h0h3d" path="res://assets/static/Roboto-Regular.ttf" id="18_ey6mn"]
 [ext_resource type="Script" uid="uid://c3qc1qfqubab2" path="res://scenes/slide_terminal.gd" id="19_k6u5g"]
@@ -395,41 +408,6 @@ grow_horizontal = 2
 grow_vertical = 2
 size_flags_horizontal = 0
 size_flags_vertical = 0
-script = ExtResource("19_k6u5g")
-
-[node name="ToggleButton" type="TextureButton" parent="Camera2D/CanvasLayer/Control" unique_id=689021728]
-layout_direction = 1
-layout_mode = 0
-offset_right = 512.0
-offset_bottom = 512.0
-scale = Vector2(0.095, 0.095)
-texture_normal = ExtResource("20_k6u5g")
-script = ExtResource("16_coh8c")
-
-[node name="EditorPanel" type="PanelContainer" parent="Camera2D/CanvasLayer/Control" unique_id=1033592394]
-layout_mode = 0
-offset_left = -138.35
-offset_right = 361.65
-offset_bottom = 500.0
-
-[node name="CodeEdit" type="CodeEdit" parent="Camera2D/CanvasLayer/Control/EditorPanel" unique_id=970474419]
-layout_mode = 2
-size_flags_stretch_ratio = 0.0
-theme_override_fonts/font = ExtResource("18_ey6mn")
-theme_override_font_sizes/font_size = 24
-caret_blink = true
-highlight_current_line = true
-gutters_draw_line_numbers = true
-
-[node name="Button" type="Button" parent="Camera2D/CanvasLayer/Control/EditorPanel" unique_id=387559616]
-custom_minimum_size = Vector2(46.29, 5)
-layout_direction = 4
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-size_flags_stretch_ratio = 0.0
-theme_override_fonts/font = ExtResource("18_ey6mn")
-text = "SUBMIT SCRIPT"
 
 [node name="ClientGateway" type="Node2D" parent="." unique_id=1984569465]
 script = ExtResource("1_ey6mn")
