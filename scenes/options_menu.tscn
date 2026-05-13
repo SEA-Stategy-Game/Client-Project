@@ -4,10 +4,25 @@
 [ext_resource type="Texture2D" uid="uid://dd21g1povtjiy" path="res://assets/Title Screen.png" id="2_4gmlt"]
 [ext_resource type="Texture2D" uid="uid://kayaunqr75l5" path="res://assets/light.png" id="3_lfjc7"]
 [ext_resource type="Texture2D" uid="uid://c60io7u4mu5d7" path="res://assets/label.png" id="4_3xsyx"]
+[ext_resource type="FontFile" uid="uid://c8c3b2jnqy5xs" path="res://assets/pixel_operator/PixelOperator8.ttf" id="5_7txom"]
+[ext_resource type="Texture2D" uid="uid://be7kyvwamcked" path="res://assets/button.png" id="6_binsn"]
+[ext_resource type="Texture2D" uid="uid://dx1xqcts50d8r" path="res://assets/pressed_button.png" id="7_2f1bn"]
+[ext_resource type="Texture2D" uid="uid://dyywbb1r4i5rm" path="res://assets/hover_button.png" id="8_i80p0"]
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_dhn0l"]
 texture = ExtResource("2_4gmlt")
 modulate_color = Color(0.32172796, 0.32172796, 0.32172796, 1)
+
+[sub_resource type="Theme" id="Theme_smlwr"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_cvq0m"]
+texture = ExtResource("6_binsn")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wxicr"]
+texture = ExtResource("7_2f1bn")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_is2fr"]
+texture = ExtResource("8_i80p0")
 
 [node name="OptionsMenu" type="Control" unique_id=405324523]
 layout_mode = 3
@@ -84,7 +99,33 @@ text = "Brightness"
 layout_mode = 2
 size_flags_horizontal = 3
 
+[node name="Back" type="Button" parent="VBoxContainer" unique_id=1894258432]
+custom_minimum_size = Vector2(0, 59)
+layout_mode = 2
+theme = SubResource("Theme_smlwr")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7294118, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7294118, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_disabled_color = Color(0, 0, 0, 1)
+theme_override_fonts/font = ExtResource("5_7txom")
+theme_override_font_sizes/font_size = 27
+theme_override_styles/normal = SubResource("StyleBoxTexture_cvq0m")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_wxicr")
+theme_override_styles/hover = SubResource("StyleBoxTexture_is2fr")
+text = "Back
+"
+
 [connection signal="pressed" from="VBoxContainer/Colorblind" to="." method="_on_colorblind_pressed"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
-[connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_2_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_2_value_changed"]
+[connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]
