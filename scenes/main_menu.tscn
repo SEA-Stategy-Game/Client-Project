@@ -167,4 +167,5 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_dy7ct")
 text = "Exit"
 
 [connection signal="pressed" from="VBoxContainer/Button4" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button6" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button7" to="." method="_on_exit_pressed"]
