@@ -1,6 +1,7 @@
 [gd_scene format=3 uid="uid://c12cm4p0puwi6"]
 
 [ext_resource type="Script" uid="uid://dyak2rs7r4v68" path="res://scenes/objects/Tree.gd" id="1_omb14"]
+[ext_resource type="Texture2D" uid="uid://cddpxfdx3qjgg" path="res://assets/Tree1.png" id="2_f8e6q"]
 
 [sub_resource type="CircleShape2D" id="CircleShape2D_qvbew"]
 
@@ -8,7 +9,9 @@
 script = ExtResource("1_omb14")
 
 [node name="Sprite2D" type="Sprite2D" parent="." unique_id=198745648]
+scale = Vector2(0.25, 0.25)
+texture = ExtResource("2_f8e6q")
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=51498948]
-scale = Vector2(1.55, 1.55)
+scale = Vector2(0.805, 0.805)
 shape = SubResource("CircleShape2D_qvbew")

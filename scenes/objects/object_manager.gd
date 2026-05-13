@@ -16,21 +16,17 @@ func _on_static_state(state: Dictionary):
 		match obj.resource_name:
 			"ressource_tree":
 				var tree = TREE_SCENE.instantiate()
-				var tile_pos = _parse_to_tile(obj.meta_values.position)
-				tree.position = tilemap.map_to_local(tile_pos)
+				tree.position = _parse_to_world(obj.meta_values.position)
 				objects_node.add_child(tree)
 			"ressource_stone":
 				var rock = ROCK_SCENE.instantiate()
-				var tile_pos = _parse_to_tile(obj.meta_values.position)
-				rock.position = tilemap.map_to_local(tile_pos)
+				rock.position = _parse_to_world(obj.meta_values.position)
 				objects_node.add_child(rock)
 
-func _parse_to_tile(s: String) -> Vector2i:
+func _parse_to_world(s: String) -> Vector2:
 	s = s.trim_prefix("(").trim_suffix(")")
 	var parts = s.split(", ")
-	var x = roundi(float(parts[0]) / 32.0)
-	var y = roundi(float(parts[1]) / 32.0)
-	return Vector2i(x, y)
+	return Vector2(float(parts[0]), float(parts[1]))
 
 func _on_dynamic_state(state: Dictionary):
-	print(state)
+	pass
