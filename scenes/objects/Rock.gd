@@ -12,4 +12,3 @@ var tree_textures = [
 
 func _ready():
 	sprite.texture = tree_textures.pick_random()
-	$Sprite2D.scale = Vector2(0.5, 0.5)

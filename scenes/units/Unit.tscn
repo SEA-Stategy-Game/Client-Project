@@ -3,9 +3,6 @@
 [ext_resource type="Script" uid="uid://o14cqn7pgqfr" path="res://scenes/units/unit.gd" id="1_gocqw"]
 [ext_resource type="Texture2D" uid="uid://ce0rh6652spyg" path="res://assets/unit.png" id="2_nlg77"]
 
-[sub_resource type="RectangleShape2D" id="RectangleShape2D_ty2l4"]
-size = Vector2(26.5, 27.5)
-
 [sub_resource type="AtlasTexture" id="AtlasTexture_coh8c"]
 atlas = ExtResource("2_nlg77")
 region = Rect2(0, 32, 32, 32)
@@ -207,13 +204,16 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="CircleShape2D" id="CircleShape2D_gocqw"]
+
 [node name="Unit" type="CharacterBody2D" unique_id=2019851043]
 script = ExtResource("1_gocqw")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1923930916]
-position = Vector2(-0.25, -0.75)
-shape = SubResource("RectangleShape2D_ty2l4")
-
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=768876667]
+scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5uit4")
 animation = &"run_down"
+
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1038222503]
+scale = Vector2(0.86, 0.86)
+shape = SubResource("CircleShape2D_gocqw")
