@@ -7,12 +7,6 @@ signal back_pressed
 @onready var volume_slider = $HSlider
 @onready var brightness_slider = $HSlider2
 
-
-
-
-
-
-
 func _on_h_slider_value_changed(value: float) -> void:
 	Globalsettings.gamesettings["volume"] = value
 	Globalsettings.apply_settings()
