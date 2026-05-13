@@ -49,9 +49,11 @@ func on_static_state_requested() -> void:
 ## This function is invoked every tick by broadcasting from the server.
 ## [param state] Dictionary containing the delta world state.
 @rpc("any_peer", "call_remote", "unreliable")
-func receive_state(state: Dictionary):
+func receive_state(data: PackedByteArray):
+	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
+	var state = JSON.parse_string(decompressed.get_string_from_utf8())
 	dynamic_state_received.emit(state)
-
+	
 ## Receives the compressed static world state from the 
 ## [param data] GZIP-compressed UTF-8 encoded JSON as a PackedByteArray.
 @rpc("any_peer", "call_remote", "unreliable")

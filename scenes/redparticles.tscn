@@ -1,6 +1,4 @@
-[gd_scene format=3 uid="uid://cmyknh4oo3wac"]
-
-[ext_resource type="Script" uid="uid://dgfvyymyossyf" path="res://scenes/particles.gd" id="1_xmlf0"]
+[gd_scene format=3 uid="uid://dbgycp7wjoo5k"]
 
 [sub_resource type="Curve" id="Curve_ynjm5"]
 _data = [Vector2(0, 1), 0.0, 0.0, 0, 0, Vector2(1, 0), 0.0, 0.0, 0, 0]
@@ -9,6 +7,17 @@ point_count = 2
 [sub_resource type="Gradient" id="Gradient_xmlf0"]
 offsets = PackedFloat32Array(0.48655257, 1)
 colors = PackedColorArray(1, 1, 1, 1, 1, 1, 1, 0)
+
+[sub_resource type="GDScript" id="GDScript_m3gdu"]
+script/source = "extends CPUParticles2D
+
+@onready var timeCreated = Time.get_ticks_msec()
+
+# Called when the node enters the scene tree for the first time.
+func _ready() -> void:
+	if Time.get_ticks_msec() - timeCreated > 10000:
+		queue_free()
+"
 
 [node name="CPUParticles2D" type="CPUParticles2D" unique_id=1430565050]
 self_modulate = Color(1.0039216, 0, 0.15765029, 1)
@@ -25,4 +34,4 @@ initial_velocity_max = 500.0
 scale_amount_max = 20.0
 scale_amount_curve = SubResource("Curve_ynjm5")
 color_ramp = SubResource("Gradient_xmlf0")
-script = ExtResource("1_xmlf0")
+script = SubResource("GDScript_m3gdu")
