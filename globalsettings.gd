@@ -3,7 +3,7 @@ extends Node
 # Default values
 var gamesettings = {
 	"colorblind": false, 
-	"volume": 5, 
+	"volume": 0, 
 	"brightness": 5
 }
 
