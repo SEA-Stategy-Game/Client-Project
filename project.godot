@@ -15,6 +15,10 @@ run/main_scene="uid://clxxe1oi4vmwn"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
+[autoload]
+
+Globalsettings="*uid://e6cufyxrfpom"
+
 [dotnet]
 
 project/assembly_name="New Game Project"
