@@ -3,7 +3,7 @@
 [ext_resource type="Script" uid="uid://dyak2rs7r4v68" path="res://scenes/objects/Tree.gd" id="1_omb14"]
 [ext_resource type="Texture2D" uid="uid://cddpxfdx3qjgg" path="res://assets/Tree1.png" id="2_f8e6q"]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_qvbew"]
+[sub_resource type="CircleShape2D" id="CircleShape2D_f8e6q"]
 
 [node name="StaticBody2D" type="StaticBody2D" unique_id=1807207651]
 script = ExtResource("1_omb14")
@@ -12,6 +12,6 @@ script = ExtResource("1_omb14")
 scale = Vector2(0.25, 0.25)
 texture = ExtResource("2_f8e6q")
 
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=51498948]
-scale = Vector2(0.805, 0.805)
-shape = SubResource("CircleShape2D_qvbew")
+[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1946216141]
+shape = SubResource("CircleShape2D_f8e6q")
+disabled = true

@@ -8,7 +8,7 @@ class_name Unit
 var current_health: int
 var _server_pos: Vector2 = Vector2.ZERO
 var _server_path: Array = []
-var _server_speed: float = 70.0
+var _server_speed: float = 3000.0
 var _has_server_state: bool = false
 var _path_index: int = 0
 
@@ -26,22 +26,25 @@ func update_from_server(server_pos: Vector2, path: Array, spd: float) -> void:
 	_path_index = 0
 
 func _physics_process(delta) -> void:
-	if not _has_server_state or _server_path.is_empty():
+	if not _has_server_state:
 		animated_sprite.stop()
 		return
 
-	var target = _server_path[_path_index]
-	var direction = (target - global_position).normalized()
-	var distance = global_position.distance_to(target)
+	var target: Vector2
 
-	if distance < 5.0:
-		if _path_index < _server_path.size() - 1:
+	if _server_path.size() > 0 and _path_index < _server_path.size():
+		target = _server_path[_path_index]
+		if global_position.distance_to(target) < 1.0:
 			_path_index += 1
-		else:
+			return
+	else:
+		target = _server_pos
+		if global_position.distance_to(target) < 1.0:
 			animated_sprite.stop()
 			return
 
-	velocity = direction * _server_speed
+	var direction = (target - global_position).normalized()
+	velocity = direction * _server_speed * delta
 	move_and_slide()
 	_update_movement_animation(direction)
 

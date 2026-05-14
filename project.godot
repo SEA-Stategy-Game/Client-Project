@@ -11,13 +11,13 @@ config_version=5
 [application]
 
 config/name="Client"
-run/main_scene="uid://clxxe1oi4vmwn"
+run/main_scene="uid://crev2inf1u6xe"
 config/features=PackedStringArray("4.6", "Forward Plus")
 config/icon="res://icon.svg"
 
 [autoload]
 
-Globalsettings="*uid://e6cufyxrfpom"
+Globalsettings="*uid://bjveigsppotrl"
 
 [dotnet]
 

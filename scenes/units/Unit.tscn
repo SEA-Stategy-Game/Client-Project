@@ -204,8 +204,6 @@ animations = [{
 "speed": 5.0
 }]
 
-[sub_resource type="CircleShape2D" id="CircleShape2D_gocqw"]
-
 [node name="Unit" type="CharacterBody2D" unique_id=2019851043]
 script = ExtResource("1_gocqw")
 
@@ -213,7 +211,3 @@ script = ExtResource("1_gocqw")
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5uit4")
 animation = &"run_down"
-
-[node name="CollisionShape2D" type="CollisionShape2D" parent="." unique_id=1038222503]
-scale = Vector2(0.86, 0.86)
-shape = SubResource("CircleShape2D_gocqw")
