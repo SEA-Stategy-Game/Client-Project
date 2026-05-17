@@ -17,9 +17,6 @@ func _ready():
 
 	var address = LobbyClient.selected_room.address
 	var port = LobbyClient.selected_room.port
-	
-	print(address)
-	print(port)
 
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(address, port)
