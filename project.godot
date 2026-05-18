@@ -19,6 +19,11 @@ config/icon="res://icon.svg"
 
 Globalsettings="*res://globalsettings.gd"
 LobbyClient="*res://multiplayer/lobby_client.gd"
+ActionGateway="*res://core/Logic/ActionGateway.gd"
+TickManager="*res://core/Logic/TickManager.gd"
+Server="*res://core/Logic/Server.gd"
+ResourceSpawner="*res://core/Entities/Map/Resource_spawner.gd"
+Game="*res://core/Logic/Game.gd"
 
 [dotnet]
 
