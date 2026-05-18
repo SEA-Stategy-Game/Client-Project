@@ -17,8 +17,8 @@ config/icon="res://icon.svg"
 
 [autoload]
 
-Globalsettings="*uid://bjveigsppotrl"
-LobbyClient="*uid://b1a3w7ldq5cag"
+Globalsettings="*res://globalsettings.gd"
+LobbyClient="*res://multiplayer/lobby_client.gd"
 
 [dotnet]
 
