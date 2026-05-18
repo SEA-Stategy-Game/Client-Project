@@ -13,4 +13,3 @@ var stump_texture = preload("res://assets/TreeStub.png")
 
 func _ready():
 	sprite.texture = tree_textures.pick_random()
-	$Sprite2D.scale = Vector2(0.5, 0.5)
