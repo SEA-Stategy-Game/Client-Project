@@ -2,8 +2,8 @@ extends Node
 
 signal world_ready(world: Node)
 
-@onready var _spawn_scene: PackedScene = preload("res://Entities/Interfaces/spawn_unit.tscn")
-@onready var _default_world_scene: PackedScene = preload("res://test_world.tscn")
+@onready var _spawn_scene: PackedScene = preload("res://scenes/Entities/Interfaces/spawn_unit.tscn")
+@onready var _default_world_scene: PackedScene = preload("res://scenes/test_world.tscn")
 
 var world: Node = null
 var Wood: int = 0
@@ -46,18 +46,18 @@ func spawn_unit(position: Vector2) -> int:
 		push_warning("[GAME] Cannot spawn unit because world is not ready.")
 		return -1
 
-	var ui_node := world.get_node_or_null("UI")
-	if ui_node == null:
-		push_warning("[GAME] World UI node not found.")
+	var units_node := world.get_node_or_null("Units")
+	if units_node == null:
+		push_warning("[GAME] World Units node not found.")
 		return -1
 
-	var spawn_unit_instance = _spawn_scene.instantiate()
-	spawn_unit_instance.housePos = position
+	var unit_instance = _spawn_scene.instantiate()
+	unit_instance.global_position = position
+	if unit_instance.get("entity_id") == null:
+		unit_instance.entity_id = int(unit_instance.get_instance_id())
+	if unit_instance.get("player_id") == null:
+		unit_instance.player_id = 0
 
-	ui_node.add_child(spawn_unit_instance)
+	units_node.add_child(unit_instance)
 
-	# Ensure entity_id exists
-	if spawn_unit_instance.get("entity_id") == null:
-		spawn_unit_instance.entity_id = spawn_unit_instance.get_instance_id()
-
-	return int(spawn_unit_instance.entity_id)
+	return int(unit_instance.entity_id)

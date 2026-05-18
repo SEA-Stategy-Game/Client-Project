@@ -20,7 +20,12 @@ func get_tick_count() -> int:
     return current_tick
 
 func build_authoritative_snapshot() -> Dictionary:
-    return _build_authoritative_snapshot()
+    var wood := 0
+    var stone := 0
+    if Game != null:
+        wood = Game.Wood
+        stone = Game.Stone
+    return _build_authoritative_snapshot(wood, stone)
 
 func _process(delta: float) -> void:
     var should_tick := run_without_network
@@ -40,9 +45,9 @@ func _process(delta: float) -> void:
 func _process_tick() -> void:
     tick.emit(current_tick)
     tick_processed.emit(current_tick)
-    authoritative_state_ready.emit(_build_authoritative_snapshot())
+    authoritative_state_ready.emit(build_authoritative_snapshot())
 
-func _build_authoritative_snapshot() -> Dictionary:
+func _build_authoritative_snapshot(wood: int, stone: int) -> Dictionary:
     var snapshot := {
         "payload_type": "full",
         "tick": current_tick,
@@ -51,8 +56,8 @@ func _build_authoritative_snapshot() -> Dictionary:
         "resources": [],
         "buildings": [],
         "stockpile": {
-            "wood": Game.Wood,
-            "stone": Game.Stone
+            "wood": wood,
+            "stone": stone
         },
         "scenario": {}
     }

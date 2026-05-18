@@ -17,16 +17,23 @@ func _ready() -> void:
 	# Wait for systems to load
 	await get_tree().create_timer(1.0).timeout
 	
-	var gateway = get_node_or_null("/root/ActionGateway")
+	var gateway = null
+	if get_tree().get_root().has_node("AdapterGateway"):
+		gateway = get_node_or_null("/root/AdapterGateway")
 	if gateway == null:
-		print("[DIAGNOSTIC_ERR] Cannot find ActionGateway.")
+		gateway = get_node_or_null("/root/ActionGateway")
+
+	if gateway == null:
+		print("[DIAGNOSTIC_ERR] Cannot find ActionGateway or AdapterGateway.")
 		get_tree().quit()
 		return
-	
+
 	gateway.unit_idled.connect(_on_unit_idled)
 	gateway.task_completed.connect(_on_task_completed)
-	
-	var sense = gateway.sense()
+
+	var sense = null
+	if gateway.has_method("sense"):
+		sense = gateway.sense()
 	var units = sense.get_all_units()
 	if units.is_empty():
 		print("[ENTITY_NOT_FOUND] No units found to test.")
@@ -113,7 +120,19 @@ func _on_unit_idled(unit_id: int) -> void:
 	if unit_id != _test_unit_id:
 		return
 	
-	var sense = get_node("/root/ActionGateway").sense()
+	var sense = null
+	if get_tree().get_root().has_node("AdapterGateway"):
+		var g = get_node_or_null("/root/AdapterGateway")
+		if g != null and g.has_method("sense"):
+			sense = g.sense()
+	if sense == null:
+		var ag = get_node_or_null("/root/ActionGateway")
+		if ag != null and ag.has_method("sense"):
+			sense = ag.sense()
+    
+	if sense == null:
+		print("[DIAGNOSTIC_ERR] Cannot acquire SenseAPI for unit idle handling.")
+		return
 	var status = sense.get_unit_status(unit_id)
 	print("[UNIT_IDLE] Unit ", unit_id, " emitted unit_idled signal.")
 	print("[DATA_SNAPSHOT] Unit status: is_idle = ", status.get("is_idle", "N/A"))

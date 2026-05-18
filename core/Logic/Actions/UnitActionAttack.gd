@@ -1,9 +1,12 @@
 extends RefCounted
 class_name UnitActionAttack
 
-const ACTION_STATE = IUnitAction.ActionState
+const ACTION_PENDING: int = 0
+const ACTION_RUNNING: int = 1
+const ACTION_COMPLETED: int = 2
+const ACTION_FAILED: int = 3
 
-var _state := ACTION_STATE.PENDING
+var _state := ACTION_PENDING
 var _target_node: Node2D = null
 
 @export var _attack_damage := 10
@@ -22,9 +25,9 @@ func setup(target: Node2D, allow_neutral_targets: bool = false) -> void:
 	_rng.randomize()
 
 func start(unit: CharacterBody2D, target: Node2D) -> void:
-	if _state == ACTION_STATE.RUNNING:
+	if _state == ACTION_RUNNING:
 		return
-	_state = ACTION_STATE.RUNNING
+	_state = ACTION_RUNNING
 	if target != null:
 		_target_node = target
 	if "attack_damage" in unit:
@@ -37,7 +40,7 @@ func start(unit: CharacterBody2D, target: Node2D) -> void:
 		_rng.randomize()
 
 func tick(unit: CharacterBody2D, delta: float) -> int:
-	if _state != ACTION_STATE.RUNNING:
+	if _state != ACTION_RUNNING:
 		return _state
 	var multiplayer_api := unit.get_tree().get_multiplayer()
 	var peer: MultiplayerPeer = multiplayer_api.multiplayer_peer
@@ -53,12 +56,12 @@ func tick(unit: CharacterBody2D, delta: float) -> int:
 
 	# Target validity check.
 	if _target_node == null or not is_instance_valid(_target_node):
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		unit.velocity = Vector2.ZERO
 		return _state
 
 	if _target_node.has_method("is_alive") and not _target_node.is_alive():
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		unit.velocity = Vector2.ZERO
 		return _state
 
@@ -106,15 +109,15 @@ func tick(unit: CharacterBody2D, delta: float) -> int:
 
 	# Re-validate after damage application.
 	if _target_node == null or not is_instance_valid(_target_node):
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		return _state
 	if _target_node.has_method("is_alive") and not _target_node.is_alive():
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 
 	return _state
 
 func cancel(unit: CharacterBody2D) -> void:
-	_state = ACTION_STATE.FAILED
+	_state = ACTION_FAILED
 	unit.velocity = Vector2.ZERO
 
 func serialize() -> Dictionary:

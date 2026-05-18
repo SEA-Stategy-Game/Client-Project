@@ -1,23 +1,27 @@
 extends Node2D
 
-# The % symbol tells Godot to look for the Unique Name
-@onready var soundtrack = %SoundTrack 
+@onready var soundtrack: AudioStreamPlayer = get_node_or_null("SoundTrack")
 
 func _ready() -> void:
-	apply_audio_settings()
+    if soundtrack != null:
+        apply_audio_settings()
+    else:
+        print("Warning: SoundTrack node not found in this instance (continuing).")
+    _connect_lobby_room_if_present()
 
 func apply_audio_settings() -> void:
-	# Use the 'is_instance_valid' check for extra safety
-	if is_instance_valid(soundtrack):
-		var volume_value = Globalsettings.gamesettings["volume"]
-		
-		# Convert 0-10 scale to 0.0-1.0
-		var linear_volume = volume_value / 10.0
-		
-		# linear_to_db converts 0.0..1.0 into -80db..0db
-		soundtrack.volume_db = linear_to_db(linear_volume)
-		
-		if not soundtrack.playing:
-			soundtrack.play()
-	else:
-		print("Error: The script still can't find the SoundTrack node!")
+    if is_instance_valid(soundtrack):
+        var volume_value = Globalsettings.gamesettings["volume"]
+        var linear_volume = volume_value / 10.0
+        soundtrack.volume_db = linear_to_db(linear_volume)
+
+        if not soundtrack.playing:
+            soundtrack.play()
+
+func _connect_lobby_room_if_present() -> void:
+    var gateway = get_node_or_null("ClientGateway")
+    if gateway == null:
+        return
+    if LobbyClient == null or LobbyClient.selected_room == null:
+        return
+    gateway.connect_to_server(LobbyClient.selected_room.address, LobbyClient.selected_room.port)

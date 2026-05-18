@@ -2,7 +2,7 @@ extends TileMapLayer
 
 @export var tile_size: int = 32
 
-const TestMapScript = preload("res://Entities/Map/TestMap.gd")
+const TestMapScript = preload("res://core/Entities/Map/TestMap.gd")
 @onready var game_map: TestMap = TestMapScript.new()
 @onready var nav_region = get_node_or_null("/root/World/NavigationRegion2D")
 

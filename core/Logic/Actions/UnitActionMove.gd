@@ -1,15 +1,18 @@
 extends RefCounted
 class_name UnitActionMove
 
-const ACTION_STATE = IUnitAction.ActionState
+const ACTION_PENDING: int = 0
+const ACTION_RUNNING: int = 1
+const ACTION_COMPLETED: int = 2
+const ACTION_FAILED: int = 3
 
 var _target_position: Vector2 = Vector2.ZERO
 var _arrival_radius: float = 12.0
-var _state: int = ACTION_STATE.PENDING
+var _state: int = ACTION_PENDING
 var _target_node: Node2D = null
 
 func start(unit: CharacterBody2D, target: Node2D) -> void:
-	_state = ACTION_STATE.RUNNING
+	_state = ACTION_RUNNING
 	if target != null:
 		_target_node = target
 	if is_instance_valid(_target_node):
@@ -23,7 +26,7 @@ func start(unit: CharacterBody2D, target: Node2D) -> void:
 		unit.get_node("AnimationPlayer").play("Walk Down")
 
 func tick(unit: CharacterBody2D, _delta: float) -> int:
-	if _state != ACTION_STATE.RUNNING:
+	if _state != ACTION_RUNNING:
 		return _state
 
 	if is_instance_valid(_target_node):
@@ -45,7 +48,7 @@ func tick(unit: CharacterBody2D, _delta: float) -> int:
 
 		if nav_finished or dist <= _arrival_radius:
 			unit.velocity = Vector2.ZERO
-			_state = ACTION_STATE.COMPLETED
+			_state = ACTION_COMPLETED
 			if unit.has_node("AnimationPlayer"):
 				unit.get_node("AnimationPlayer").stop()
 		else:
@@ -55,14 +58,14 @@ func tick(unit: CharacterBody2D, _delta: float) -> int:
 
 		if unit.global_position.distance_to(_target_position) <= _arrival_radius:
 			unit.velocity = Vector2.ZERO
-			_state = ACTION_STATE.COMPLETED
+			_state = ACTION_COMPLETED
 			if unit.has_node("AnimationPlayer"):
 				unit.get_node("AnimationPlayer").stop()
 
 	return _state
 
 func cancel(unit: CharacterBody2D) -> void:
-	_state = ACTION_STATE.FAILED
+	_state = ACTION_FAILED
 	var agent: NavigationAgent2D = unit.get_node_or_null("NavigationAgent2D")
 	if agent != null:
 		agent.target_position = unit.global_position

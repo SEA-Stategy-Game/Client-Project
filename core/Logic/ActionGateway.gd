@@ -7,23 +7,24 @@ signal plan_execution_finished(plan_id: String)
 signal unit_idled(unit_id: int)
 signal command_validated(command: Dictionary)
 
-var _sense: SenseAPI = null
+var _sense = null
 var _active_player_id: int = 0
 var _chop_return_state: Dictionary = {}
-var _tick_manager: TickManager = null
+var _tick_manager = null
 
 func _ready() -> void:
     process_mode = Node.PROCESS_MODE_ALWAYS
-    _tick_manager = get_node_or_null("/root/TickManager") as TickManager
+    _tick_manager = get_node_or_null("/root/TickManager")
     if _tick_manager != null and not _tick_manager.tick.is_connected(_on_tick):
         _tick_manager.tick.connect(_on_tick)
 
 func set_active_player(player_id: int) -> void:
     _active_player_id = player_id
 
-func sense() -> SenseAPI:
+func sense():
     if _sense == null:
-        _sense = SenseAPI.new(get_tree())
+        var SenseAPIScript := preload("res://core/Logic/SenseAPI.gd")
+        _sense = SenseAPIScript.new(get_tree())
     return _sense
 
 func move_unit(unit_id: int, destination: Vector2, requesting_player_id: int = -1, requesting_peer_id: int = -1) -> bool:

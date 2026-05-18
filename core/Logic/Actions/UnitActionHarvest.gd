@@ -1,9 +1,12 @@
 extends RefCounted
 class_name UnitActionHarvest
 
-const ACTION_STATE = IUnitAction.ActionState
+const ACTION_PENDING: int = 0
+const ACTION_RUNNING: int = 1
+const ACTION_COMPLETED: int = 2
+const ACTION_FAILED: int = 3
 
-var _state: int = ACTION_STATE.PENDING
+var _state: int = ACTION_PENDING
 var _target_node: Node2D = null
 var _elapsed: float = 0.0
 var _harvest_duration: float = 5.0
@@ -31,15 +34,15 @@ func setup(resource_node: Node2D) -> void:
 		_resource_type = "stone"
 
 func start(unit: CharacterBody2D, target: Node2D) -> void:
-	_state = ACTION_STATE.RUNNING
+	_state = ACTION_RUNNING
 	if target != null:
 		_target_node = target
 
 	if not is_instance_valid(_target_node):
-		_state = ACTION_STATE.FAILED
+		_state = ACTION_FAILED
 		return
 	if _target_node.has_method("is_alive") and not _target_node.is_alive():
-		_state = ACTION_STATE.FAILED
+		_state = ACTION_FAILED
 		return
 
 	if "total_time" in _target_node:
@@ -63,33 +66,33 @@ func start(unit: CharacterBody2D, target: Node2D) -> void:
 				timer.start()
 
 func tick(unit: CharacterBody2D, delta: float) -> int:
-	if _state != ACTION_STATE.RUNNING:
+	if _state != ACTION_RUNNING:
 		return _state
 
 	if not is_instance_valid(_target_node):
 		# Resource was freed this frame (depleted). Credit inventory now.
 		_credit_inventory_if_needed(unit)
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		if unit.has_node("AnimationPlayer"):
 			unit.get_node("AnimationPlayer").stop()
 		return _state
 
 	if _target_node.has_method("is_alive") and not _target_node.is_alive():
 		_credit_inventory_if_needed(unit)
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		_cleanup(unit)
 		return _state
 
 	_elapsed += delta
 
 	if _elapsed > _harvest_duration * 3.0:
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		_cleanup(unit)
 
 	return _state
 
 func cancel(unit: CharacterBody2D) -> void:
-	_state = ACTION_STATE.FAILED
+	_state = ACTION_FAILED
 	_cleanup(unit)
 
 func serialize() -> Dictionary:

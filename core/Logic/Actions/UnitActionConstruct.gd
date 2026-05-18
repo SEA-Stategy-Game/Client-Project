@@ -7,9 +7,12 @@
 extends RefCounted
 class_name UnitActionConstruct
 
-const ACTION_STATE = IUnitAction.ActionState
+const ACTION_PENDING: int = 0
+const ACTION_RUNNING: int = 1
+const ACTION_COMPLETED: int = 2
+const ACTION_FAILED: int = 3
 
-var _state: int = ACTION_STATE.PENDING
+var _state: int = ACTION_PENDING
 var _build_position: Vector2 = Vector2.ZERO
 var _building_scene_path: String = ""
 var _build_duration: float = 10.0
@@ -20,7 +23,7 @@ var _elapsed: float = 0.0
 # -----------------------------------------------------------------
 
 func start(unit: CharacterBody2D, _target: Node2D) -> void:
-	_state = ACTION_STATE.RUNNING
+	_state = ACTION_RUNNING
 	if _target:
 		_build_position = _target.global_position
 
@@ -33,20 +36,20 @@ func start(unit: CharacterBody2D, _target: Node2D) -> void:
 			anim.play("Work")
 
 func tick(unit: CharacterBody2D, delta: float) -> int:
-	if _state != ACTION_STATE.RUNNING:
+	if _state != ACTION_RUNNING:
 		return _state
 
 	_elapsed += delta
 	if _elapsed >= _build_duration:
 		_place_building(unit)
-		_state = ACTION_STATE.COMPLETED
+		_state = ACTION_COMPLETED
 		if unit.has_node("AnimationPlayer"):
 			unit.get_node("AnimationPlayer").stop()
 
 	return _state
 
 func cancel(unit: CharacterBody2D) -> void:
-	_state = ACTION_STATE.FAILED
+	_state = ACTION_FAILED
 	if unit.has_node("AnimationPlayer"):
 		unit.get_node("AnimationPlayer").stop()
 
@@ -71,7 +74,7 @@ func _place_building(unit: CharacterBody2D) -> void:
 	var scene = load(_building_scene_path)
 	if scene == null:
 		push_error("UnitActionConstruct: Failed to load scene: ", _building_scene_path)
-		_state = ACTION_STATE.FAILED
+		_state = ACTION_FAILED
 		return
 	var building = scene.instantiate()
 	building.global_position = _build_position

@@ -30,7 +30,13 @@ func _unhandled_input(event: InputEvent) -> void:
 		if mouseEntered == true and _allow_spawn_ui():
 			selected = !selected
 			if selected == true:
-				Game.spawn_unit(global_position)
+				var adapter = null
+				if get_tree().get_root().has_node("AdapterGame"):
+					adapter = get_node_or_null("/root/AdapterGame")
+				if adapter != null and adapter.has_method("spawn_unit"):
+					adapter.spawn_unit(global_position)
+				elif Engine.has_singleton("Game"):
+					Game.spawn_unit(global_position)
 
 
 func _on_mouse_entered() -> void:

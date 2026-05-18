@@ -24,6 +24,9 @@ TickManager="*res://core/Logic/TickManager.gd"
 Server="*res://core/Logic/Server.gd"
 ResourceSpawner="*res://core/Entities/Map/Resource_spawner.gd"
 Game="*res://core/Logic/Game.gd"
+AdapterWorldBinding="*res://core/adapter/AdapterWorldBinding.gd"
+AdapterGateway="*res://core/adapter/AdapterGateway.gd"
+AdapterGame="*res://core/adapter/AdapterGame.gd"
 
 [dotnet]
 

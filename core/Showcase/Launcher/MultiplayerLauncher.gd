@@ -326,7 +326,11 @@ func _refresh_pressed() -> void:
     _log_line("[SHOWCASE] Refreshed unit and target IDs from world state.")
 
 func _apply_player_pressed() -> void:
-    var gateway = get_node_or_null("/root/ActionGateway")
+    var gateway = null
+    if get_tree().get_root().has_node("AdapterGateway"):
+        gateway = get_node_or_null("/root/AdapterGateway")
+    if gateway == null:
+        gateway = get_node_or_null("/root/ActionGateway")
     if gateway != null and gateway.has_method("set_active_player"):
         gateway.set_active_player(int(_player_spin.value))
     _log_line("[SHOWCASE] Active player set to %d." % int(_player_spin.value))
@@ -347,7 +351,11 @@ func _configure_gateway() -> void:
     var gateway := _gateway_node()
     if gateway != null and gateway.has_method("set_port"):
         gateway.set_port(int(_port_spin.value))
-    var action_gateway = get_node_or_null("/root/ActionGateway")
+    var action_gateway = null
+    if get_tree().get_root().has_node("AdapterGateway"):
+        action_gateway = get_node_or_null("/root/AdapterGateway")
+    if action_gateway == null:
+        action_gateway = get_node_or_null("/root/ActionGateway")
     if action_gateway != null and action_gateway.has_method("set_active_player"):
         action_gateway.set_active_player(int(_player_spin.value))
 
