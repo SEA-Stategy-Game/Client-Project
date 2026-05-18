@@ -10,8 +10,16 @@ signal dynamic_state_received(state: Dictionary)
 ## Initialises the ENet client and connects to a specific server
 ## Binds connection lifecycle signals for logging and post-connect logic.
 func _ready():
+	
+	if LobbyClient.selected_room == null:
+		print("Error: No room selected. Returning to menu.")
+		return
+
+	var address = LobbyClient.selected_room.address
+	var port = LobbyClient.selected_room.port
+
 	var peer = ENetMultiplayerPeer.new()
-	var err = peer.create_client("127.0.0.1", 12345)
+	var err = peer.create_client(address, port)
 	print("create_client result: ", err)  # 0 = OK, anything else is an error
 	multiplayer.multiplayer_peer = peer
 	multiplayer.connected_to_server.connect(func(): _on_connected())
