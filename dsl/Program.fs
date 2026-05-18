@@ -9,7 +9,12 @@ let private decompileStep (step: Lang.ResponseStep) =
     let get k = if step.parameters.ContainsKey(k) then step.parameters.[k] else "0"
     match step.actionType with
     | "MoveTo"    -> sprintf "    MoveTo %s %s" (get "x") (get "y")
-    | "Harvest"   -> sprintf "    Harvest %s" (get "target_id")
+    | "Harvest"   ->
+        let rt  = get "resource_type"
+        let tid = get "target_id"
+        if rt <> "0" && rt <> "" then
+            sprintf "    Harvest %s" (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower()))
+        else sprintf "    Harvest %s" tid
     | "Construct" -> sprintf "    Construct %s %s %s" (get "scene") (get "x") (get "y")
     | other       -> sprintf "    # Unknown action: %s" other
 
