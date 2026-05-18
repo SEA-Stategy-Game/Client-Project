@@ -38,9 +38,11 @@ let pMoveTo =
         Lang.Command.Action("MoveTo", mkParams [("x", floatStr x); ("y", floatStr y)]))
 
 let pHarvest =
-    str "Harvest" >>. spaces1 >>.
-    pint32 |>> (fun id ->
-        Lang.Command.Action("Harvest", mkParams [("target_id", string id)]))
+    str "Harvest" >>. spaces1 >>. (
+        attempt (str "Tree"  >>% Lang.Command.Action("Harvest", mkParams [("resource_type", "tree")])) <|>
+        attempt (str "Stone" >>% Lang.Command.Action("Harvest", mkParams [("resource_type", "stone")])) <|>
+        (pint32 |>> fun id -> Lang.Command.Action("Harvest", mkParams [("target_id", string id)]))
+    )
 
 let pConstruct =
     str "Construct" >>. spaces1 >>.
