@@ -1,19 +1,15 @@
 [gd_scene format=3 uid="uid://4pqund3nukl7"]
 
-[ext_resource type="Script" path="res://scenes/node_2d.gd" id="1_dubn7"]
-[ext_resource type="Script" path="res://core/adapter/NodeGatewayBridge.gd" id="1_ey6mn"]
+[ext_resource type="Script" uid="uid://b480m8ikwjkmw" path="res://scenes/node_2d.gd" id="1_dubn7"]
+[ext_resource type="Script" uid="uid://ckejatblvltnc" path="res://core/adapter/NodeGatewayBridge.gd" id="1_ey6mn"]
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
 [ext_resource type="FontFile" uid="uid://c8c3b2jnqy5xs" path="res://assets/pixel_operator/PixelOperator8.ttf" id="4_hsdmi"]
 [ext_resource type="FontFile" uid="uid://1jdlpvtvvc7e" path="res://assets/pixel_operator/PixelOperatorHB8.ttf" id="5_f6ptj"]
-[ext_resource type="Script" path="res://scenes/unit_manager.gd" id="7_3m5ht"]
 [ext_resource type="Texture2D" uid="uid://d0jx2iwo0qfa7" path="res://assets/Tiles.png" id="8_f6ptj"]
-[ext_resource type="Script" path="res://scenes/terrain_manager.gd" id="11_08kqv"]
 [ext_resource type="AudioStream" uid="uid://docoj8fyd0ty2" path="res://Under_the_Black_Mountain.mp3" id="11_f6ptj"]
-[ext_resource type="Script" path="res://scenes/buildings_manager.gd" id="12_f6ptj"]
 [ext_resource type="Script" uid="uid://c3qc1qfqubab2" path="res://scenes/slide_terminal.gd" id="19_k6u5g"]
-[ext_resource type="Script" uid="uid://c3bf1m2y10cyf" path="res://scenes/objects/object_manager.gd" id="23_ey6mn"]
-[ext_resource type="Script" path="res://navigation_region_2d.gd" id="24_navrg"]
-[ext_resource type="Script" path="res://core/Entities/Map/MapManager.gd" id="25_mapmg"]
+[ext_resource type="Script" uid="uid://55kguk8x1hkf" path="res://navigation_region_2d.gd" id="24_navrg"]
+[ext_resource type="Script" uid="uid://rwknlhnif0la" path="res://core/Entities/Map/MapManager.gd" id="25_mapmg"]
 
 [sub_resource type="Environment" id="Environment_xtx0q"]
 background_mode = 3
@@ -375,7 +371,7 @@ environment = SubResource("Environment_xtx0q")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1284736273]
 position = Vector2(150.99997, -105.00001)
 scale = Vector2(1.3696884, 8.886781)
-zoom = Vector2(0.27, 0.27)
+zoom = Vector2(0.7, 0.7)
 limit_left = -2298
 limit_top = -1697
 limit_right = 2742
@@ -452,6 +448,8 @@ script = ExtResource("25_mapmg")
 [node name="Houses" type="Node2D" parent="NavigationRegion2D/TileMapLayer" unique_id=350287105]
 
 [node name="UI" type="Control" parent="." unique_id=1080200729]
+layout_mode = 3
+anchors_preset = 0
 
 [node name="Units" type="Node2D" parent="." unique_id=1528379333]
 

@@ -2,7 +2,7 @@ extends Node
 
 signal world_ready(world: Node)
 
-@onready var _spawn_scene: PackedScene = preload("res://scenes/Entities/Interfaces/spawn_unit.tscn")
+@onready var _spawn_scene: PackedScene = preload("res://scenes/units/Unit.tscn")
 @onready var _default_world_scene: PackedScene = preload("res://scenes/test_world.tscn")
 
 var world: Node = null

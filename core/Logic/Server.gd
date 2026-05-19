@@ -4,7 +4,7 @@ signal client_connected(peer_id: int)
 signal client_disconnected(peer_id: int)
 signal authoritative_state_applied(state: Dictionary)
 
-const UNIT_SCENE := preload("res://scenes/Entities/Units/unit.tscn")
+const UNIT_SCENE := preload("res://scenes/units/Unit.tscn")
 const DEFAULT_UNIT_SPAWN_POSITIONS := [
     Vector2(433, 499),
     Vector2(520, 499),

@@ -65,15 +65,16 @@ func get_movement_multiplier() -> float:
 func get_atlas_coordinates() -> Vector2i:
     match terrain:
         TerrainType.PLAINS:
-            return Vector2i(1, 1)
+            return Vector2i(randi() % 4, 0)
         TerrainType.FOREST:
-            return Vector2i(2, 3)
+            return Vector2i(4, 0)
         TerrainType.HILLS:
-            return Vector2i(3, 3)
+            return Vector2i(6, 0)
         TerrainType.WATER:
-            return Vector2i(1, 3)
+            return Vector2i(randi() % 4, 1)
+            return Vector2i(0, 1)
         _:
-            return Vector2i(-1, -1)
+            return Vector2i(0, 1)
 
 func take_damage(dmg: int) -> void:
     if map_object == null:

@@ -3,9 +3,9 @@ extends Control
 signal back_pressed
 
 # References to UI nodes (Adjust these paths to match your scene tree!)
-@onready var colorblind_check = $CheckBox
-@onready var volume_slider = $HSlider
-@onready var brightness_slider = $HSlider2
+@onready var colorblind_check = $VBoxContainer/Colorblind
+@onready var volume_slider = $VBoxContainer/HBoxContainer/HSlider
+@onready var brightness_slider = $VBoxContainer/HBoxContainer3/HSlider2
 
 func _on_h_slider_value_changed(value: float) -> void:
 	Globalsettings.gamesettings["volume"] = value
