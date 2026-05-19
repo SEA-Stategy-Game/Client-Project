@@ -12,7 +12,7 @@ const TERRAIN_ATLAS = {
 		Vector2i(2, 0),
 		Vector2i(3, 0),
 	],
-	1: Vector2i(4, 0),  # fores
+	1: Vector2i(4, 0),  # forest
 	2: Vector2i(6, 0),  # hills
 	3: [
 	Vector2i(0, 1), # [0] deep water

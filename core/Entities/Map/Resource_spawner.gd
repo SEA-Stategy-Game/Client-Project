@@ -2,7 +2,6 @@ extends Node
 
 @onready var stone_scene = preload("res://core/Entities/Resource/Stone.tscn")
 @onready var tree_scene = preload("res://core/Entities/Resource/Tree.tscn")
-@onready var objects = (get_tree().get_root().get_node("World/NavigationRegion2D/TileMapLayer/Objects") if get_tree().get_root().has_node("World/NavigationRegion2D/TileMapLayer/Objects") else null)
 
 var rng := RandomNumberGenerator.new()
 
@@ -36,17 +35,28 @@ func spawn_resource(type: MapTile.TerrainType) -> MapResource:
     var table_type = spawn_table[type]
     if rng.randf() <= table_type["spawn_chance"]:
         var picked_num = rng.randi_range(0, table_type["choice_array"].size() - 1)
+        var objects := _get_objects_node()
         match table_type["choice_array"][picked_num]:
             "tree":
                 var tree = tree_scene.instantiate()
                 tree.entity_id = _allocate_resource_id()
-                if objects != null:
-                    objects.add_child(tree)
+                if objects == null:
+                    tree.queue_free()
+                    return null
+                objects.add_child(tree)
                 return tree
             "stone":
                 var stone = stone_scene.instantiate()
                 stone.entity_id = _allocate_resource_id()
-                if objects != null:
-                    objects.add_child(stone)
+                if objects == null:
+                    stone.queue_free()
+                    return null
+                objects.add_child(stone)
                 return stone
     return null
+
+func _get_objects_node() -> Node:
+    var root := get_tree().get_root()
+    if root == null:
+        return null
+    return root.get_node_or_null("World/NavigationRegion2D/TileMapLayer/Objects")

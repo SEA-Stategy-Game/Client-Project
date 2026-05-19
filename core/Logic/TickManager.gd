@@ -70,13 +70,27 @@ func _build_authoritative_snapshot(wood: int, stone: int) -> Dictionary:
             continue
         if unit.is_queued_for_deletion() or _node_is_destroyed(unit):
             continue
+
+        # safe property reads (avoid two-arg get())
+        var player_id_val = unit.get("player_id")
+        var player_id_num = int(player_id_val) if player_id_val != null else 0
+
+        var owner_peer_val = unit.get("owner_peer_id")
+        var owner_peer_num = int(owner_peer_val) if owner_peer_val != null else -1
+
+        var health_val = unit.get("current_health")
+        var health_num = int(health_val) if health_val != null else 0
+
+        var idle_val = unit.get("is_idle")
+        var idle_bool = bool(idle_val) if idle_val != null else false
+
         snapshot["units"].append({
             "entity_id": int(entity_id),
-            "player_id": int(unit.get("player_id")) if unit.get("player_id") != null else 0,
-            "owner_peer_id": int(unit.get("owner_peer_id")) if unit.get("owner_peer_id") != null else -1,
+            "player_id": player_id_num,
+            "owner_peer_id": owner_peer_num,
             "position": {"x": unit.global_position.x, "y": unit.global_position.y},
-            "health": int(unit.get("current_health")),
-            "idle": bool(unit.get("is_idle")),
+            "health": health_num,
+            "idle": idle_bool,
             "destroyed": false
         })
 

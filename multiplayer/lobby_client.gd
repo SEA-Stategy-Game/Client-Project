@@ -3,12 +3,14 @@ extends Node
 # Signal emitted when the room list is successfully fetched
 signal rooms_fetched(rooms: Array[GameRoom])
 signal request_failed(error_message: String)
+signal room_created(room: GameRoom)
 
 const BASE_URL = "http://localhost:8080"
 var selected_room: GameRoom
 
 # Internal HTTPRequest node
 var _http_request: HTTPRequest
+var _pending_action: String = ""
 
 func _ready():
 	# Setup the HTTPRequest node dynamically
@@ -18,18 +20,34 @@ func _ready():
 
 ## Calls /rooms to get the list of available rooms
 func list_game_rooms():
+	_pending_action = "list"
 	var url = BASE_URL + "/rooms"
 	var err = _http_request.request(url)
 	if err != OK:
+		_pending_action = ""
 		request_failed.emit("Failed to initiate HTTP request to GameRoomManager.")
+
+## Create a new room on the Game Room Manager via POST /rooms
+func create_room(name: String = "LocalGame") -> void:
+	_pending_action = "create"
+	var url: String = BASE_URL + "/rooms"
+	var payload: Dictionary = {"name": name}
+	var body_str: String = JSON.stringify(payload)
+	var headers: PackedStringArray = PackedStringArray(["Content-Type: application/json"])
+	var err: int = _http_request.request(url, headers, HTTPClient.METHOD_POST, body_str)
+	if err != OK:
+		_pending_action = ""
+		request_failed.emit("Failed to initiate room creation request.")
 
 func _on_request_completed(result: int, response_code: int, _headers: PackedStringArray, body: PackedByteArray):
 	if result != HTTPRequest.RESULT_SUCCESS:
 		request_failed.emit("Network error occurred connecting to GameRoomManager.")
+		_pending_action = ""
 		return
 	
-	if response_code != 200:
+	if response_code < 200 or response_code >= 300:
 		request_failed.emit("GameRoomManager returned error: " + str(response_code))
+		_pending_action = ""
 		return
 
 	# Parse JSON body
@@ -41,16 +59,29 @@ func _on_request_completed(result: int, response_code: int, _headers: PackedStri
 		return
 		
 	var data = json.get_data()
-	if typeof(data) == TYPE_ARRAY:
-		# Convert the raw array of dictionaries into an array of GameRoom objects
-		var room_objects: Array[GameRoom] = []
-		for item in data:
-			if typeof(item) == TYPE_DICTIONARY:
-				room_objects.append(GameRoom.from_dict(item))
-		
-		rooms_fetched.emit(room_objects)
-	else:
+	if _pending_action == "list":
+		if typeof(data) == TYPE_ARRAY:
+			var room_objects: Array[GameRoom] = []
+			for item in data:
+				if typeof(item) == TYPE_DICTIONARY:
+					room_objects.append(GameRoom.from_dict(item))
+			_pending_action = ""
+			rooms_fetched.emit(room_objects)
+			return
+		_pending_action = ""
 		request_failed.emit("Unexpected data format from server.")
+		return
+
+	if _pending_action == "create":
+		if typeof(data) == TYPE_DICTIONARY:
+			var room = GameRoom.from_dict(data)
+			selected_room = room
+			_pending_action = ""
+			room_created.emit(room)
+			return
+		_pending_action = ""
+		request_failed.emit("Unexpected data format from create_room response.")
+		return
 
 ## Helper method to join a specific room based on the GameRoom object
 func join_room(room: GameRoom):

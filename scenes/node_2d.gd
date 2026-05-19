@@ -7,6 +7,14 @@ func _ready() -> void:
         apply_audio_settings()
     else:
         print("Warning: SoundTrack node not found in this instance (continuing).")
+    # Ensure the deterministic world exists before any network connections
+    Game.ensure_world(self)
+
+    # If no room was selected from the lobby, start a local server (host)
+    if LobbyClient.selected_room == null:
+        Server.start_server()
+
+    # Now connect using any selected room (client) if present
     _connect_lobby_room_if_present()
 
 func apply_audio_settings() -> void:
@@ -25,3 +33,13 @@ func _connect_lobby_room_if_present() -> void:
     if LobbyClient == null or LobbyClient.selected_room == null:
         return
     gateway.connect_to_server(LobbyClient.selected_room.address, LobbyClient.selected_room.port)
+
+func end_game_and_return_to_menu() -> void:
+    # Disconnect server/network (if hosting)
+    if Server != null:
+        Server.disconnect_network()
+    # Remove the world instance
+    if Game != null:
+        Game.set_world(null)
+    # Go back to main menu
+    get_tree().change_scene_to_file("res://scenes/main_menu.tscn")

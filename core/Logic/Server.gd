@@ -5,6 +5,7 @@ signal client_disconnected(peer_id: int)
 signal authoritative_state_applied(state: Dictionary)
 
 const UNIT_SCENE := preload("res://scenes/units/Unit.tscn")
+const BARRACKS_SCENE := preload("res://core/Houses/Barracks.tscn")
 const DEFAULT_UNIT_SPAWN_POSITIONS := [
     Vector2(433, 499),
     Vector2(520, 499),
@@ -232,6 +233,8 @@ func _initialize_authoritative_world() -> void:
     _track_peer(host_peer_id)
     _register_peer(host_peer_id)
     _spawn_unit_for_peer(host_peer_id)
+    # spawn initial barracks for the host
+    _spawn_barracks_for_peer(host_peer_id)
     _refresh_last_full_state()
 
 func _track_peer(peer_id: int) -> void:
@@ -311,6 +314,8 @@ func _on_peer_connected(id: int) -> void:
     _track_peer(id)
     _register_peer(id)
     _spawn_unit_for_peer(id)
+    # ensure each new peer receives a barracks and initial building
+    _spawn_barracks_for_peer(id)
     _refresh_last_full_state()
     _broadcast_full_state()
     client_connected.emit(id)
@@ -609,6 +614,32 @@ func _find_unit_node_by_entity_id(unit_id: int) -> Node:
 
 func _get_units_root() -> Node:
     return get_node_or_null("/root/World/Units")
+
+func _get_houses_root() -> Node:
+    return get_node_or_null("/root/World/Houses")
+
+func _spawn_barracks_for_peer(peer_id: int) -> Node:
+    var houses_parent := _get_houses_root()
+    if houses_parent == null:
+        push_error("[SPAWN_ERR] World/Houses node not found; unable to spawn barracks for peer %d." % peer_id)
+        return null
+
+    # Do not spawn duplicate barracks for the same peer
+    for b in get_tree().get_nodes_in_group("barracks"):
+        if not is_instance_valid(b):
+            continue
+        if b.get("player_id") == int(_player_slots_by_peer.get(peer_id, -1)):
+            return b
+
+    var barracks = BARRACKS_SCENE.instantiate()
+    var player_slot := int(_player_slots_by_peer.get(peer_id, _register_peer(peer_id)))
+    barracks.entity_id = _allocate_dynamic_entity_id()
+    barracks.player_id = player_slot
+    # position barracks near spawn point for this player
+    barracks.global_position = _get_spawn_position(player_slot) + Vector2(0, -48)
+    houses_parent.add_child(barracks)
+    print("[SPAWN_LOG] Spawned barracks ", barracks.entity_id, " for peer ", peer_id, ".")
+    return barracks
 
 func _allocate_dynamic_entity_id() -> int:
     while _find_unit_node_by_entity_id(_next_dynamic_entity_id) != null:

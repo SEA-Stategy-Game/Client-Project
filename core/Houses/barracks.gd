@@ -10,24 +10,30 @@ extends StaticBody2D
 @export var max_health: int = 500
 var current_health: int
 
-var mouseEntered = false
 @onready var select = get_node("Selected")
 var selected = false
+var _mouse_entered: bool = false
 
 func _ready() -> void:
 	current_health = max_health
 	add_to_group("buildings")
 	add_to_group("barracks")
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
+
+	var enter_callable := Callable(self, "_on_mouse_entered")
+	if not is_connected("mouse_entered", enter_callable):
+		connect("mouse_entered", enter_callable)
+	var exit_callable := Callable(self, "_on_mouse_exited")
+	if not is_connected("mouse_exited", exit_callable):
+		connect("mouse_exited", exit_callable)
 
 func _process(delta) -> void:
 	select.visible = selected
 
 func _unhandled_input(event: InputEvent) -> void:
-	if event.is_action_pressed("LeftClick"):
-		print("click! mouseEntered=", mouseEntered, " allow=", _allow_spawn_ui())
-		if mouseEntered == true and _allow_spawn_ui():
+	# Use project InputMap action "click" (not LeftClick)
+	if event.is_action_pressed("click"):
+		print("click! mouse_entered=", _mouse_entered, " allow=", _allow_spawn_ui())
+		if _mouse_entered == true and _allow_spawn_ui():
 			selected = !selected
 			if selected == true:
 				var adapter = null
@@ -38,13 +44,12 @@ func _unhandled_input(event: InputEvent) -> void:
 				elif Engine.has_singleton("Game"):
 					Game.spawn_unit(global_position)
 
-
 func _on_mouse_entered() -> void:
-	print(mouseEntered)
-	mouseEntered = true
+	print(_mouse_entered)
+	_mouse_entered = true
 
 func _on_mouse_exited():
-	mouseEntered = false
+	_mouse_entered = false
 
 # -----------------------------------------------------------------
 # IDamageable contract

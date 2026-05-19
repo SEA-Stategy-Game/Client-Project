@@ -60,18 +60,17 @@ func get_movement_multiplier() -> float:
         TerrainType.WATER:
             return 0.0
         _:
-            return 1.0
+            return 0.0
 
 func get_atlas_coordinates() -> Vector2i:
     match terrain:
         TerrainType.PLAINS:
-            return Vector2i(randi() % 4, 0)
+            return Vector2i(x % 4, 0)
         TerrainType.FOREST:
             return Vector2i(4, 0)
         TerrainType.HILLS:
             return Vector2i(6, 0)
         TerrainType.WATER:
-            return Vector2i(randi() % 4, 1)
             return Vector2i(0, 1)
         _:
             return Vector2i(0, 1)

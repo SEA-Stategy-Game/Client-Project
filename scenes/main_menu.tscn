@@ -167,5 +167,26 @@ theme_override_styles/hover = SubResource("StyleBoxTexture_dy7ct")
 text = "Exit"
 
 [connection signal="pressed" from="VBoxContainer/Button4" to="." method="_on_start_pressed"]
+[connection signal="pressed" from="VBoxContainer/Button5" to="." method="_on_load_game_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button6" to="." method="_on_settings_pressed"]
 [connection signal="pressed" from="VBoxContainer/Button7" to="." method="_on_exit_pressed"]
+
+[node name="RoomListPanel" type="PanelContainer" parent="." ]
+visible = false
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -260.0
+offset_top = 120.0
+offset_right = 260.0
+offset_bottom = 420.0
+
+[node name="ScrollContainer" type="ScrollContainer" parent="RoomListPanel"]
+layout_mode = 2
+
+[node name="RoomList" type="VBoxContainer" parent="RoomListPanel/ScrollContainer"]
+layout_mode = 2
+theme_override_constants/separation = 6

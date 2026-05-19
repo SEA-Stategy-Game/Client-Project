@@ -18,6 +18,14 @@ func ensure_world(parent: Node = null) -> Node:
 	if is_instance_valid(world):
 		return world
 
+	var root := get_tree().get_root()
+	# If a World node already exists and has a TileMapLayer, reuse it.
+	var existing_world := root.get_node_or_null("World")
+	if existing_world != null and existing_world.has_node("NavigationRegion2D/TileMapLayer"):
+		world = existing_world
+		world_ready.emit(world)
+		return world
+
 	var scene := _default_world_scene
 	if scene == null:
 		push_error("[GAME] Unable to load deterministic test world.")
@@ -26,7 +34,7 @@ func ensure_world(parent: Node = null) -> Node:
 	world = scene.instantiate()
 
 	if parent == null:
-		parent = get_tree().current_scene if get_tree().current_scene != null else get_tree().root
+		parent = get_tree().current_scene if get_tree().current_scene != null else root
 
 	parent.add_child(world)
 	world_ready.emit(world)

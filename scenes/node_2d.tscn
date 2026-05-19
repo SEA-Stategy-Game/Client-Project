@@ -371,7 +371,6 @@ environment = SubResource("Environment_xtx0q")
 [node name="Camera2D" type="Camera2D" parent="." unique_id=1284736273]
 position = Vector2(150.99997, -105.00001)
 scale = Vector2(1.3696884, 8.886781)
-zoom = Vector2(0.7, 0.7)
 limit_left = -2298
 limit_top = -1697
 limit_right = 2742

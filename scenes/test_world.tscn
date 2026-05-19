@@ -1,7 +1,7 @@
 [gd_scene format=3 uid="uid://dmd3l4a7w0n05"]
 
 [ext_resource type="Script" path="res://scenes/camera_2d.gd" id="1_f3sb7"]
-[ext_resource type="Texture2D" path="res://assets/MapTiles.png" id="3_k3n1d"]
+[ext_resource type="Texture2D" path="res://assets/Tiles.png" id="3_k3n1d"]
 [ext_resource type="Script" path="res://core/Entities/Map/MapManager.gd" id="4_2o6r5"]
 [ext_resource type="PackedScene" path="res://core/Entities/Resource/Tree.tscn" id="4_aqk2v"]
 [ext_resource type="PackedScene" path="res://scenes/units/Unit.tscn" id="5_gbfbk"]
@@ -47,6 +47,10 @@ texture_region_size = Vector2i(32, 32)
 1:0/0 = 0
 2:0/0 = 0
 3:0/0 = 0
+4:0/0 = 0
+4:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_2u3nc")
+6:0/0 = 0
+6:0/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_2u3nc")
 0:1/0 = 0
 1:1/0 = 0
 1:1/0/navigation_layer_0/polygon = SubResource("NavigationPolygon_2o6r5")
