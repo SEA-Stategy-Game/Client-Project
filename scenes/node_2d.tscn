@@ -7,7 +7,6 @@
 [ext_resource type="FontFile" uid="uid://1jdlpvtvvc7e" path="res://assets/pixel_operator/PixelOperatorHB8.ttf" id="5_f6ptj"]
 [ext_resource type="Texture2D" uid="uid://d0jx2iwo0qfa7" path="res://assets/Tiles.png" id="8_f6ptj"]
 [ext_resource type="AudioStream" uid="uid://docoj8fyd0ty2" path="res://Under_the_Black_Mountain.mp3" id="11_f6ptj"]
-[ext_resource type="Script" uid="uid://c3qc1qfqubab2" path="res://scenes/slide_terminal.gd" id="19_k6u5g"]
 [ext_resource type="Script" uid="uid://55kguk8x1hkf" path="res://navigation_region_2d.gd" id="24_navrg"]
 [ext_resource type="Script" uid="uid://rwknlhnif0la" path="res://core/Entities/Map/MapManager.gd" id="25_mapmg"]
 
@@ -22,24 +21,6 @@ glow_levels/4 = 1.0
 glow_levels/5 = 1.0
 glow_levels/6 = 1.0
 glow_levels/7 = 1.0
-
-[sub_resource type="CompressedTexture2D" id="CompressedTexture2D_dubn7"]
-load_path = "res://.godot/imported/Terminal_refurb.png-04499bd37ba496b80878d29ee177e131.ctex"
-
-[sub_resource type="GDScript" id="GDScript_dubn7"]
-script/source = "extends TextureButton
-
-func _ready():
-	mouse_entered.connect(_on_mouse_entered)
-	mouse_exited.connect(_on_mouse_exited)
-	mouse_default_cursor_shape = Control.CURSOR_POINTING_HAND
-
-func _on_mouse_entered():
-	modulate = Color(1.2, 1.2, 1.2) # brighter
-
-func _on_mouse_exited():
-	modulate = Color(1, 1, 1) # normal
-"
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_08kqv"]
 texture = ExtResource("8_f6ptj")
@@ -378,58 +359,6 @@ limit_bottom = 1804
 script = ExtResource("2_08kqv")
 min_zoom = 0.2
 
-[node name="CanvasLayer" type="CanvasLayer" parent="Camera2D" unique_id=1813312778]
-auto_translate_mode = 2
-
-[node name="Control" type="Control" parent="Camera2D/CanvasLayer" unique_id=1470457964]
-layout_mode = 3
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-offset_right = -708.57996
-offset_bottom = -238.0
-grow_horizontal = 2
-grow_vertical = 2
-size_flags_horizontal = 0
-size_flags_vertical = 0
-script = ExtResource("19_k6u5g")
-
-[node name="ToggleButton" type="TextureButton" parent="Camera2D/CanvasLayer/Control" unique_id=689021728]
-layout_direction = 1
-layout_mode = 0
-offset_right = 512.0
-offset_bottom = 512.0
-scale = Vector2(0.095, 0.095)
-texture_normal = SubResource("CompressedTexture2D_dubn7")
-script = SubResource("GDScript_dubn7")
-
-[node name="EditorPanel" type="PanelContainer" parent="Camera2D/CanvasLayer/Control" unique_id=1033592394]
-layout_mode = 0
-offset_left = -138.35
-offset_right = 361.65
-offset_bottom = 500.0
-
-[node name="CodeEdit" type="CodeEdit" parent="Camera2D/CanvasLayer/Control/EditorPanel" unique_id=970474419]
-layout_mode = 2
-size_flags_stretch_ratio = 0.0
-theme_override_fonts/font = ExtResource("4_hsdmi")
-theme_override_font_sizes/font_size = 16
-caret_blink = true
-caret_blink_interval = 0.5
-highlight_current_line = true
-gutters_draw_line_numbers = true
-
-[node name="Label" type="Label" parent="Camera2D/CanvasLayer/Control/EditorPanel" unique_id=1858669539]
-custom_minimum_size = Vector2(46.29, 5)
-layout_direction = 4
-layout_mode = 2
-size_flags_horizontal = 8
-size_flags_vertical = 8
-size_flags_stretch_ratio = 0.0
-theme_override_fonts/font = ExtResource("5_f6ptj")
-theme_override_font_sizes/font_size = 12
-text = "Press 'ENTER' to submit script"
-
 [node name="ClientGateway" type="Node2D" parent="." unique_id=1984569465]
 script = ExtResource("1_ey6mn")
 
@@ -455,5 +384,3 @@ anchors_preset = 0
 [node name="SoundTrack" type="AudioStreamPlayer" parent="." unique_id=628626579]
 stream = ExtResource("11_f6ptj")
 autoplay = true
-
-[connection signal="pressed" from="Camera2D/CanvasLayer/Control/ToggleButton" to="Camera2D/CanvasLayer/Control" method="_on_toggle_button_pressed"]
