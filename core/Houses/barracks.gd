@@ -32,7 +32,6 @@ func _process(delta) -> void:
 func _unhandled_input(event: InputEvent) -> void:
 	# Use project InputMap action "click" (not LeftClick)
 	if event.is_action_pressed("click"):
-		print("click! mouse_entered=", _mouse_entered, " allow=", _allow_spawn_ui())
 		if _mouse_entered == true and _allow_spawn_ui():
 			selected = !selected
 			if selected == true:

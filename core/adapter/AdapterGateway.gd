@@ -3,6 +3,7 @@ extends Node
 signal task_completed(unit_id: int, action_data: Dictionary)
 signal task_failed(unit_id: int, action_data: Dictionary)
 signal queue_empty(unit_id: int)
+signal move_denied(message: String)
 
 func _ready() -> void:
 	var ag = _get_gateway()
@@ -13,6 +14,8 @@ func _ready() -> void:
 			ag.connect("task_failed", Callable(self, "_on_task_failed"))
 		if ag.has_signal("queue_empty") and not ag.is_connected("queue_empty", Callable(self, "_on_queue_empty")):
 			ag.connect("queue_empty", Callable(self, "_on_queue_empty"))
+		if ag.has_signal("move_denied") and not ag.is_connected("move_denied", Callable(self, "_on_move_denied")):
+			ag.connect("move_denied", Callable(self, "_on_move_denied"))
 
 func _get_gateway():
 	return get_node_or_null("/root/ActionGateway")
@@ -85,3 +88,6 @@ func _on_task_failed(unit_id: int, action_data: Dictionary) -> void:
 
 func _on_queue_empty(unit_id: int) -> void:
 	emit_signal("queue_empty", unit_id)
+
+func _on_move_denied(message: String) -> void:
+	emit_signal("move_denied", message)

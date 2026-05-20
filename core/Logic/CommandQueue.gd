@@ -21,7 +21,7 @@ func setup(unit: CharacterBody2D, unit_id: int) -> void:
     _unit_id = unit_id
 
 func enqueue(action) -> bool:
-    if action == null or not action.has_method("start") or not action.has_method("tick") or not action.has_method("cancel") or not action.has_method("serialize"):
+    if (action == null or not action.has_method("start") or not action.has_method("tick") or not action.has_method("cancel") or not action.has_method("serialize")):
         push_error("CommandQueue: object does not implement IUnitAction.")
         return false
     if _queue.size() >= MAX_QUEUE_SIZE:

@@ -28,9 +28,9 @@ func setup(resource_node: Node2D) -> void:
 	if resource_name_value != null:
 		resource_name = str(resource_name_value)
 
-	if resource_name == "ressource_tree" or resource_node is TreeResource:
+	if resource_name == "ressource_tree":
 		_resource_type = "tree"
-	elif resource_name == "ressource_stone" or resource_node is StoneResource:
+	elif resource_name == "ressource_stone":
 		_resource_type = "stone"
 
 func start(unit: CharacterBody2D, target: Node2D) -> void:
@@ -127,10 +127,10 @@ func _credit_inventory_if_needed(unit: CharacterBody2D) -> void:
 		if resource_name_value != null:
 			resource_name = str(resource_name_value)
 
-		if _target_node is TreeResource or resource_name == "ressource_tree":
+		if resource_name == "ressource_tree":
 			Game.Wood += 1
 			print("[RESOURCE_LOG] Inventory credited: Wood=", Game.Wood)
-		elif _target_node is StoneResource or resource_name == "ressource_stone":
+		elif resource_name == "ressource_stone":
 			Game.Stone += 1
 			print("[RESOURCE_LOG] Inventory credited: Stone=", Game.Stone)
 	else:
@@ -153,6 +153,6 @@ func _cleanup(unit: CharacterBody2D) -> void:
 var _resource_type: String = ""
 
 static func create(resource_node: Node2D) -> UnitActionHarvest:
-	var action = UnitActionHarvest.new()
+	var action = new()
 	action.setup(resource_node)
 	return action

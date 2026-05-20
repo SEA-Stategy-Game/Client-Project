@@ -28,7 +28,7 @@ func _ready() -> void:
         remove_from_group("units")
     add_to_group("resources")
     if multiplayer.is_server() and server != null and server.has_method("_on_ressource_modified"):
-        modified.connect(server._on_ressource_modified)
+        modified.connect(Callable(server, "_on_ressource_modified"))
 
 func _has_server_authority() -> bool:
     if multiplayer.multiplayer_peer == null:
@@ -97,8 +97,20 @@ func _finalize_destruction(reason: String) -> void:
     units_harvesting = 0
     if timer:
         timer.stop()
-    print("[RESOURCE_LOG] Resource ", entity_id, " (", resource_name, ") destroyed via ", reason, ".")
-    print("[DESTROY_LOG] Resource ", entity_id, " removed from authoritative gameplay.")
+    print(
+        "[RESOURCE_LOG] Resource ",
+        entity_id,
+        " (",
+        resource_name,
+        ") destroyed via",
+        reason,
+        "."
+    )
+    print(
+        "[DESTROY_LOG] Resource ",
+        entity_id,
+        " removed from authoritative gameplay."
+    )
     modified.emit(self)
     queue_free()
     if nav_region != null and nav_region.has_method("rebuild_nav"):
@@ -113,5 +125,11 @@ func _mark_destroyed_from_network() -> void:
     units_harvesting = 0
     if timer:
         timer.stop()
-    print("[DESTROY_LOG] Replicated destruction for resource ", entity_id, " (", resource_name, ").")
+    print(
+        "[DESTROY_LOG] Replicated destruction for resource ",
+        entity_id,
+        " (",
+        resource_name,
+        ")."
+    )
     queue_free()

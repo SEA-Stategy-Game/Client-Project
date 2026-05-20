@@ -113,7 +113,7 @@ func get_all_resources() -> Array:
 	var world = _tree.get_root().get_node_or_null("World")
 	if world:
 		for child in world.get_children():
-			if child is MapResource:
+			if child.is_in_group("resources"):
 				result.append(_resource_snapshot(child))
 	return result
 

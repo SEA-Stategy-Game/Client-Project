@@ -104,7 +104,7 @@ func tick(unit: CharacterBody2D, delta: float) -> int:
 	if is_instance_valid(_target_node) and _target_node.has_method("is_alive") and _target_node.is_alive():
 		if "command_queue" in _target_node and _target_node.command_queue != null:
 			if _target_node.command_queue.is_idle():
-				var retaliation: UnitActionAttack = UnitActionAttack.create_focused(unit)
+				var retaliation = create_focused(unit)
 				_target_node.command_queue.enqueue(retaliation)
 
 	# Re-validate after damage application.
@@ -159,12 +159,12 @@ func _effective_range_radius(unit: CharacterBody2D) -> float:
 	var sy: float = abs(unit.scale.y) * abs(range_area.scale.y) * abs(cs.scale.y)
 	return shape_radius * maxf(sx, sy)
 
-static func create(target: Node2D) -> UnitActionAttack:
-	var attack := UnitActionAttack.new()
+static func create(target: Node2D):
+	var attack := new()
 	attack.setup(target, true)
 	return attack
 
-static func create_focused(target: Node2D) -> UnitActionAttack:
-	var attack := UnitActionAttack.new()
+static func create_focused(target: Node2D):
+	var attack := new()
 	attack.setup(target, false)
 	return attack

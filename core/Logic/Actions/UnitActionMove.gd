@@ -86,13 +86,13 @@ func _push_target_to_agent(unit: CharacterBody2D) -> void:
 	if agent != null:
 		agent.target_position = _target_position
 
-static func create(position: Vector2) -> UnitActionMove:
-	var action := UnitActionMove.new()
+static func create(position: Vector2):
+	var action := new()
 	action.setup(position)
 	return action
 
-static func create_to_node(node: Node2D) -> UnitActionMove:
-	var action := UnitActionMove.new()
+static func create_to_node(node: Node2D):
+	var action := new()
 	action.setup_to_node(node)
 	return action
 

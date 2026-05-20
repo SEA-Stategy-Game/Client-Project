@@ -1,8 +1,7 @@
 extends Control
 
 # ── Configuration ────────────────────────────────────────────────
-const BASE_URL         := "http://127.0.0.1:5020"
-const DSL_DLL_RELATIVE := "dsl/bin/Release/net10.0/dsl.dll"
+const BASE_URL         := "http://127.0.0.1:5000"
 const GAME_ID          := "testgame"
 const PLAYER_ID        := "testplayer"
 const SCHEMA_VERSION   := "1.0"
@@ -17,6 +16,7 @@ enum State { DRAFT, ACTIVE, HISTORY }
 var _state         := State.DRAFT
 var _state_version := -1
 var _loading_text  := false   # suppress text_changed → DRAFT during programmatic load
+var _last_submitted_plan_json: String = ""
 
 # ── Tab ──────────────────────────────────────────────────────────
 var _active_tab    := 0        # 0 = Script, 1 = History
@@ -48,6 +48,9 @@ var _pending_ver_load: int    = -1  # version we're currently fetching
 var _http_submit : HTTPRequest
 var _http_history: HTTPRequest
 var _http_version: HTTPRequest
+var _gateway_feedback_connected := false
+
+var _last_compiled_json: String = ""
 
 # ════════════════════════════════════════════════════════════════
 func _ready() -> void:
@@ -157,13 +160,14 @@ func _on_submit_pressed() -> void:
 	if json.is_empty():
 		submit_btn.disabled = false
 		return
+	_last_compiled_json = json
 	status_label.text = "Sending…"
 	var err := _http_submit.request(
 		BASE_URL + "/plan",
 		["Content-Type: application/json"],
 		HTTPClient.METHOD_POST, json)
 	if err != OK:
-		_show_error("[color=red]HTTP error %d — is the backend running on port 5020?[/color]" % err)
+		_show_error("[color=red]HTTP error %d — is the backend running on port 5000?[/color]" % err)
 
 func _on_submit_done(result: int, code: int, _h: PackedStringArray, body: PackedByteArray) -> void:
 	submit_btn.disabled = false
@@ -173,7 +177,8 @@ func _on_submit_done(result: int, code: int, _h: PackedStringArray, body: Packed
 		return
 	if code == 200:
 		_clear_feedback()
-		status_label.text = "  ✓  Plan accepted"
+		var executed := _execute_last_compiled_plan_locally()
+		status_label.text = "  Plan accepted and executed" if executed else "  Plan accepted (not executed locally)"
 		_set_state(State.ACTIVE)
 		_history_data.clear()  # invalidate cache so next History visit refreshes
 	elif code == 400:
@@ -189,7 +194,7 @@ func _build_header() -> String:
 func _run_dsl(full_source: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_input.txt")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_output.json")
-	var dll_abs    := (ProjectSettings.globalize_path("res://") + DSL_DLL_RELATIVE).simplify_path()
+	var dll_abs := (ProjectSettings.globalize_path("res://")+ "dsl/bin/Release/net8.0/dsl.dll").simplify_path()
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
 	if f == null:
@@ -334,7 +339,7 @@ func _on_version_done(result: int, code: int, _h: PackedStringArray, body: Packe
 func _decompile_plan(json: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_decompile_input.json")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_decompile_output.txt")
-	var dll_abs    := (ProjectSettings.globalize_path("res://") + DSL_DLL_RELATIVE).simplify_path()
+	var dll_abs := (ProjectSettings.globalize_path("res://") + "dsl/bin/Release/net8.0/dsl.dll").simplify_path()
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
 	if f == null:
@@ -367,3 +372,104 @@ func _clear_feedback() -> void:
 	status_label.text = ""
 	error_display.visible = false
 	error_display.text = ""
+
+func _execute_last_compiled_plan_locally() -> bool:
+	if _last_compiled_json.is_empty():
+		return false
+	var parsed: Variant = JSON.parse_string(_last_compiled_json)
+	if not (parsed is Dictionary):
+		return false
+	var exec_plan := _convert_submission_to_exec_plan(parsed as Dictionary)
+	var commands: Array = exec_plan.get("commands", [])
+	if commands.is_empty():
+		return false
+	var gateway := _get_runtime_gateway()
+	if gateway == null or not gateway.has_method("execute_plan"):
+		return false
+	_connect_gateway_feedback(gateway)
+	return bool(gateway.call("execute_plan", exec_plan))
+
+func _get_runtime_gateway() -> Node:
+	var root := get_tree().get_root()
+	if root.has_node("AdapterGateway"):
+		return get_node_or_null("/root/AdapterGateway")
+	if root.has_node("ActionGateway"):
+		return get_node_or_null("/root/ActionGateway")
+	return null
+
+func _connect_gateway_feedback(gateway: Node) -> void:
+	if _gateway_feedback_connected or gateway == null:
+		return
+	if gateway.has_signal("move_denied") and not gateway.is_connected("move_denied", Callable(self, "_on_move_denied")):
+		gateway.connect("move_denied", Callable(self, "_on_move_denied"))
+		_gateway_feedback_connected = true
+
+func _on_move_denied(message: String) -> void:
+	_show_error("[color=red]%s[/color]" % message)
+
+func _convert_submission_to_exec_plan(submission: Dictionary) -> Dictionary:
+	var commands: Array = []
+	var unit_plans: Array = submission.get("unit_plans", [])
+	for unit_plan in unit_plans:
+		if not (unit_plan is Dictionary):
+			continue
+		var source_uid := int(unit_plan.get("unit_id", -1))
+		var runtime_uid := _resolve_runtime_unit_id(source_uid)
+		var steps: Array = unit_plan.get("steps", [])
+		for step in steps:
+			if not (step is Dictionary):
+				continue
+			var action_type := String(step.get("action_type", ""))
+			var p: Dictionary = step.get("parameters", {})
+			match action_type:
+				"MoveTo":
+					commands.append({
+						"unit_id": runtime_uid,
+						"action": "MOVE",
+						"target": {
+							"x": float(p.get("x", 0.0)),
+							"y": float(p.get("y", 0.0))
+						}
+					})
+				"Harvest":
+					var harvest_cmd := {
+						"unit_id": runtime_uid,
+						"action": "HARVEST"
+					}
+					if p.has("target_id"):
+						harvest_cmd["target_id"] = int(p.get("target_id", -1))
+					if p.has("resource_type"):
+						harvest_cmd["resource_type"] = String(p.get("resource_type", ""))
+					commands.append(harvest_cmd)
+				"Construct":
+					commands.append({
+						"unit_id": runtime_uid,
+						"action": "CONSTRUCT",
+						"scene": String(p.get("scene", "")),
+						"position": {
+							"x": float(p.get("x", 0.0)),
+							"y": float(p.get("y", 0.0))
+						},
+						"duration": float(p.get("duration", 10.0))
+					})
+				_:
+					pass
+	return {"player_id": -1, "commands": commands}
+
+func _resolve_runtime_unit_id(source_uid: int) -> int:
+	if source_uid < 0:
+		return source_uid
+	var units := get_tree().get_nodes_in_group("units")
+	for u in units:
+		if is_instance_valid(u) and "entity_id" in u and int(u.entity_id) == source_uid:
+			return source_uid
+	if source_uid == 0 or source_uid > units.size():
+		return source_uid
+	var ordered: Array = []
+	for u in units:
+		if is_instance_valid(u) and "entity_id" in u:
+			ordered.append(u)
+	ordered.sort_custom(func(a, b): return int(a.entity_id) < int(b.entity_id))
+	if source_uid - 1 >= 0 and source_uid - 1 < ordered.size():
+		return int(ordered[source_uid - 1].entity_id)
+	return source_uid

@@ -6,6 +6,14 @@ signal path_blocked(unit_id: int, position: Dictionary)
 signal plan_execution_finished(plan_id: String)
 signal unit_idled(unit_id: int)
 signal command_validated(command: Dictionary)
+signal move_denied(message: String)
+
+const CommandQueueScript = preload("res://core/Logic/CommandQueue.gd")
+const MapTileScript = preload("res://core/Entities/Map/MapTile.gd")
+const UnitActionAttackScript = preload("res://core/Logic/Actions/UnitActionAttack.gd")
+const UnitActionConstructScript = preload("res://core/Logic/Actions/UnitActionConstruct.gd")
+const UnitActionHarvestScript = preload("res://core/Logic/Actions/UnitActionHarvest.gd")
+const UnitActionMoveScript = preload("res://core/Logic/Actions/UnitActionMove.gd")
 
 var _sense = null
 var _active_player_id: int = 0
@@ -34,15 +42,18 @@ func move_unit(unit_id: int, destination: Vector2, requesting_player_id: int = -
     if not _validate_ownership(unit, requesting_player_id, requesting_peer_id):
         return false
 
-    var tile_map = get_node_or_null("/root/World/NavigationRegion2D/TileMapLayer")
-    if tile_map != null and tile_map.has_method("get_tile_at_world_pos"):
-        var tile = tile_map.get_tile_at_world_pos(destination)
-        if tile == null or int(tile.terrain) == MapTile.TerrainType.WATER:
-            push_warning("[MOVE_DENIED] Destination is not walkable (water/outside map): %s" % str(destination))
-            return false
+    var tile_map: Node = _get_tilemap_layer()
+    if tile_map == null:
+        move_denied.emit("[MOVE_DENIED] Navigation map unavailable.")
+        return false
 
-    var action = UnitActionMove.create(destination)
-    var cq: CommandQueue = _get_or_create_queue(unit)
+    var tile: Variant = tile_map.call("get_tile_at_world_pos", destination)
+    if tile == null or not tile.has_method("is_walkable") or not bool(tile.call("is_walkable")):
+        move_denied.emit("[MOVE_DENIED] Destination is not walkable (water/outside map): %s" % str(destination))
+        return false
+
+    var action = UnitActionMoveScript.create(destination)
+    var cq = _get_or_create_queue(unit)
     if not cq.enqueue(action):
         return false
 
@@ -61,15 +72,15 @@ func go_chop_tree_and_return(unit_id: int, tree_id: int, requesting_player_id: i
         print("[RESOURCE_LOG] Rejected harvest command against destroyed resource ", tree_id, ".")
         return false
 
-    var cq: CommandQueue = _get_or_create_queue(unit)
-    if not cq.enqueue(UnitActionMove.create_to_node(tree_node)):
+    var cq = _get_or_create_queue(unit)
+    if not cq.enqueue(UnitActionMoveScript.create_to_node(tree_node)):
         return false
-    if not cq.enqueue(UnitActionHarvest.create(tree_node)):
+    if not cq.enqueue(UnitActionHarvestScript.create(tree_node)):
         return false
 
     var barracks := _find_closest_barracks(unit.global_position)
     if barracks != null:
-        cq.enqueue(UnitActionMove.create_to_node(barracks))
+        cq.enqueue(UnitActionMoveScript.create_to_node(barracks))
 
     _chop_return_state[_get_uid(unit)] = {"state": "CHOPPING", "player_id": unit.player_id if "player_id" in unit else 0}
     _emit_command("CHOP_AND_RETURN", unit_id, {"target_id": tree_id})
@@ -81,6 +92,52 @@ func go_chop_tree(unit_id: int, tree_id: int, requesting_player_id: int = -1, re
 func go_mine_stone(unit_id: int, stone_id: int, requesting_player_id: int = -1, requesting_peer_id: int = -1) -> bool:
     return go_chop_tree_and_return(unit_id, stone_id, requesting_player_id, requesting_peer_id)
 
+func go_harvest_nearest(unit_id: int, resource_type: String = "", requesting_player_id: int = -1, requesting_peer_id: int = -1) -> bool:
+    var unit = _find_unit(unit_id)
+    if unit == null:
+        return false
+    if not _validate_ownership(unit, requesting_player_id, requesting_peer_id):
+        return false
+
+    var resource_node = _find_closest_resource(unit.global_position, resource_type)
+    if resource_node == null:
+        push_warning("ActionGateway.go_harvest_nearest: no matching resource found.")
+        return false
+
+    return go_chop_tree_and_return(unit_id, _get_uid(resource_node), requesting_player_id, requesting_peer_id)
+
+func _find_closest_resource(origin: Vector2, resource_type: String = "") -> Node:
+    var closest: Node = null
+    var best_distance := INF
+    for resource in get_tree().get_nodes_in_group("resources"):
+        if not is_instance_valid(resource):
+            continue
+        if not _resource_matches_type(resource, resource_type):
+            continue
+        var distance := origin.distance_to(resource.global_position)
+        if distance < best_distance:
+            best_distance = distance
+            closest = resource
+    return closest
+
+func _resource_matches_type(resource: Node, resource_type: String) -> bool:
+    if resource_type.is_empty():
+        return true
+
+    var normalized := resource_type.to_lower()
+    var resource_name_value = resource.get("resource_name")
+    var resource_name := ""
+    if resource_name_value != null:
+        resource_name = String(resource_name_value).to_lower()
+
+    match normalized:
+        "tree":
+            return resource_name == "ressource_tree"
+        "stone":
+            return resource_name == "ressource_stone"
+        _:
+            return true
+
 func go_construct(unit_id: int, building_scene: String, build_pos: Vector2, duration: float = 10.0, requesting_player_id: int = -1, requesting_peer_id: int = -1) -> bool:
     var unit = _find_unit(unit_id)
     if unit == null:
@@ -88,10 +145,10 @@ func go_construct(unit_id: int, building_scene: String, build_pos: Vector2, dura
     if not _validate_ownership(unit, requesting_player_id, requesting_peer_id):
         return false
 
-    var cq: CommandQueue = _get_or_create_queue(unit)
-    if not cq.enqueue(UnitActionMove.create(build_pos)):
+    var cq = _get_or_create_queue(unit)
+    if not cq.enqueue(UnitActionMoveScript.create(build_pos)):
         return false
-    if not cq.enqueue(UnitActionConstruct.create(building_scene, build_pos, duration)):
+    if not cq.enqueue(UnitActionConstructScript.create(building_scene, build_pos, duration)):
         return false
 
     _emit_command("CONSTRUCT", unit_id, {
@@ -116,9 +173,9 @@ func attack_target(unit_id: int, target_id: int, requesting_player_id: int = -1,
     if target_node.is_in_group("resources"):
         return go_chop_tree_and_return(unit_id, target_id, requesting_player_id, requesting_peer_id)
 
-    var cq: CommandQueue = _get_or_create_queue(unit)
-    cq.enqueue(UnitActionMove.create_to_node(target_node))
-    cq.enqueue(UnitActionAttack.create(target_node))
+    var cq = _get_or_create_queue(unit)
+    cq.enqueue(UnitActionMoveScript.create_to_node(target_node))
+    cq.enqueue(UnitActionAttackScript.create(target_node))
     _emit_command("ATTACK", unit_id, {"target_id": target_id})
     return true
 
@@ -133,7 +190,12 @@ func execute_plan(plan: Dictionary) -> bool:
             "MOVE":
                 ok = move_unit(uid, Vector2(float(cmd.get("target", {}).get("x", 0.0)), float(cmd.get("target", {}).get("y", 0.0))), int(plan.get("player_id", -1))) and ok
             "HARVEST":
-                ok = go_chop_tree(uid, int(cmd.get("target_id", -1)), int(plan.get("player_id", -1))) and ok
+                var target_id := int(cmd.get("target_id", -1))
+                var resource_type := String(cmd.get("resource_type", ""))
+                if target_id >= 0 and _find_resource(target_id) != null:
+                    ok = go_chop_tree_and_return(uid, target_id, int(plan.get("player_id", -1))) and ok
+                else:
+                    ok = go_harvest_nearest(uid, resource_type, int(plan.get("player_id", -1))) and ok 
             "CHOP_AND_RETURN":
                 ok = go_chop_tree_and_return(uid, int(cmd.get("target_id", -1)), int(plan.get("player_id", -1))) and ok
             "CONSTRUCT":
@@ -155,21 +217,21 @@ func _on_tick(_tick: int) -> void:
         if unit.has_method("get_closest_hostile") and unit.command_queue.is_idle():
             var hostile = unit.get_closest_hostile()
             if hostile != null:
-                unit.command_queue.enqueue(UnitActionAttack.create_focused(hostile))
+                unit.command_queue.enqueue(UnitActionAttackScript.create_focused(hostile))
                 print("[COMBAT_LOG] Auto-engaging hostile for unit ", _get_uid(unit), ".")
         unit.command_queue.process_tick(unit, _tick_manager.tick_interval)
 
-func _get_or_create_queue(unit: Node) -> CommandQueue:
+func _get_or_create_queue(unit: Node):
     if "command_queue" in unit and unit.command_queue != null:
         _connect_queue_signals(unit.command_queue)
         return unit.command_queue
-    var cq := CommandQueue.new()
+    var cq = CommandQueueScript.new()
     cq.setup(unit, _get_uid(unit))
     unit.command_queue = cq
     _connect_queue_signals(cq)
     return cq
 
-func _connect_queue_signals(cq: CommandQueue) -> void:
+func _connect_queue_signals(cq) -> void:
     if not cq.action_completed.is_connected(_on_action_completed):
         cq.action_completed.connect(_on_action_completed)
     if not cq.action_failed.is_connected(_on_action_failed):
@@ -254,3 +316,21 @@ func _get_uid(node: Node) -> int:
     if "entity_id" in node and node.entity_id != null:
         return int(node.entity_id)
     return int(node.get_instance_id())
+
+func _get_tilemap_layer() -> Node:
+    if Game != null and Game.has_method("ensure_world"):
+        Game.ensure_world()
+
+    var adapter_world_binding := get_node_or_null("/root/AdapterWorldBinding")
+    if adapter_world_binding != null and adapter_world_binding.has_method("get_tilemap_layer"):
+        var tilemap: Node = adapter_world_binding.call("get_tilemap_layer")
+        if tilemap != null:
+            return tilemap
+
+    var world := get_node_or_null("/root/World")
+    if world != null:
+        var nav := world.get_node_or_null("NavigationRegion2D")
+        if nav != null:
+            return nav.get_node_or_null("TileMapLayer")
+
+    return null

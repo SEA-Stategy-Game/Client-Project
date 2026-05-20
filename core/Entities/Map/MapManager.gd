@@ -1,9 +1,10 @@
 extends TileMapLayer
 
+const TestMapScript = preload("res://core/Entities/Map/TestMap.gd")
+
 @export var tile_size: int = 32
 
-const TestMapScript = preload("res://core/Entities/Map/TestMap.gd")
-@onready var game_map: TestMap = TestMapScript.new()
+@onready var game_map = TestMapScript.new()
 @onready var nav_region = get_node_or_null("/root/World/NavigationRegion2D")
 
 func draw_tile(tile) -> void:
@@ -13,11 +14,11 @@ func draw_tile(tile) -> void:
 
 func _ready() -> void:
     if game_map.tiles.is_empty():
-        game_map.initialize_tiles()
+        game_map.call("initialize_tiles")
 
     for y in range(game_map.height):
         for x in range(game_map.width):
-            var tile = game_map.get_tile(x, y)
+            var tile = game_map.call("get_tile", x, y)
             if tile == null:
                 continue
             draw_tile(tile)
@@ -30,7 +31,7 @@ func _ready() -> void:
         var rng: RandomNumberGenerator = RandomNumberGenerator.new()
         rng.seed = 42
         resource_spawner.set_rng(rng)
-    game_map.populate_tiles(resource_spawner, tile_size)
+    game_map.call("populate_tiles", resource_spawner, tile_size)
 
     if nav_region != null and nav_region.has_method("rebuild_nav"):
         nav_region.rebuild_nav()
@@ -41,7 +42,7 @@ func world_to_grid(world_pos: Vector2) -> Vector2i:
 func get_tile_at_world_pos(world_pos: Vector2) -> Variant:
     var gpos = world_to_grid(world_pos)
     if game_map != null:
-        return game_map.get_tile(gpos.x, gpos.y)
+        return game_map.call("get_tile", gpos.x, gpos.y)
     return null
 
 func _index(x: int, y: int) -> int:
@@ -49,12 +50,12 @@ func _index(x: int, y: int) -> int:
 
 func clear_map_object_at_world_pos(world_pos: Vector2) -> void:
     var grid_pos := world_to_grid(world_pos)
-    var tile: MapTile = game_map.get_tile(grid_pos.x, grid_pos.y)
+    var tile = game_map.call("get_tile", grid_pos.x, grid_pos.y)
     if tile != null:
         tile.clear_map_object()
 
 func set_map_object_at_world_pos(world_pos: Vector2, map_object: Variant) -> void:
     var grid_pos := world_to_grid(world_pos)
-    var tile: MapTile = game_map.get_tile(grid_pos.x, grid_pos.y)
+    var tile = game_map.call("get_tile", grid_pos.x, grid_pos.y)
     if tile != null:
         tile.set_map_object(map_object)

@@ -1,5 +1,5 @@
-class_name StoneResource
 extends MapResource
+class_name StoneResource
 
 func _ready() -> void:
 	super()

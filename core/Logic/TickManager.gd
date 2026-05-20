@@ -4,6 +4,8 @@ signal tick(tick: int)
 signal tick_processed(count: int)
 signal authoritative_state_ready(state: Dictionary)
 
+const DeterminismHashScript = preload("res://core/Logic/DeterminismHash.gd")
+
 @export var tick_interval: float = 0.1
 @export var run_without_network: bool = true
 
@@ -132,7 +134,7 @@ func _build_authoritative_snapshot(wood: int, stone: int) -> Dictionary:
     if scenario != null and scenario.has_method("serialize_state"):
         snapshot["scenario"] = scenario.serialize_state()
 
-    snapshot["state_signature"] = DeterminismHash.snapshot_signature(snapshot)
+    snapshot["state_signature"] = DeterminismHashScript.snapshot_signature(snapshot)
     return snapshot
 
 static func _snapshot_sort_by_id(items: Array) -> void:

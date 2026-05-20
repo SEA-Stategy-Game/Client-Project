@@ -89,8 +89,8 @@ func _place_building(unit: CharacterBody2D) -> void:
 # Factory
 # -----------------------------------------------------------------
 
-static func create(scene_path: String, position: Vector2, duration: float = 10.0) -> UnitActionConstruct:
-	var action = UnitActionConstruct.new()
+static func create(scene_path: String, position: Vector2, duration: float = 10.0):
+	var action = new()
 	action._building_scene_path = scene_path
 	action._build_position = position
 	action._build_duration = duration
