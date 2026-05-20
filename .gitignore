@@ -3,5 +3,17 @@
 /android/
 
 .fake
-/dsl/bin/
-/dsl/obj/
+/dsl/bin
+/dsl/obj
+/dsl/out
+
+/backend/PlanBackend.Api/bin
+/backend/PlanBackend.Api/obj
+/backend/PlanBackend.Application/bin
+/backend/PlanBackend.Application/obj
+/backend/PlanBackend.Infrastructure/bin
+/backend/PlanBackend.Infrastructure/obj
+/backend/PlanBackend.Domain/bin
+/backend/PlanBackend.Domain/obj
+/backend/PlanBackend.Tests/bin
+/backend/PlanBackend.Tests/obj

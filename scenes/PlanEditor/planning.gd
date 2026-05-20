@@ -203,8 +203,26 @@ func _run_dsl(full_source: String) -> String:
 	f.store_string(full_source)
 	f.close()
 
+	var publish_exe := (ProjectSettings.globalize_path("res://") + "dsl/out/publish/dsl").simplify_path()
+	var dev_dll := (ProjectSettings.globalize_path("res://") + "dsl/bin/Release/net8.0/dsl.dll").simplify_path()
+
 	var out: Array = []
-	var exit := OS.execute("dotnet", [dll_abs, input_abs, output_abs], out, true)
+	var exit := -1
+	
+	if FileAccess.file_exists(publish_exe):
+		exit = OS.execute(
+			publish_exe,
+			[input_abs, output_abs],
+			out,
+			true
+		)
+	else:
+		exit = OS.execute(
+			"dotnet",
+			[dev_dll, input_abs, output_abs],
+			out,
+			true
+		)
 	if exit != 0:
 		_show_error("[color=red]DSL parse error:[/color]\n" + "\n".join(out))
 		return ""
