@@ -3,7 +3,7 @@ extends Node2D
 @onready var tilemap = $"../../Terrain/tilemap"
 @onready var client = $"../../ClientGateway"
 
-
+signal terrain_ready
 
 const TERRAIN_ATLAS = {
 	0: [  # plains variants
@@ -78,5 +78,6 @@ func _on_static_state(state: Dictionary):
 				tilemap.set_cell(pos, 0, TERRAIN_ATLAS[3][1])  # mid deep
 			else:
 				tilemap.set_cell(pos, 0, TERRAIN_ATLAS[3][0])  # deep
+	emit_signal("terrain_ready")
 
 		

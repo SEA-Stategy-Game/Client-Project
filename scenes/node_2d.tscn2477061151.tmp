@@ -5,12 +5,10 @@
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
 [ext_resource type="Script" uid="uid://ihpik7v8odea" path="res://scenes/unit_manager.gd" id="7_3m5ht"]
 [ext_resource type="Texture2D" uid="uid://d0jx2iwo0qfa7" path="res://assets/Tiles.png" id="8_f6ptj"]
-[ext_resource type="Script" uid="uid://bs0ahsi4k0lei" path="res://scenes/sub_viewport.gd" id="10_08kqv"]
 [ext_resource type="Script" uid="uid://ird3afkyic5s" path="res://scenes/minimap_camera_2d.gd" id="10_dubn7"]
 [ext_resource type="Script" uid="uid://dgnnne7hlvryl" path="res://scenes/terrain_manager.gd" id="11_08kqv"]
 [ext_resource type="AudioStream" uid="uid://docoj8fyd0ty2" path="res://Under_the_Black_Mountain.mp3" id="11_f6ptj"]
 [ext_resource type="Script" uid="uid://dpsjtdw2gynso" path="res://scenes/buildings_manager.gd" id="12_f6ptj"]
-[ext_resource type="Script" uid="uid://nbis3lfsr0it" path="res://scenes/minimap_viewfinder.gd" id="12_hsdmi"]
 [ext_resource type="Script" uid="uid://c3bf1m2y10cyf" path="res://scenes/objects/object_manager.gd" id="23_ey6mn"]
 
 [sub_resource type="Environment" id="Environment_xtx0q"]
@@ -346,14 +344,6 @@ terrain_set_0/terrain_0/name = "Water"
 terrain_set_0/terrain_0/color = Color(0.69682884, 0.14980322, 0.010434843, 1)
 sources/0 = SubResource("TileSetAtlasSource_08kqv")
 
-[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_f6ptj"]
-bg_color = Color(0.5764706, 0.06666667, 0.44705883, 0)
-border_width_left = 3
-border_width_top = 3
-border_width_right = 3
-border_width_bottom = 3
-border_color = Color(0.011764706, 0.62352943, 0.27058825, 1)
-
 [node name="World" type="Node2D" unique_id=85050630]
 script = ExtResource("1_dubn7")
 
@@ -405,44 +395,21 @@ autoplay = true
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=549482427]
 
 [node name="Control" type="Control" parent="CanvasLayer" unique_id=214694647]
-custom_minimum_size = Vector2(200, 200)
 layout_mode = 3
 anchors_preset = 0
-offset_left = 10.0
-offset_top = 10.0
-offset_right = 210.0
-offset_bottom = 210.0
+offset_left = 150.99997
+offset_top = -105.00001
+offset_right = 190.99997
+offset_bottom = -65.00001
 
 [node name="SubViewportContainer" type="SubViewportContainer" parent="CanvasLayer/Control" unique_id=1140186911]
-custom_minimum_size = Vector2(200, 200)
-layout_mode = 1
-offset_right = 200.0
-offset_bottom = 200.0
-stretch = true
+layout_mode = 0
+offset_right = 40.0
+offset_bottom = 40.0
 
 [node name="SubViewport" type="SubViewport" parent="CanvasLayer/Control/SubViewportContainer" unique_id=1340577313]
 handle_input_locally = false
-size = Vector2i(200, 200)
 render_target_update_mode = 4
-script = ExtResource("10_08kqv")
 
-[node name="MinimapCamera2D" type="Camera2D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport" unique_id=68445721 node_paths=PackedStringArray("main_camera")]
-visibility_layer = 3
+[node name="MinimapCamera2D" type="Camera2D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport" unique_id=68445721]
 script = ExtResource("10_dubn7")
-main_camera = NodePath("../../../../../Camera2D")
-
-[node name="CanvasLayer" type="CanvasLayer" parent="CanvasLayer/Control/SubViewportContainer/SubViewport" unique_id=1168137924]
-
-[node name="MinimapViewfinder" type="Node2D" parent="CanvasLayer/Control/SubViewportContainer/SubViewport/CanvasLayer" unique_id=174660300 node_paths=PackedStringArray("main_camera")]
-visibility_layer = 2
-script = ExtResource("12_hsdmi")
-main_camera = NodePath("../../../../../../Camera2D")
-
-[node name="Panel" type="Panel" parent="CanvasLayer/Control" unique_id=556083659]
-layout_mode = 1
-anchors_preset = 15
-anchor_right = 1.0
-anchor_bottom = 1.0
-grow_horizontal = 2
-grow_vertical = 2
-theme_override_styles/panel = SubResource("StyleBoxFlat_f6ptj")

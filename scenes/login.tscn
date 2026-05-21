@@ -1,0 +1,120 @@
+[gd_scene format=3 uid="uid://db3qxmy0qncqn"]
+
+[ext_resource type="Script" uid="uid://dn12u7ocbrg15" path="res://scenes/main_menu.gd" id="1_1u3ka"]
+[ext_resource type="Texture2D" uid="uid://dd21g1povtjiy" path="res://assets/Title Screen.png" id="2_wlyqo"]
+[ext_resource type="Texture2D" uid="uid://kayaunqr75l5" path="res://assets/light.png" id="3_tbijj"]
+[ext_resource type="FontFile" uid="uid://c8c3b2jnqy5xs" path="res://assets/pixel_operator/PixelOperator8.ttf" id="4_47vyr"]
+[ext_resource type="Texture2D" uid="uid://dnmqo1ubb4027" path="res://assets/login_box.png" id="5_1u3ka"]
+[ext_resource type="Texture2D" uid="uid://be7kyvwamcked" path="res://assets/button.png" id="5_ngwtj"]
+[ext_resource type="Texture2D" uid="uid://dx1xqcts50d8r" path="res://assets/pressed_button.png" id="6_8mo1x"]
+[ext_resource type="Texture2D" uid="uid://dyywbb1r4i5rm" path="res://assets/hover_button.png" id="7_p2j7e"]
+[ext_resource type="Texture2D" uid="uid://c60io7u4mu5d7" path="res://assets/label.png" id="8_ep5o7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_jix8l"]
+texture = ExtResource("2_wlyqo")
+modulate_color = Color(0.32172796, 0.32172796, 0.32172796, 1)
+
+[sub_resource type="Theme" id="Theme_1u3ka"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_wlyqo"]
+texture = ExtResource("5_ngwtj")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_tbijj"]
+texture = ExtResource("6_8mo1x")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_47vyr"]
+texture = ExtResource("7_p2j7e")
+
+[node name="MainMenu" type="Control" unique_id=2089717124]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_1u3ka")
+
+[node name="Panel" type="Panel" parent="." unique_id=1626512159]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0016651, 1.0024334)
+theme_override_styles/panel = SubResource("StyleBoxTexture_jix8l")
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=54127697]
+modulate = Color(0.601223, 0.601223, 0.60122293, 1)
+layout_mode = 0
+offset_left = -383.36166
+offset_right = 1147.09
+offset_bottom = 962.6574
+texture = ExtResource("3_tbijj")
+expand_mode = 2
+
+[node name="Label2" type="Sprite2D" parent="." unique_id=1287428423]
+position = Vector2(576, 119.999985)
+scale = Vector2(1.408, 1.408)
+texture = ExtResource("8_ep5o7")
+
+[node name="LoginBox" type="Sprite2D" parent="." unique_id=1496835944]
+position = Vector2(576, 328)
+texture = ExtResource("5_1u3ka")
+metadata/_edit_group_ = true
+
+[node name="LineEdit" type="LineEdit" parent="." unique_id=349784133]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -144.0
+offset_top = -36.0
+offset_right = 140.58997
+offset_bottom = 2.5899658
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_fonts/font = ExtResource("4_47vyr")
+theme_override_font_sizes/font_size = 11
+placeholder_text = "Input your username"
+alignment = 1
+
+[node name="Button5" type="Button" parent="." unique_id=1314209067]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -88.0
+offset_top = 28.0
+offset_right = 93.0
+offset_bottom = 61.455017
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_vertical = 3
+theme = SubResource("Theme_1u3ka")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_colors/font_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/font_pressed_color = Color(1, 0.7294118, 0, 1)
+theme_override_colors/font_hover_color = Color(1, 0.7294118, 0, 1)
+theme_override_colors/font_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/font_disabled_color = Color(0, 0, 0, 1)
+theme_override_colors/font_outline_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_normal_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_focus_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_hover_pressed_color = Color(0, 0, 0, 1)
+theme_override_colors/icon_disabled_color = Color(0, 0, 0, 1)
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("4_47vyr")
+theme_override_font_sizes/font_size = 11
+theme_override_styles/normal = SubResource("StyleBoxTexture_wlyqo")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_tbijj")
+theme_override_styles/hover = SubResource("StyleBoxTexture_47vyr")
+text = "Confirm"
+
+[connection signal="pressed" from="Button5" to="." method="_on_confirm_pressed"]
