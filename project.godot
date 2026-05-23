@@ -19,6 +19,7 @@ config/icon="res://icon.svg"
 
 Globalsettings="*res://globalsettings.gd"
 LobbyClient="*res://multiplayer/lobby_client.gd"
+ObjectFactory="*uid://doy3oeti1t3ip"
 
 [dotnet]
 
