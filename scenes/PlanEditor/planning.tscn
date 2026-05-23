@@ -1,0 +1,161 @@
+[gd_scene format=3]
+
+[ext_resource type="Script" path="res://scenes/PlanEditor/planning.gd" id="1_planscr"]
+
+[node name="PlanEditorFooter" type="Control"]
+anchor_left = 0.0
+anchor_right = 1.0
+anchor_top = 1.0
+anchor_bottom = 1.0
+offset_top = -32.0
+offset_bottom = 0.0
+grow_vertical = 0
+clip_contents = true
+script = ExtResource("1_planscr")
+
+[node name="Background" type="ColorRect" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+color = Color(0.1, 0.1, 0.13, 0.97)
+
+[node name="MainLayout" type="VBoxContainer" parent="."]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+theme_override_constants/separation = 0
+
+[node name="TabBar" type="HBoxContainer" parent="MainLayout"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+theme_override_constants/separation = 0
+
+[node name="ScriptTabBtn" type="Button" parent="MainLayout/TabBar"]
+layout_mode = 2
+flat = true
+mouse_default_cursor_shape = 2
+text = "  Script  "
+
+[node name="HistoryTabBtn" type="Button" parent="MainLayout/TabBar"]
+layout_mode = 2
+flat = true
+mouse_default_cursor_shape = 2
+text = "  History  "
+
+[node name="TabSpacer" type="Control" parent="MainLayout/TabBar"]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="StateChip" type="Label" parent="MainLayout/TabBar"]
+layout_mode = 2
+vertical_alignment = 1
+text = "  ✎  Draft  "
+
+[node name="KeyHint" type="Label" parent="MainLayout/TabBar"]
+layout_mode = 2
+vertical_alignment = 1
+text = "  [P]  "
+
+[node name="CollapseBtn" type="Button" parent="MainLayout/TabBar"]
+layout_mode = 2
+flat = true
+mouse_default_cursor_shape = 2
+text = " ▲ "
+
+[node name="Separator" type="HSeparator" parent="MainLayout"]
+layout_mode = 2
+
+[node name="ContentStack" type="VBoxContainer" parent="MainLayout"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="ScriptView" type="VBoxContainer" parent="MainLayout/ContentStack"]
+layout_mode = 2
+size_flags_vertical = 3
+theme_override_constants/separation = 0
+
+[node name="Terminal" type="CodeEdit" parent="MainLayout/ContentStack/ScriptView"]
+layout_mode = 2
+size_flags_vertical = 3
+custom_minimum_size = Vector2(0, 160)
+caret_blink = true
+highlight_current_line = true
+gutters_draw_line_numbers = true
+placeholder_text = "unit 1:
+    MoveTo 100.0 200.0
+    Harvest 42
+END"
+
+[node name="ActionRow" type="HBoxContainer" parent="MainLayout/ContentStack/ScriptView"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 34)
+theme_override_constants/separation = 8
+
+[node name="SubmitBtn" type="Button" parent="MainLayout/ContentStack/ScriptView/ActionRow"]
+layout_mode = 2
+custom_minimum_size = Vector2(100, 0)
+text = "Submit Plan"
+
+[node name="StatusLabel" type="Label" parent="MainLayout/ContentStack/ScriptView/ActionRow"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+text = ""
+
+[node name="ErrorDisplay" type="RichTextLabel" parent="MainLayout/ContentStack/ScriptView"]
+layout_mode = 2
+visible = false
+bbcode_enabled = true
+custom_minimum_size = Vector2(0, 48)
+fit_content = true
+
+[node name="HistoryView" type="VBoxContainer" parent="MainLayout/ContentStack"]
+layout_mode = 2
+size_flags_vertical = 3
+visible = false
+theme_override_constants/separation = 0
+
+[node name="HistoryHeader" type="HBoxContainer" parent="MainLayout/ContentStack/HistoryView"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 32)
+theme_override_constants/separation = 12
+
+[node name="HistoryTitle" type="Label" parent="MainLayout/ContentStack/HistoryView/HistoryHeader"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+text = "Plan History"
+
+[node name="RefreshBtn" type="Button" parent="MainLayout/ContentStack/HistoryView/HistoryHeader"]
+layout_mode = 2
+mouse_default_cursor_shape = 2
+text = "↻ Refresh"
+
+[node name="HistoryScroll" type="ScrollContainer" parent="MainLayout/ContentStack/HistoryView"]
+layout_mode = 2
+size_flags_vertical = 3
+
+[node name="HistoryList" type="VBoxContainer" parent="MainLayout/ContentStack/HistoryView/HistoryScroll"]
+layout_mode = 2
+size_flags_horizontal = 3
+theme_override_constants/separation = 1
+
+[node name="HistoryFooter" type="HBoxContainer" parent="MainLayout/ContentStack/HistoryView"]
+layout_mode = 2
+custom_minimum_size = Vector2(0, 36)
+theme_override_constants/separation = 8
+
+[node name="LoadBtn" type="Button" parent="MainLayout/ContentStack/HistoryView/HistoryFooter"]
+layout_mode = 2
+disabled = true
+mouse_default_cursor_shape = 2
+text = "Load into Editor"
+
+[node name="HistoryStatus" type="Label" parent="MainLayout/ContentStack/HistoryView/HistoryFooter"]
+layout_mode = 2
+size_flags_horizontal = 3
+vertical_alignment = 1
+text = ""
