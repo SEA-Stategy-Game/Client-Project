@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://4pqund3nukl7"]
 
 [ext_resource type="Script" uid="uid://b480m8ikwjkmw" path="res://scenes/node_2d.gd" id="1_dubn7"]
-[ext_resource type="Script" uid="uid://dsrbte245t6uy" path="res://client.gd" id="1_ey6mn"]
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
 
 [ext_resource type="Texture2D" uid="uid://dmmhvillaju8m" path="res://assets/New Piskel (1).png" id="2_coh8c"]
@@ -388,6 +387,7 @@ limit_top = -1697
 limit_right = 2742
 limit_bottom = 1804
 script = ExtResource("2_08kqv")
+
 
 min_zoom = 0.2
 
