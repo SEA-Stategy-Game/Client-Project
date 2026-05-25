@@ -19,14 +19,10 @@ func _on_static_state(state: Dictionary):
 			
 func _on_dynamic_state(state: Dictionary):
 	for obj in state.get("modified_objects", []):
-		var world_pos = _parse_to_world(obj.meta_values.position)
+		var world_pos = (obj.meta_values.position).trim_prefix("(").trim_suffix(")")
+		var parts = world_pos.split(", ")
+		world_pos = Vector2(int(parts[0]), int(parts[1]))
 		if obj.get("destroyed", false):
 			if spawned_objects.has(world_pos):
 				spawned_objects[world_pos].queue_free()
 				spawned_objects.erase(world_pos)
-
-
-func _parse_to_world(s: String) -> Vector2:
-	s = s.trim_prefix("(").trim_suffix(")")
-	var parts = s.split(", ")
-	return Vector2(int(parts[0]), int(parts[1]))

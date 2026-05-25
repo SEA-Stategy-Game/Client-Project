@@ -186,6 +186,24 @@ func _build_header() -> String:
 	return "Schema version: %s\nGame Id: %s\nPlayer Id: %s\n\n" % [
 		SCHEMA_VERSION, GAME_ID, PLAYER_ID]
 
+
+func _get_dotnet_path() -> String:
+	var out: Array = []
+	OS.execute("cmd.exe", ["/c", "where dotnet"], out, true)
+	for line in out:
+		var trimmed: String = line.strip_edges()
+		if trimmed.ends_with(".exe") and "dotnet" in trimmed.to_lower():
+			return trimmed
+	# Common fallback locations
+	var common := [
+		"C:/Program Files/dotnet/dotnet.exe",
+		"C:/Program Files (x86)/dotnet/dotnet.exe",
+	]
+	for path in common:
+		if FileAccess.file_exists(path):
+			return path
+	return ""
+	
 func _run_dsl(full_source: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_input.txt")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_output.json")
@@ -199,7 +217,8 @@ func _run_dsl(full_source: String) -> String:
 	f.close()
 
 	var out: Array = []
-	var exit := OS.execute("dotnet", [dll_abs, input_abs, output_abs], out, true)
+	var dotnet := _get_dotnet_path()
+	var exit := OS.execute(dotnet, [dll_abs, input_abs, output_abs], out, true)
 	if exit != 0:
 		_show_error("[color=red]DSL parse error:[/color]\n" + "\n".join(out))
 		return ""
@@ -344,7 +363,7 @@ func _decompile_plan(json: String) -> String:
 	f.close()
 
 	var out: Array = []
-	var exit := OS.execute("dotnet", [dll_abs, "--decompile", input_abs, output_abs], out, true)
+	var exit := OS.execute("C:/Program Files/dotnet/dotnet.exe", [dll_abs, input_abs, output_abs], out, true)
 	if exit != 0:
 		_show_error("[color=red]Decompile error:[/color]\n" + "\n".join(out))
 		return ""
