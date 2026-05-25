@@ -12,7 +12,7 @@ var map_min = Vector2.ZERO
 var map_max = Vector2.ZERO
 
 @onready var tilemap = get_parent().get_node("Terrain/tilemap")
-@onready var terrain_manager = get_parent().get_node("Managers/TerrainManager")
+@onready var terrain_manager = get_parent().get_node("Observers/TerrainObserver")
 
 func _ready():
 	limit_left = -10000000
@@ -20,6 +20,7 @@ func _ready():
 	limit_top = -10000000
 	limit_bottom = 10000000
 	terrain_manager.terrain_ready.connect(update_map_bounds)
+	
 func update_map_bounds():
 	var used = tilemap.get_used_rect()
 	var cell = Vector2(tilemap.tile_set.tile_size) if tilemap.tile_set else Vector2i(16, 16)

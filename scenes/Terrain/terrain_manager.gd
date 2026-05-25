@@ -1,7 +1,6 @@
-extends Node2D
+extends WorldObserver
 
-@onready var tilemap = $"../../Terrain/tilemap"
-@onready var client = $"../../ClientGateway"
+@export var tilemap: TileMapLayer
 
 signal terrain_ready
 
@@ -21,9 +20,6 @@ const TERRAIN_ATLAS = {
 	Vector2i(3, 1), # [3] very shallow
 	]
 }
-
-func _ready():
-	Networking.static_state_received.connect(_on_static_state)
 
 func _on_static_state(state: Dictionary):
 	tilemap.clear()

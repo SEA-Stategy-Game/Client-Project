@@ -406,9 +406,8 @@ tilemap = NodePath("../../Terrain/tilemap")
 script = ExtResource("7_3m5ht")
 units_node = NodePath("../../Units")
 
-[node name="TerrainObserver" type="Node2D" parent="Observers" unique_id=675604953 node_paths=PackedStringArray("tilemap")]
+[node name="TerrainObserver" type="Node2D" parent="Observers" unique_id=675604953]
 script = ExtResource("11_08kqv")
-tilemap = NodePath("../../Terrain/tilemap")
 
 [node name="BuildingsObserver" type="Node2D" parent="Observers" unique_id=451543235]
 script = ExtResource("12_f6ptj")

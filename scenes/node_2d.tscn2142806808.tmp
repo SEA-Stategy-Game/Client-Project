@@ -1,15 +1,15 @@
 [gd_scene format=3 uid="uid://4pqund3nukl7"]
 
 [ext_resource type="Script" uid="uid://b480m8ikwjkmw" path="res://scenes/node_2d.gd" id="1_dubn7"]
-[ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/Camera/camera_2d.gd" id="2_08kqv"]
-[ext_resource type="Script" uid="uid://ihpik7v8odea" path="res://scenes/units/unit_observer.gd" id="7_3m5ht"]
+[ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
+[ext_resource type="Script" uid="uid://ihpik7v8odea" path="res://scenes/unit_manager.gd" id="7_3m5ht"]
 [ext_resource type="Texture2D" uid="uid://d0jx2iwo0qfa7" path="res://assets/Tiles.png" id="8_f6ptj"]
-[ext_resource type="Script" uid="uid://bs0ahsi4k0lei" path="res://scenes/Camera/sub_viewport.gd" id="10_08kqv"]
-[ext_resource type="Script" uid="uid://ird3afkyic5s" path="res://scenes/Camera/minimap_camera_2d.gd" id="10_dubn7"]
-[ext_resource type="Script" uid="uid://dgnnne7hlvryl" path="res://scenes/Terrain/terrain_manager.gd" id="11_08kqv"]
+[ext_resource type="Script" uid="uid://bs0ahsi4k0lei" path="res://scenes/sub_viewport.gd" id="10_08kqv"]
+[ext_resource type="Script" uid="uid://ird3afkyic5s" path="res://scenes/minimap_camera_2d.gd" id="10_dubn7"]
+[ext_resource type="Script" uid="uid://dgnnne7hlvryl" path="res://scenes/terrain_manager.gd" id="11_08kqv"]
 [ext_resource type="AudioStream" uid="uid://docoj8fyd0ty2" path="res://Under_the_Black_Mountain.mp3" id="11_f6ptj"]
-[ext_resource type="Script" uid="uid://dpsjtdw2gynso" path="res://scenes/Buildings/buildings_observer.gd" id="12_f6ptj"]
-[ext_resource type="Script" uid="uid://nbis3lfsr0it" path="res://scenes/Camera/minimap_viewfinder.gd" id="12_hsdmi"]
+[ext_resource type="Script" uid="uid://dpsjtdw2gynso" path="res://scenes/buildings_manager.gd" id="12_f6ptj"]
+[ext_resource type="Script" uid="uid://nbis3lfsr0it" path="res://scenes/minimap_viewfinder.gd" id="12_hsdmi"]
 [ext_resource type="Script" uid="uid://c3bf1m2y10cyf" path="res://scenes/resources/resource_observer.gd" id="23_ey6mn"]
 
 [sub_resource type="Environment" id="Environment_xtx0q"]
@@ -397,20 +397,19 @@ physics_quadrant_size = 32
 
 [node name="Observers" type="Node2D" parent="." unique_id=923860353]
 
-[node name="ResourceObserver" type="Node2D" parent="Observers" unique_id=920373343 node_paths=PackedStringArray("resource_node", "tilemap")]
+[node name="ResourceObserver" type="Node2D" parent="Observers" unique_id=920373343 node_paths=PackedStringArray("tilemap")]
 script = ExtResource("23_ey6mn")
-resource_node = NodePath("../../Resources")
 tilemap = NodePath("../../Terrain/tilemap")
 
-[node name="UnitObserver" type="Node2D" parent="Observers" unique_id=1665956856 node_paths=PackedStringArray("units_node")]
+[node name="UnitObserver" type="Node2D" parent="Observers" unique_id=1665956856 node_paths=PackedStringArray("units_node", "tilemap")]
 script = ExtResource("7_3m5ht")
 units_node = NodePath("../../Units")
-
-[node name="TerrainObserver" type="Node2D" parent="Observers" unique_id=675604953 node_paths=PackedStringArray("tilemap")]
-script = ExtResource("11_08kqv")
 tilemap = NodePath("../../Terrain/tilemap")
 
-[node name="BuildingsObserver" type="Node2D" parent="Observers" unique_id=451543235]
+[node name="TerrainManager" type="Node2D" parent="Observers" unique_id=675604953]
+script = ExtResource("11_08kqv")
+
+[node name="BuildingsManager" type="Node2D" parent="Observers" unique_id=451543235]
 script = ExtResource("12_f6ptj")
 
 [node name="soundtrackmus" type="AudioStreamPlayer" parent="." unique_id=628626579]

@@ -13,7 +13,7 @@ func _process(delta: float) -> void:
 	pass
 
 func _on_confirm_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
 
 func _on_start_pressed() -> void:
 	LobbyClient.list_game_rooms()
@@ -22,7 +22,7 @@ func _on_start_pressed() -> void:
 	pass
 
 func _on_settings_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/options_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/Menus/options_menu.tscn")
 
 func _on_exit_pressed() -> void:
 	get_tree().quit()

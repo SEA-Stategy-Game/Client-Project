@@ -22,7 +22,7 @@ LobbyClient="*res://multiplayer/lobby_client.gd"
 Networking="*uid://dsrbte245t6uy"
 ObjectFactory="*uid://doy3oeti1t3ip"
 PlanEditorAutoload="*res://scenes/PlanEditor/plan_editor_autoload.gd"
-
+UnitFactory="*uid://0k2p7qaodr2w"
 
 [dotnet]
 

@@ -1,23 +1,16 @@
-extends Node2D
+extends WorldObserver
 
-@onready var units_node = $"../../Units"
-@onready var tilemap = $"../../Terrain/tilemap"
-const UNIT_SCENE = preload("res://scenes/units/Unit.tscn")
+@export var units_node: Node
+var _units: Dictionary = {}
 
-var _units: Dictionary = {}  # entity_id -> Unit node
-
-func _ready():
-	Networking.static_state_received.connect(_on_static_state)
-	Networking.dynamic_state_received.connect(_on_dynamic_state)
-
-func _on_static_state(state: Dictionary):
+func _on_static_state(state: Dictionary) -> void:
 	for child in units_node.get_children():
 		child.queue_free()
 	_units.clear()
 	for obj in state.get("units", []):
 		_spawn_unit(obj)
 
-func _on_dynamic_state(state: Dictionary):
+func _on_dynamic_state(state: Dictionary) -> void:
 	var live_ids: Array = []
 	for obj in state.get("units", []):
 		var id = int(obj.meta_values.entity_id)
@@ -30,25 +23,16 @@ func _on_dynamic_state(state: Dictionary):
 		var path = _parse_path(obj.get("path", "[]"))
 		var spd = obj.get("speed", 0.0)
 		unit.update_from_server(pos, path, spd)
-	# Clean up dead units
 	for id in _units.keys():
 		if id not in live_ids:
 			_units[id].queue_free()
 			_units.erase(id)
 
 func _spawn_unit(obj: Dictionary) -> void:
-	var id = int(obj.meta_values.entity_id)
-	var unit = UNIT_SCENE.instantiate()
-	unit.entity_id = id
-	unit.player_id = int(obj.meta_values.player_id)
-	unit.position = _parse_vec2(obj.meta_values.position)
-	units_node.add_child(unit)
-	_units[id] = unit
-
-func _parse_vec2(s: String) -> Vector2:
-	s = s.trim_prefix("(").trim_suffix(")")
-	var parts = s.split(", ")
-	return Vector2(float(parts[0]), float(parts[1]))
+	var unit: WorldUnit = UnitFactory.create("normal", obj)
+	if unit:
+		units_node.add_child(unit)
+		_units[unit.entity_id] = unit
 
 func _parse_path(s: String) -> Array:
 	var result: Array = []

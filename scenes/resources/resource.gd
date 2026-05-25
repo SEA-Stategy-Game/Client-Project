@@ -1,4 +1,4 @@
-class_name WorldObject
+class_name WorldResource
 extends StaticBody2D
 
 var world_position: Vector2

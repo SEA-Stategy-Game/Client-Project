@@ -3,9 +3,6 @@ extends Node2D
 @onready var objects_node = $"../../Objects"
 @onready var tilemap = $"../../Terrain/tilemap"
 
-const TREE_SCENE = preload("res://scenes/objects/Tree.tscn")
-const ROCK_SCENE = preload("res://scenes/objects/Rock.tscn")
-
 func _ready():
 	Networking.static_state_received.connect(_on_static_state)
 	Networking.dynamic_state_received.connect(_on_dynamic_state)

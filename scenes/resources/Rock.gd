@@ -1,5 +1,5 @@
 class_name Rock
-extends WorldObject
+extends WorldResource
 
 @onready var sprite = $Sprite2D
 @onready var collision = $CollisionShape2D
