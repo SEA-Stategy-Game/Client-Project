@@ -23,7 +23,7 @@ const TERRAIN_ATLAS = {
 }
 
 func _ready():
-	client.static_state_received.connect(_on_static_state)
+	Networking.static_state_received.connect(_on_static_state)
 
 func _on_static_state(state: Dictionary):
 	tilemap.clear()

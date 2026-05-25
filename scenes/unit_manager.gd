@@ -1,15 +1,14 @@
 extends Node2D
 
 @onready var units_node = $"../../Units"
-@onready var client = $"../../ClientGateway"
 @onready var tilemap = $"../../Terrain/tilemap"
 const UNIT_SCENE = preload("res://scenes/units/Unit.tscn")
 
 var _units: Dictionary = {}  # entity_id -> Unit node
 
 func _ready():
-	client.static_state_received.connect(_on_static_state)
-	client.dynamic_state_received.connect(_on_dynamic_state)
+	Networking.static_state_received.connect(_on_static_state)
+	Networking.dynamic_state_received.connect(_on_dynamic_state)
 
 func _on_static_state(state: Dictionary):
 	for child in units_node.get_children():

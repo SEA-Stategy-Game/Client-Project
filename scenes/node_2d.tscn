@@ -1,7 +1,6 @@
 [gd_scene format=3 uid="uid://4pqund3nukl7"]
 
 [ext_resource type="Script" uid="uid://b480m8ikwjkmw" path="res://scenes/node_2d.gd" id="1_dubn7"]
-[ext_resource type="Script" uid="uid://dsrbte245t6uy" path="res://client.gd" id="1_ey6mn"]
 [ext_resource type="Script" uid="uid://8i71gb37aacl" path="res://scenes/camera_2d.gd" id="2_08kqv"]
 [ext_resource type="Script" uid="uid://ihpik7v8odea" path="res://scenes/unit_manager.gd" id="7_3m5ht"]
 [ext_resource type="Texture2D" uid="uid://d0jx2iwo0qfa7" path="res://assets/Tiles.png" id="8_f6ptj"]
@@ -369,6 +368,9 @@ limit_top = -1697
 limit_right = 2742
 limit_bottom = 1804
 script = ExtResource("2_08kqv")
+
+
+min_zoom = 0.2
 
 [node name="CanvasLayer" type="CanvasLayer" parent="Camera2D" unique_id=1813312778]
 auto_translate_mode = 2

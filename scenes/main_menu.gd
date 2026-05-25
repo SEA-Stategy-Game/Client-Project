@@ -33,7 +33,7 @@ func _on_rooms_received(rooms: Array):
 	if rooms.size() > 0:
 		LobbyClient.selected_room = rooms[0]
 		print("Selected Room: ", LobbyClient.selected_room)
-	
+		Networking.connect_to_server()
 		get_tree().change_scene_to_file("res://scenes/node_2d.tscn")
 	else:
 		print("No rooms available.")

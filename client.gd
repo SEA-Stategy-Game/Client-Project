@@ -7,10 +7,13 @@ signal dynamic_state_received(state: Dictionary)
 ## Client-side network gateway. Manages the connection to the authoritative
 ## server and handles receiving and deserialising state updates.
 
+func _ready():
+	return
+	
+
 ## Initialises the ENet client and connects to a specific server
 ## Binds connection lifecycle signals for logging and post-connect logic.
-func _ready():
-	
+func connect_to_server():
 	if LobbyClient.selected_room == null:
 		print("Error: No room selected. Returning to menu.")
 		return
@@ -25,6 +28,7 @@ func _ready():
 	multiplayer.connected_to_server.connect(func(): _on_connected())
 	multiplayer.connection_failed.connect(func(): print("Connection FAILED"))
 	multiplayer.server_disconnected.connect(func(): print("Server disconnected"))
+	
 
 ## Called when the client successfully establishes a connection to the server.
 func _on_connected():
@@ -60,6 +64,7 @@ func on_static_state_requested() -> void:
 func receive_state(data: PackedByteArray):
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
+	print(state)
 	dynamic_state_received.emit(state)
 	
 ## Receives the compressed static world state from the 
