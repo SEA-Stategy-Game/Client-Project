@@ -1,5 +1,5 @@
-# Tree.gd attached to StaticBody2D
-extends StaticBody2D
+class_name TreeObject
+extends WorldObject
 
 @onready var sprite = $Sprite2D
 @onready var collision = $CollisionShape2D
@@ -13,3 +13,10 @@ var stump_texture = preload("res://assets/TreeStub.png")
 
 func _ready():
 	sprite.texture = tree_textures.pick_random()
+
+func initialise(obj: Dictionary) -> void:
+	super(obj)
+
+func show_stump() -> void:
+	sprite.texture = stump_texture
+	collision.disabled = true
