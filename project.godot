@@ -19,10 +19,10 @@ config/icon="res://icon.svg"
 
 Globalsettings="*res://globalsettings.gd"
 LobbyClient="*res://multiplayer/lobby_client.gd"
-Networking="*uid://dsrbte245t6uy"
-ObjectFactory="*uid://doy3oeti1t3ip"
+Networking="*res://client.gd"
+ObjectFactory="*res://scenes/resources/resource_factory.gd"
 PlanEditorAutoload="*res://scenes/PlanEditor/plan_editor_autoload.gd"
-UnitFactory="*uid://0k2p7qaodr2w"
+UnitFactory="*res://scenes/units/unit_factory.gd"
 
 [dotnet]
 
