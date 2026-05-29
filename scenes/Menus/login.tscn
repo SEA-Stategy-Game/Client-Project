@@ -1,6 +1,6 @@
 [gd_scene format=3 uid="uid://db3qxmy0qncqn"]
 
-[ext_resource type="Script" uid="uid://dn12u7ocbrg15" path="res://scenes/Menus/main_menu.gd" id="1_1u3ka"]
+[ext_resource type="Script" uid="uid://q7xorpq23eng" path="res://scenes/Menus/login.gd" id="1_88f6a"]
 [ext_resource type="Texture2D" uid="uid://dd21g1povtjiy" path="res://assets/Title Screen.png" id="2_wlyqo"]
 [ext_resource type="Texture2D" uid="uid://kayaunqr75l5" path="res://assets/light.png" id="3_tbijj"]
 [ext_resource type="FontFile" uid="uid://c8c3b2jnqy5xs" path="res://assets/pixel_operator/PixelOperator8.ttf" id="4_47vyr"]
@@ -32,7 +32,7 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-script = ExtResource("1_1u3ka")
+script = ExtResource("1_88f6a")
 
 [node name="Panel" type="Panel" parent="." unique_id=1626512159]
 layout_mode = 1
@@ -63,7 +63,7 @@ position = Vector2(576, 328)
 texture = ExtResource("5_1u3ka")
 metadata/_edit_group_ = true
 
-[node name="LineEdit" type="LineEdit" parent="." unique_id=349784133]
+[node name="PlayerIdEdit" type="LineEdit" parent="." unique_id=349784133]
 layout_mode = 1
 anchors_preset = 8
 anchor_left = 0.5
@@ -117,4 +117,4 @@ theme_override_styles/pressed = SubResource("StyleBoxTexture_tbijj")
 theme_override_styles/hover = SubResource("StyleBoxTexture_47vyr")
 text = "Confirm"
 
-[connection signal="pressed" from="Button5" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="Button5" to="." method="_on_login_pressed"]

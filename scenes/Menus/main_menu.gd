@@ -1,6 +1,5 @@
 extends Control
 
-
 # Called when the node enters the scene tree for the first time.
 func _ready() -> void:
 	LobbyClient.rooms_fetched.connect(_on_rooms_received)
@@ -12,12 +11,11 @@ func _ready() -> void:
 func _process(delta: float) -> void:
 	pass
 
-func _on_confirm_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
 
 func _on_start_pressed() -> void:
 	LobbyClient.list_game_rooms()
 	print("Fetching rooms...")
+	print(PlayerManager.player_uuid)
 
 	pass
 
