@@ -6,6 +6,10 @@ extends Node2D
 func _ready() -> void:
 	apply_audio_settings()
 
+func _unhandled_input(event: InputEvent) -> void:
+	if event.is_action_pressed("ui_cancel"):
+		get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
+
 func apply_audio_settings() -> void:
 	# Use the 'is_instance_valid' check for extra safety
 	if is_instance_valid(soundtrack):
