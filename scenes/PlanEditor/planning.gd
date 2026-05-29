@@ -1,8 +1,8 @@
 extends Control
 
 # ── Configuration ────────────────────────────────────────────────
-const BASE_URL         := "http://127.0.0.1:5020"
-const DSL_DLL_RELATIVE := "dsl/bin/Release/net10.0/dsl.dll"
+const BASE_URL         := "http://127.0.0.1:5000"
+const DSL_DLL_RELATIVE := "dsl/bin/Release/net10.0/publish/dsl.dll"
 const GAME_ID          := "testgame"
 const SCHEMA_VERSION   := "1.0"
 
@@ -188,25 +188,42 @@ func _build_header() -> String:
 
 func _get_dotnet_path() -> String:
 	var out: Array = []
-	OS.execute("cmd.exe", ["/c", "where dotnet"], out, true)
-	for line in out:
-		var trimmed: String = line.strip_edges()
-		if trimmed.ends_with(".exe") and "dotnet" in trimmed.to_lower():
-			return trimmed
-	# Common fallback locations
-	var common := [
-		"C:/Program Files/dotnet/dotnet.exe",
-		"C:/Program Files (x86)/dotnet/dotnet.exe",
-	]
-	for path in common:
-		if FileAccess.file_exists(path):
-			return path
-	return ""
+	if OS.get_name() == "Windows":
+		OS.execute("cmd.exe", ["/c", "where dotnet"], out, true)
+		for line in out:
+			var trimmed: String = line.strip_edges()
+			if trimmed.ends_with(".exe") and "dotnet" in trimmed.to_lower():
+				return trimmed
+		# Common fallback locations
+		var common := [
+			"C:/Program Files/dotnet/dotnet.exe",
+			"C:/Program Files (x86)/dotnet/dotnet.exe",
+		]
+		for path in common:
+			if FileAccess.file_exists(path):
+				return path
+	else:
+		OS.execute("sh", ["-c", "which dotnet"], out, true)
+		if out.size() > 0:
+			var trimmed: String = out[0].strip_edges()
+			if not trimmed.is_empty() and not "not found" in trimmed:
+				return trimmed
+		var common := [
+			"/usr/local/share/dotnet/dotnet",
+			"/usr/local/bin/dotnet",
+			"/opt/homebrew/bin/dotnet",
+			"/usr/bin/dotnet"
+		]
+		for path in common:
+			if FileAccess.file_exists(path):
+				return path
+	return "dotnet"
 	
 func _run_dsl(full_source: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_input.txt")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_output.json")
 	var dll_abs    := (ProjectSettings.globalize_path("res://") + DSL_DLL_RELATIVE).simplify_path()
+
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
 	if f == null:
@@ -362,7 +379,8 @@ func _decompile_plan(json: String) -> String:
 	f.close()
 
 	var out: Array = []
-	var exit := OS.execute("C:/Program Files/dotnet/dotnet.exe", [dll_abs, input_abs, output_abs], out, true)
+	var dotnet := _get_dotnet_path()
+	var exit := OS.execute(dotnet, [dll_abs, "--decompile", input_abs, output_abs], out, true)
 	if exit != 0:
 		_show_error("[color=red]Decompile error:[/color]\n" + "\n".join(out))
 		return ""
