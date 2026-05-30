@@ -5,3 +5,9 @@
 # DSL compiled output
 dsl/bin/
 dsl/obj/
+
+# Add-ons
+addons/
+
+LICENSE
+.DS_Store

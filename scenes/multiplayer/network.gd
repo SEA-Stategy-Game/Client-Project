@@ -32,26 +32,32 @@ func connect_to_server():
 
 ## Called when the client successfully establishes a connection to the server.
 func _on_connected():
-	print("Connected to server")
+	print("Connected to server. Sending Player ID: ", PlayerManager.player_uuid)
+	register_player(PlayerManager.player_uuid)
+	# Pass the local_player_id to the server
 	request_static_state()
+
 
 # -----------------------------------------------------------------------
 # Static state sync
 # -----------------------------------------------------------------------
 
+@rpc("authority", "call_remote", "reliable")
+func register_player(player_uuid: String) -> void:
+	rpc_id(1, "on_player_registered", player_uuid)  # 1 is always the server's peer ID
+
 ## Requests the full static world state from the server.
-## Invokes [method on_static_state_requested] on the server (peer ID 1).
-@rpc("any_peer", "call_remote", "reliable")
+@rpc("authority", "call_remote", "reliable")
 func request_static_state() -> void:
 	print("request_static_state")
 	rpc_id(1, "on_static_state_requested")  # 1 is always the server's peer ID
 
-## Stub: server-side handler for static state requests.
-## Never executed on the client — exists only so Godot can compute
-## a matching RPC checksum between client and server.
-@rpc("any_peer", "call_remote", "reliable")
-func on_static_state_requested() -> void:
-	pass
+
+@rpc("authority", "call_remote", "reliable")
+func receive_player_registration(player_local_id: int) -> void:
+	print("Player registered with local ID: ", player_local_id)
+	# Emit the signal so other parts of your game can use the ID
+	PlayerManager.player_local_id = player_local_id
 
 # -----------------------------------------------------------------------
 # Receiving state from server
@@ -69,8 +75,21 @@ func receive_state(data: PackedByteArray):
 	
 ## Receives the compressed static world state from the 
 ## [param data] GZIP-compressed UTF-8 encoded JSON as a PackedByteArray.
-@rpc("any_peer", "call_remote", "unreliable")
+@rpc("authority", "call_remote", "unreliable")
 func receive_static_state(data: PackedByteArray):
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
 	static_state_received.emit(state)
+	
+## Stubs: server-side handler for server functions
+## Never executed on the client — exists only so Godot can compute
+## a matching RPC checksum between client and server.
+
+@rpc("any_peer", "call_remote", "reliable")
+func on_player_registered(player_uuid: String) -> void:
+	pass
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func on_static_state_requested() -> void:
+	pass

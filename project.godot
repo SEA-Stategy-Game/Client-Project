@@ -18,11 +18,12 @@ config/icon="res://icon.svg"
 [autoload]
 
 Globalsettings="*res://globalsettings.gd"
-LobbyClient="*res://multiplayer/lobby_client.gd"
-Networking="*res://client.gd"
+LobbyClient="*res://scenes/multiplayer/lobby_client.gd"
+Networking="*res://scenes/multiplayer/network.gd"
 ObjectFactory="*res://scenes/resources/resource_factory.gd"
 PlanEditorAutoload="*res://scenes/PlanEditor/plan_editor_autoload.gd"
 UnitFactory="*res://scenes/units/unit_factory.gd"
+PlayerManager="*res://scenes/multiplayer/player_manager.gd"
 
 [dotnet]
 

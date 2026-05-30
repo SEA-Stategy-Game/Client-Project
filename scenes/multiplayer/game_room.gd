@@ -9,6 +9,7 @@ var state: String
 var participants: int
 var address: String
 var port: int
+var players: Array[String] = []
 
 # Factory method to create a Room object from the Server's Dictionary
 static func from_dict(data: Dictionary) -> GameRoom:
@@ -19,4 +20,7 @@ static func from_dict(data: Dictionary) -> GameRoom:
 	room.participants = int(data.get("participants", 0))
 	room.address = data.get("address", "127.0.0.1")
 	room.port = int(data.get("port", 0))
+	if data.has("players") and data["players"] is Array:
+		room.players.assign(data["players"])
+
 	return room

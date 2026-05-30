@@ -24,4 +24,4 @@ func update_from_server(server_pos: Vector2, path: Array, spd: float) -> void:
 	_path_index = 0
 
 func get_player_id() -> int:
-	return player_id
+	return PlayerManager.player_local_id
