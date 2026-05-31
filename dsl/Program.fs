@@ -4,19 +4,29 @@ open System.Text.Json
 open FParsec
 open Validate
 
-let private decompileStep (step: Lang.ResponseStep) =
-    let get k = if step.parameters.ContainsKey(k) then step.parameters.[k] else "0"
+let rec private decompileStep (indent: string) (step: Lang.ResponseStep) =
+    let get k    = if step.parameters.ContainsKey(k) then step.parameters.[k] else "0"
+    let getStr k = if step.parameters.ContainsKey(k) then step.parameters.[k] else ""
     match step.actionType with
-    | "MoveTo"    -> sprintf "    MoveTo %s %s" (get "x") (get "y")
+    | "MoveTo"    -> sprintf "%sMoveTo %s %s" indent (get "x") (get "y")
     | "Harvest"   ->
-        let rt  = get "resource_type"
+        let rt  = getStr "resource_type"
         let tid = get "target_id"
-        if rt <> "0" && rt <> "" then
-            sprintf "    Harvest %s" (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower()))
-        else sprintf "    Harvest %s" tid
-    | "Attack"    -> "    Attack"
-    | "Construct" -> sprintf "    Construct %s %s %s" (get "scene") (get "x") (get "y")
-    | other       -> sprintf "    # Unknown action: %s" other
+        if rt <> "" then
+            sprintf "%sHarvest %s" indent (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower()))
+        else sprintf "%sHarvest %s" indent tid
+    | "Attack"    -> sprintf "%sAttack" indent
+    | "Construct" -> sprintf "%sConstruct %s %s %s" indent (get "scene") (get "x") (get "y")
+    | "If"        ->
+        let cond      = getStr "condition"
+        let inner     = indent + "  "
+        let thenBlock = step.body      |> List.map (decompileStep inner) |> String.concat "\n"
+        let elseBlock = step.else_body |> List.map (decompileStep inner) |> String.concat "\n"
+        if step.else_body.IsEmpty then
+            sprintf "%sif %s\n%s\n%sEND if" indent cond thenBlock indent
+        else
+            sprintf "%sif %s\n%s\n%selse\n%s\n%sEND if" indent cond thenBlock indent elseBlock indent
+    | other       -> sprintf "%s# Unknown action: %s" indent other
 
 let private decompilePlan (plan: Lang.ResponsePlan) =
     plan.unitPlans
@@ -25,7 +35,7 @@ let private decompilePlan (plan: Lang.ResponsePlan) =
             match up.unitId.ValueKind with
             | JsonValueKind.Number -> string (up.unitId.GetInt32())
             | _                    -> up.unitId.GetString()
-        let steps = up.steps |> List.map decompileStep |> String.concat "\n"
+        let steps = up.steps |> List.map (decompileStep "    ") |> String.concat "\n"
         sprintf "unit %s:\n%s\nEND" uid steps)
     |> String.concat "\n\n"
 
