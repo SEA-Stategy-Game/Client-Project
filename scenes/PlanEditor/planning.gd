@@ -9,7 +9,7 @@ const SCHEMA_VERSION   := "1.0"
 const TAB_HEIGHT  := 32
 const OPEN_HEIGHT := 350
 
-const DSL_KEYWORDS := ["MoveTo", "Harvest", "Construct", "if", "END if", "END", "unit"]
+const DSL_KEYWORDS := ["MoveTo", "Harvest", "Attack", "Construct", "if", "else", "END if", "END", "unit"]
 
 # ── Plan state ───────────────────────────────────────────────────
 enum State { DRAFT, ACTIVE, HISTORY }
