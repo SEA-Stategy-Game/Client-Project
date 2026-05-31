@@ -32,9 +32,6 @@ func update_ui() -> void:
 	# Always show ID for your units
 	id_label.visible = player_id == PlayerManager.player_local_id
 
-	# Show health only when damaged
-	health_bar.visible = player_id == PlayerManager.player_local_id
-
 	health_bar.value = current_health
 
 func update_from_server(server_pos: Vector2, path: Array, spd: float) -> void:

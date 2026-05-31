@@ -2,7 +2,7 @@
 
 [ext_resource type="Script" uid="uid://o14cqn7pgqfr" path="res://scenes/units/normal_unit.gd" id="1_432mm"]
 [ext_resource type="Texture2D" uid="uid://bv34d84kvhsyw" path="res://assets/unitEnemy.png" id="2_jqau5"]
-[ext_resource type="FontFile" uid="uid://c8c3b2jnqy5xs" path="res://assets/pixel_operator/PixelOperator8.ttf" id="3_yhmo7"]
+[ext_resource type="FontFile" uid="uid://cop4il1alab4b" path="res://assets/pixel_operator/PixelOperator.ttf" id="3_yhmo7"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_yhmo7"]
 atlas = ExtResource("2_jqau5")
@@ -205,37 +205,57 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_yhmo7"]
+bg_color = Color(0, 0, 0, 0.27450982)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_l2gkj"]
+bg_color = Color(0.7294118, 0.23921569, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [node name="EnemyUnit" type="CharacterBody2D" unique_id=1858351609]
 position = Vector2(-1, -1)
 script = ExtResource("1_432mm")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=1151868015]
+position = Vector2(1, 0)
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_vwh6h")
 animation = &"hit_down"
 
-[node name="Label" type="Label" parent="." unique_id=1998668546]
+[node name="Label" type="Label" parent="." unique_id=13508091]
+z_index = 1
 anchors_preset = 8
 anchor_left = 0.5
 anchor_top = 0.5
 anchor_right = 0.5
 anchor_bottom = 0.5
-offset_left = -15.0
-offset_top = -44.0
-offset_right = 45.0
-offset_bottom = -26.0
+offset_left = -9.0
+offset_top = -20.0
+offset_right = 190.99997
+offset_bottom = 46.0
 grow_horizontal = 2
 grow_vertical = 2
-scale = Vector2(0.5, 0.5)
+scale = Vector2(0.1, 0.1)
 size_flags_horizontal = 4
-theme_override_colors/font_color = Color(1, 1, 0, 1)
+theme_override_colors/font_color = Color(1, 1, 1, 1)
 theme_override_fonts/font = ExtResource("3_yhmo7")
-theme_override_font_sizes/font_size = 17
-text = "0000"
+theme_override_font_sizes/font_size = 65
+text = "ID: 0000"
 
-[node name="HealthBar" type="ProgressBar" parent="." unique_id=695578357]
-offset_top = -35.0
-offset_right = 4.0
-offset_bottom = -8.0
-value = 100.0
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1003321234]
+offset_left = -14.0
+offset_top = -11.0
+offset_right = 17.0
+offset_bottom = -9.0
+theme_override_styles/background = SubResource("StyleBoxFlat_yhmo7")
+theme_override_styles/fill = SubResource("StyleBoxFlat_l2gkj")
+max_value = 80.0
+value = 60.0
 show_percentage = false
