@@ -84,10 +84,7 @@ custom_minimum_size = Vector2(0, 160)
 caret_blink = true
 highlight_current_line = true
 gutters_draw_line_numbers = true
-placeholder_text = "unit 1:
-    MoveTo 100.0 200.0
-    Harvest 42
-END"
+placeholder_text = ""
 
 [node name="ActionRow" type="HBoxContainer" parent="MainLayout/ContentStack/ScriptView"]
 layout_mode = 2
