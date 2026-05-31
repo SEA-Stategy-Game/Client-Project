@@ -50,8 +50,11 @@ let pConstruct =
         Lang.Command.Action("Construct",
             mkParams [("scene", scene); ("x", floatStr x); ("y", floatStr y)]))
 
+let pAttack =
+    str "Attack" >>% Lang.Command.Action("Attack", mkParams [])
+
 let pActionCommand : Parser<Lang.Command, unit> =
-    pMoveTo <|> pHarvest <|> pConstruct
+    pMoveTo <|> pHarvest <|> pConstruct <|> pAttack
 
 // ---------- If / Unit commands ----------
 

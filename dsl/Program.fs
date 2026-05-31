@@ -14,6 +14,7 @@ let private decompileStep (step: Lang.ResponseStep) =
         if rt <> "0" && rt <> "" then
             sprintf "    Harvest %s" (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower()))
         else sprintf "    Harvest %s" tid
+    | "Attack"    -> "    Attack"
     | "Construct" -> sprintf "    Construct %s %s %s" (get "scene") (get "x") (get "y")
     | other       -> sprintf "    # Unknown action: %s" other
 
