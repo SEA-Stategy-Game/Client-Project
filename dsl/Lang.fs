@@ -4,17 +4,18 @@ open System.Collections.Generic
 
 // Internal AST used during parsing (commands can be nested under `If`)
 type Command =
-    | Action of string * Dictionary<string, string>   // actionType, params
-    | If of string * Command list                     // condition text, body
-    | UnitCommand of string * string list             // unit id digits, dot path
+    | Action of string * Dictionary<string, string>          // actionType, params
+    | If of string * Command list * Command list             // condition, then-body, else-body
+    | UnitCommand of string * string list                    // unit id digits, dot path
 
 // Output shape — matches the backend's PlanStepIR exactly when serialized.
 type Step = {
-    stepIndex: int
-    stepType: string
-    actionType: string
-    parameters: Dictionary<string, string>
-    body: Step list
+    stepIndex  : int
+    stepType   : string
+    actionType : string
+    parameters : Dictionary<string, string>
+    body       : Step list
+    else_body  : Step list
 }
 
 type UnitPlan = {
@@ -30,10 +31,11 @@ type PlanSubmission = {
 }
 
 // Types for deserializing a backend plan-version response (camelCase JSON).
-// Unknown fields (stepIndex, stepType, body, …) are silently ignored by System.Text.Json.
 type ResponseStep = {
-    actionType: string
-    parameters: Dictionary<string, string>
+    actionType : string
+    parameters : Dictionary<string, string>
+    body       : ResponseStep list
+    else_body  : ResponseStep list   // JSON key "else_body" — CamelCase leaves underscored names unchanged
 }
 
 type ResponseUnitPlan = {

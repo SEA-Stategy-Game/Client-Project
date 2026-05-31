@@ -61,14 +61,19 @@ let pActionCommand : Parser<Lang.Command, unit> =
 let pENDIF : Parser<unit, unit> =
     ws >>. str "END if" .>> ws >>% ()
 
+let pElseKeyword : Parser<unit, unit> =
+    ws >>. str "else" .>> ws >>% ()
+
 let pCondition : Parser<string, unit> =
     many1Chars (noneOf "\n") .>> ws
 
 let pIfCommand : Parser<Lang.Command, unit> =
-    pipe2
-        (str "if" >>. spaces1 >>. pCondition)
-        (manyTill pCommands pENDIF)
-        (fun cond inner -> Lang.Command.If(cond, inner))
+    str "if" >>. spaces1 >>. pCondition >>= fun cond ->
+    (   attempt (manyTill pCommands pElseKeyword >>= fun thenCmds ->
+            manyTill pCommands pENDIF |>> fun elseCmds ->
+            Lang.Command.If(cond, thenCmds, elseCmds))
+    <|> (manyTill pCommands pENDIF |>> fun thenCmds ->
+            Lang.Command.If(cond, thenCmds, [])) )
 
 let pUnitCommand : Parser<Lang.Command, unit> =
     pipe3
@@ -94,32 +99,36 @@ let rec commandsToSteps (startIndex: int) (commands: Lang.Command list)
         match cmd with
         | Lang.Command.Action(actionType, parameters) ->
             let step : Lang.Step = {
-                stepIndex = idx
-                stepType = "Action"
+                stepIndex  = idx
+                stepType   = "Action"
                 actionType = actionType
                 parameters = parameters
-                body = []
+                body       = []
+                else_body  = []
             }
             (steps @ [step], idx + 1)
 
-        | Lang.Command.If(cond, inner) ->
-            let innerSteps, _ = commandsToSteps 0 inner
+        | Lang.Command.If(cond, thenCmds, elseCmds) ->
+            let thenSteps, _ = commandsToSteps 0 thenCmds
+            let elseSteps, _ = commandsToSteps 0 elseCmds
             let step : Lang.Step = {
-                stepIndex = idx
-                stepType = "Conditional"
+                stepIndex  = idx
+                stepType   = "Conditional"
                 actionType = "If"
                 parameters = mkParams [("condition", cond)]
-                body = innerSteps
+                body       = thenSteps
+                else_body  = elseSteps
             }
             (steps @ [step], idx + 1)
 
         | Lang.Command.UnitCommand(id, path) ->
             let step : Lang.Step = {
-                stepIndex = idx
-                stepType = "Conditional"
+                stepIndex  = idx
+                stepType   = "Conditional"
                 actionType = "UnitCommand"
                 parameters = mkParams [("unit_id", id); ("path", String.concat "." path)]
-                body = []
+                body       = []
+                else_body  = []
             }
             (steps @ [step], idx + 1)
 
