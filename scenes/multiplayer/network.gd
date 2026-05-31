@@ -58,7 +58,6 @@ func receive_player_registration(player_local_id: int) -> void:
 	print("Player registered with local ID: ", player_local_id)
 	# Emit the signal so other parts of your game can use the ID
 	PlayerManager.player_local_id = player_local_id
-
 # -----------------------------------------------------------------------
 # Receiving state from server
 # -----------------------------------------------------------------------
@@ -70,7 +69,6 @@ func receive_player_registration(player_local_id: int) -> void:
 func receive_state(data: PackedByteArray):
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
-	print(state)
 	dynamic_state_received.emit(state)
 	
 ## Receives the compressed static world state from the 

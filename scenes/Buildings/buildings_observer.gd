@@ -8,8 +8,7 @@ func _ready():
 	Networking.dynamic_state_received.connect(_on_dynamic_state)
 
 func _on_static_state(state: Dictionary):
-	for obj in state.get("buildings", []):
-		print(obj)
+	pass
 
 func _on_dynamic_state(state: Dictionary):
 	# Delta updates — handle destroyed objects etc.

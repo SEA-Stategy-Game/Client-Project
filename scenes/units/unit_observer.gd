@@ -1,5 +1,8 @@
 extends WorldObserver
 
+signal units_updated
+signal units_ready
+var _initial_spawn_done: bool = false
 @export var units_node: Node
 var _units: Dictionary = {}
 
@@ -9,8 +12,12 @@ func _on_static_state(state: Dictionary) -> void:
 	_units.clear()
 	for obj in state.get("units", []):
 		_spawn_unit(obj)
+	if not _initial_spawn_done:
+		_initial_spawn_done = true
+		units_ready.emit()
 
 func _on_dynamic_state(state: Dictionary) -> void:
+	units_updated.emit()
 	var live_ids: Array = []
 	for obj in state.get("units", []):
 		var id = int(obj.meta_values.entity_id)

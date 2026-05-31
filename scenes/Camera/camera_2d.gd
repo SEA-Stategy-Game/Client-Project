@@ -1,5 +1,8 @@
 extends Camera2D
 
+var _units_ready: bool = false
+var _player_ready: bool = false
+
 @export var CamSpeed = 20.0
 @export var ZoomSpeed = 20.0
 @export var ZoomMargin = 0.1
@@ -13,6 +16,7 @@ var map_max = Vector2.ZERO
 
 @onready var tilemap = get_parent().get_node("Terrain/tilemap")
 @onready var terrain_manager = get_parent().get_node("Observers/TerrainObserver")
+@onready var unit_observer = get_parent().get_node("Observers/UnitObserver")
 
 func _ready():
 	limit_left = -10000000
@@ -20,7 +24,33 @@ func _ready():
 	limit_top = -10000000
 	limit_bottom = 10000000
 	terrain_manager.terrain_ready.connect(update_map_bounds)
+	unit_observer.units_ready.connect(_on_units_ready)
+	PlayerManager.player_id_ready.connect(_on_player_ready)
 	
+	
+func _on_units_ready() -> void:
+	_units_ready = true
+	_try_spawn()
+	
+func _on_player_ready() -> void:
+	_player_ready = true
+	_try_spawn()
+
+func _try_spawn() -> void:
+	if _units_ready and _player_ready:
+		_spawn_on_player_unit()
+
+func _spawn_on_player_unit() -> void:
+	if PlayerManager.player_local_id == null:
+		return
+	var player_units = unit_observer._units.values().filter(
+		func(u): return u.player_id == PlayerManager.player_local_id
+	)
+	if player_units.is_empty():
+		return
+	var target = player_units[randi() % player_units.size()]
+	global_position = target.global_position
+
 func update_map_bounds():
 	var used = tilemap.get_used_rect()
 	var cell = Vector2(tilemap.tile_set.tile_size) if tilemap.tile_set else Vector2i(16, 16)

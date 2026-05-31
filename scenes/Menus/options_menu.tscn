@@ -128,6 +128,6 @@ text = "Back
 [connection signal="pressed" from="VBoxContainer/Colorblind" to="." method="_on_colorblind_pressed"]
 [connection signal="toggled" from="VBoxContainer/Colorblind" to="." method="_on_colorblind_toggled"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer/HSlider" to="." method="_on_h_slider_value_changed"]
-[connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_2_value_changed"]
 [connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_value_changed"]
+[connection signal="value_changed" from="VBoxContainer/HBoxContainer3/HSlider2" to="." method="_on_h_slider_2_value_changed"]
 [connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]

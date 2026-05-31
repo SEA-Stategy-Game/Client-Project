@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" uid="uid://o14cqn7pgqfr" path="res://scenes/units/normal_unit.gd" id="1_ijbcr"]
 [ext_resource type="Texture2D" uid="uid://ce0rh6652spyg" path="res://assets/unit.png" id="2_ydugb"]
+[ext_resource type="FontFile" uid="uid://cop4il1alab4b" path="res://assets/pixel_operator/PixelOperator.ttf" id="3_ydugb"]
 
 [sub_resource type="AtlasTexture" id="AtlasTexture_coh8c"]
 atlas = ExtResource("2_ydugb")
@@ -204,10 +205,55 @@ animations = [{
 "speed": 5.0
 }]
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_02uir"]
+bg_color = Color(0, 0, 0, 0.27450982)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_ydugb"]
+bg_color = Color(0.7294118, 0.23921569, 0, 1)
+corner_radius_top_left = 2
+corner_radius_top_right = 2
+corner_radius_bottom_right = 2
+corner_radius_bottom_left = 2
+
 [node name="Unit" type="CharacterBody2D" unique_id=2019851043]
 script = ExtResource("1_ijbcr")
 
 [node name="AnimatedSprite2D" type="AnimatedSprite2D" parent="." unique_id=768876667]
 scale = Vector2(0.5, 0.5)
 sprite_frames = SubResource("SpriteFrames_5uit4")
-animation = &"run_down"
+animation = &"hit_down"
+
+[node name="Label" type="Label" parent="." unique_id=2070475428]
+z_index = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -10.0
+offset_top = -20.0
+offset_right = 189.99997
+offset_bottom = 46.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(0.1, 0.1)
+size_flags_horizontal = 4
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_fonts/font = ExtResource("3_ydugb")
+theme_override_font_sizes/font_size = 65
+text = "ID: 0000"
+
+[node name="HealthBar" type="ProgressBar" parent="." unique_id=1097281218]
+offset_left = -16.0
+offset_top = -13.0
+offset_right = 15.0
+offset_bottom = -11.0
+theme_override_styles/background = SubResource("StyleBoxFlat_02uir")
+theme_override_styles/fill = SubResource("StyleBoxFlat_ydugb")
+max_value = 80.0
+value = 60.0
+show_percentage = false
