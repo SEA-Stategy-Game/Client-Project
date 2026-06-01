@@ -4,7 +4,7 @@ extends Control
 func _ready() -> void:
 	LobbyClient.rooms_fetched.connect(_on_rooms_received)
 	LobbyClient.request_failed.connect(_on_rooms_failed)
-	Networking.registration_successful.connect(_on_registration_successful)
+	Networking.player_room_connection_complete.connect(_on_player_room_connection_complete)
 	pass # Replace with function body.
 	
 
@@ -35,7 +35,7 @@ func _on_rooms_received(rooms: Array):
 	else:
 		print("No rooms available.")
 
-func _on_registration_successful():
+func _on_player_room_connection_complete():
 	get_tree().change_scene_to_file("res://scenes/node_2d.tscn")
 
 func _on_rooms_failed(error_message: String):

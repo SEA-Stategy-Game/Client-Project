@@ -3,7 +3,7 @@ extends Control
 # ── Configuration ────────────────────────────────────────────────
 const BASE_URL         := "http://127.0.0.1:5000"
 const DSL_DLL_RELATIVE := "dsl/bin/Release/net10.0/publish/dsl.dll"
-const GAME_ID          := "testgame"
+
 const SCHEMA_VERSION   := "1.0"
 
 const TAB_HEIGHT  := 32
@@ -20,6 +20,10 @@ var _loading_text  := false   # suppress text_changed → DRAFT during programma
 # ── Tab ──────────────────────────────────────────────────────────
 var _active_tab    := 0        # 0 = Script, 1 = History
 var _open          := false
+
+# ── Cache ────────────────────────────────────────────────────────
+var _game_id       := ""
+var _player_id     := 0
 
 # ── History ──────────────────────────────────────────────────────
 var _history_data    : Array  = []
@@ -56,6 +60,8 @@ func _ready() -> void:
 	_http_submit.request_completed.connect(_on_submit_done)
 	_http_history.request_completed.connect(_on_history_done)
 	_http_version.request_completed.connect(_on_version_done)
+	Networking.player_room_connection_complete.connect(_on_connection_complete)
+
 
 	script_tab_btn.pressed.connect(func(): _switch_tab(0))
 	history_tab_btn.pressed.connect(func(): _switch_tab(1))
@@ -74,6 +80,10 @@ func _make_http() -> HTTPRequest:
 	var h := HTTPRequest.new()
 	add_child(h)
 	return h
+
+func _on_connection_complete() -> void:
+	_game_id = LobbyClient.game_room_id
+	_player_id = PlayerManager.player_local_id
 
 # ── Toggle ───────────────────────────────────────────────────────
 func toggle() -> void:
@@ -183,7 +193,7 @@ func _on_submit_done(result: int, code: int, _h: PackedStringArray, body: Packed
 # ── DSL runner ───────────────────────────────────────────────────
 func _build_header() -> String:
 	return "Schema version: %s\nGame Id: %s\nPlayer Id: %s\n\n" % [
-		SCHEMA_VERSION, GAME_ID, PlayerManager.player_local_id]
+		SCHEMA_VERSION, _game_id, _player_id]
 
 
 func _get_dotnet_path() -> String:
@@ -252,7 +262,7 @@ func _fetch_history() -> void:
 	history_status.text = "Loading…"
 	load_btn.disabled = true
 	_selected_ver = -1
-	var url := "%s/plan/%s/%s/history" % [BASE_URL, GAME_ID, PlayerManager.player_local_id]
+	var url := "%s/plan/%s/%s/history" % [BASE_URL, _game_id, _player_id]
 	_http_history.request(url)
 
 func _on_history_done(result: int, code: int, _h: PackedStringArray, body: PackedByteArray) -> void:
@@ -330,7 +340,7 @@ func _on_load_pressed() -> void:
 	_pending_ver_load = _selected_ver
 	history_status.text = "Loading v%d…" % _selected_ver
 	load_btn.disabled = true
-	var url := "%s/plan/%s/%s/version/%d" % [BASE_URL, GAME_ID, PlayerManager.player_local_id, _selected_ver]
+	var url := "%s/plan/%s/%s/version/%d" % [BASE_URL, _game_id, _player_id, _selected_ver]
 	_http_version.request(url)
 
 func _on_version_done(result: int, code: int, _h: PackedStringArray, body: PackedByteArray) -> void:

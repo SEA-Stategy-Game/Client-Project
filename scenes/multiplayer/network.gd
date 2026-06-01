@@ -3,7 +3,7 @@ extends Node
 # Signals for static and dynamic states. Subsribed to by Managers
 signal static_state_received(state: Dictionary)
 signal dynamic_state_received(state: Dictionary)
-signal registration_successful
+signal player_room_connection_complete
 
 ## Client-side network gateway. Manages the connection to the authoritative
 ## server and handles receiving and deserialising state updates.
@@ -53,7 +53,7 @@ func receive_player_registration(player_local_id: int, game_room_id: String) -> 
 	# Emit the signal so other parts of your game can use the ID
 	PlayerManager.player_local_id = player_local_id
 	LobbyClient.game_room_id = game_room_id
-	registration_successful.emit()
+	player_room_connection_complete.emit()
 
 # -----------------------------------------------------------------------
 # Receiving state from server
