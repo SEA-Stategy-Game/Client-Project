@@ -58,8 +58,4 @@ func join_room(room: GameRoom):
 		print("Error: GameRoom has no valid port.")
 		return
 		
-	selected_room = room
 	Networking.connect_to_server(room.address, room.port)
-
-ort)
-
