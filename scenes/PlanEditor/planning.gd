@@ -60,7 +60,7 @@ func _ready() -> void:
 	_http_submit.request_completed.connect(_on_submit_done)
 	_http_history.request_completed.connect(_on_history_done)
 	_http_version.request_completed.connect(_on_version_done)
-	Networking.player_room_connection_complete.connect(_on_connection_complete)
+	Networking.game_load_ready.connect(_on_game_load_ready)
 
 
 	script_tab_btn.pressed.connect(func(): _switch_tab(0))
@@ -81,7 +81,7 @@ func _make_http() -> HTTPRequest:
 	add_child(h)
 	return h
 
-func _on_connection_complete() -> void:
+func _on_game_load_ready() -> void:
 	_game_id = LobbyClient.game_room_id
 	_player_id = PlayerManager.player_local_id
 

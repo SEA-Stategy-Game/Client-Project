@@ -4,7 +4,11 @@ extends WorldObserver
 @export var tilemap: TileMapLayer
 var spawned_objects := {}
 
-func _on_static_state(state: Dictionary) -> void:
+func initialize(state: Dictionary) -> void:
+	print("DEBUG: ResourceObserver initializing...")
+	for child in resource_node.get_children():
+		child.queue_free()
+	spawned_objects.clear()
 	for obj in state.get("objects", []):
 		var instance: WorldResource = ObjectFactory.create(obj.resource_name, obj)
 		if instance:

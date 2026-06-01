@@ -21,7 +21,7 @@ const TERRAIN_ATLAS = {
 	]
 }
 
-func _on_static_state(state: Dictionary):
+func initialize(state: Dictionary) -> void:
 	tilemap.clear()
 	
 	var terrain_map: Dictionary = {}

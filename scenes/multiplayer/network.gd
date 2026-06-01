@@ -1,12 +1,14 @@
 extends Node
 
 # Signals for static and dynamic states. Subsribed to by Managers
-signal static_state_received(state: Dictionary)
 signal dynamic_state_received(state: Dictionary)
-signal player_room_connection_complete
+signal game_load_ready
 
 ## Client-side network gateway. Manages the connection to the authoritative
 ## server and handles receiving and deserialising state updates.
+
+## Caches the static state received from the server until the game scene requests it.
+var static_state_cache: Dictionary = {}
 
 func _ready():
 	return
@@ -28,8 +30,7 @@ func connect_to_server(address: String, port: int):
 func _on_connected():
 	print("Connected to server. Sending Player ID: ", PlayerManager.player_uuid)
 	register_player(PlayerManager.player_uuid)
-	# Pass the local_player_id to the server
-	request_static_state()
+	
 
 
 # -----------------------------------------------------------------------
@@ -53,7 +54,7 @@ func receive_player_registration(player_local_id: int, game_room_id: String) -> 
 	# Emit the signal so other parts of your game can use the ID
 	PlayerManager.player_local_id = player_local_id
 	LobbyClient.game_room_id = game_room_id
-	player_room_connection_complete.emit()
+	request_static_state()
 
 # -----------------------------------------------------------------------
 # Receiving state from server
@@ -70,14 +71,24 @@ func receive_state(data: PackedByteArray):
 	
 ## Receives the compressed static world state from the 
 ## [param data] GZIP-compressed UTF-8 encoded JSON as a PackedByteArray.
-@rpc("authority", "call_remote", "unreliable")
+@rpc("authority", "call_remote", "reliable")
 func receive_static_state(data: PackedByteArray):
+	print("DEBUG: receive_static_state called.")
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
-	static_state_received.emit(state)
+
+	if state == null:
+		print("ERROR: Failed to parse static state JSON.")
+		return
+		
+	print("DEBUG: State decompressed and parsed. Caching in Networking node.")
+	static_state_cache = state
 	
-## Stubs: server-side handler for server functions
-## Never executed on the client — exists only so Godot can compute
+	print("DEBUG: Emitting game_load_ready to switch scenes.")
+	game_load_ready.emit()
+	
+## Stubs: server-side handler for server functions.
+## Never executed on the client — exists only so Godot can compute.
 ## a matching RPC checksum between client and server.
 
 @rpc("any_peer", "call_remote", "reliable")
