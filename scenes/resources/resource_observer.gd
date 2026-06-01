@@ -5,7 +5,6 @@ extends WorldObserver
 var spawned_objects := {}
 
 func initialize(state: Dictionary) -> void:
-	print("DEBUG: ResourceObserver initializing...")
 	for child in resource_node.get_children():
 		child.queue_free()
 	spawned_objects.clear()

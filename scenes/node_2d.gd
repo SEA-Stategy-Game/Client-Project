@@ -43,15 +43,11 @@ func _initialize_world_state():
 		get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
 		return
 
-	print("DEBUG: node_2d is ready. Initializing observers with cached state.")
-
 	# 2. Pass the state to all interested observers via an 'initialize' method.
 	unit_observer.initialize(state)
 	buildings_observer.initialize(state)
 	terrain_manager.initialize(state)
 	resource_observer.initialize(state)
 
-
 	# 3. Clear the cache now that it has been consumed to free memory.
-	print("DEBUG: Clearing static state cache.")
 	Networking.static_state_cache = {}

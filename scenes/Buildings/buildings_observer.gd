@@ -8,7 +8,7 @@ func _ready():
 
 func initialize(state: Dictionary):
 	# TODO: Implement logic to spawn initial buildings from the static state.
-	print("DEBUG: BuildingsObserver initialized.")
+	pass
 
 func _on_dynamic_state(state: Dictionary):
 	# Delta updates — handle destroyed objects etc.
