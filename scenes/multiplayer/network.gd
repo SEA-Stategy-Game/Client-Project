@@ -3,6 +3,7 @@ extends Node
 # Signals for static and dynamic states. Subsribed to by Managers
 signal static_state_received(state: Dictionary)
 signal dynamic_state_received(state: Dictionary)
+signal registration_successful
 
 ## Client-side network gateway. Manages the connection to the authoritative
 ## server and handles receiving and deserialising state updates.
@@ -13,14 +14,7 @@ func _ready():
 
 ## Initialises the ENet client and connects to a specific server
 ## Binds connection lifecycle signals for logging and post-connect logic.
-func connect_to_server():
-	if LobbyClient.selected_room == null:
-		print("Error: No room selected. Returning to menu.")
-		return
-
-	var address = LobbyClient.selected_room.address
-	var port = LobbyClient.selected_room.port
-
+func connect_to_server(address: String, port: int):
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(address, port)
 	print("create_client result: ", err)  # 0 = OK, anything else is an error
@@ -54,10 +48,13 @@ func request_static_state() -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func receive_player_registration(player_local_id: int) -> void:
-	print("Player registered with local ID: ", player_local_id)
+func receive_player_registration(player_local_id: int, game_room_id: String) -> void:
+	print("Player registered with local ID: ", player_local_id, " in room: ", game_room_id)
 	# Emit the signal so other parts of your game can use the ID
 	PlayerManager.player_local_id = player_local_id
+	LobbyClient.game_room_id = game_room_id
+	registration_successful.emit()
+
 # -----------------------------------------------------------------------
 # Receiving state from server
 # -----------------------------------------------------------------------

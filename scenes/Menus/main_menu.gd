@@ -4,6 +4,7 @@ extends Control
 func _ready() -> void:
 	LobbyClient.rooms_fetched.connect(_on_rooms_received)
 	LobbyClient.request_failed.connect(_on_rooms_failed)
+	Networking.registration_successful.connect(_on_registration_successful)
 	pass # Replace with function body.
 	
 
@@ -29,14 +30,13 @@ func _on_exit_pressed() -> void:
 
 func _on_rooms_received(rooms: Array):
 	if rooms.size() > 0:
-		LobbyClient.selected_room = rooms[0]
-		print("Selected Room: ", LobbyClient.selected_room)
-		Networking.connect_to_server()
-		get_tree().change_scene_to_file("res://scenes/node_2d.tscn")
+		print("Connecting to server...")
+		LobbyClient.join_room(rooms[0])
 	else:
 		print("No rooms available.")
 
-
+func _on_registration_successful():
+	get_tree().change_scene_to_file("res://scenes/node_2d.tscn")
 
 func _on_rooms_failed(error_message: String):
 	print("Main Menu: Error fetching rooms -> ", error_message)
