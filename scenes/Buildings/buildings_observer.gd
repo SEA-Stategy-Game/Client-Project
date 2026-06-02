@@ -1,7 +1,5 @@
 extends Node2D
 
-@onready var objects_node = $"../../Objects"
-@onready var tilemap = $"../../Terrain/tilemap"
 
 func _ready():
 	Networking.dynamic_state_received.connect(_on_dynamic_state)

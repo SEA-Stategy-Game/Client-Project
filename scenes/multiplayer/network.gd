@@ -99,3 +99,54 @@ func on_player_registered(player_uuid: String) -> void:
 @rpc("any_peer", "call_remote", "reliable")
 func on_static_state_requested() -> void:
 	pass
+
+#---- STUBS TO THE AI-SERVER CONNECITON ---- #
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_execute_plan(plan: Dictionary) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_move_unit(unit_id: int, x: float, y: float, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_move(unit_id: int, x: float, y: float, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_tree(unit_id: int, tree_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_nearest_tree(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_mine_stone(unit_id: int, stone_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_mine_nearest_stone(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_target(unit_id: int, target_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_nearest(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_construct(unit_id: int, scene_path: String, x: float, y: float,
+		duration: float, pid: int) -> void:	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_nearest_and_return(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_explode_at(unit_id: int, x: float, y: float,
+		radius: float, damage: int, pid: int) -> void:
+	pass
