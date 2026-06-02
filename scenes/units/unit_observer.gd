@@ -6,7 +6,9 @@ var _initial_spawn_done: bool = false
 @export var units_node: Node
 var _units: Dictionary = {}
 
-func _on_static_state(state: Dictionary) -> void:
+# This is called by node_2d.gd after the scene loads.
+# It populates the world with the initial set of units from the static state.
+func initialize(state: Dictionary) -> void:
 	for child in units_node.get_children():
 		child.queue_free()
 	_units.clear()

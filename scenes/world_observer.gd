@@ -2,10 +2,11 @@ extends Node2D
 class_name WorldObserver
 
 func _ready():
-	Networking.static_state_received.connect(_on_static_state)
 	Networking.dynamic_state_received.connect(_on_dynamic_state)
 
-func _on_static_state(state: Dictionary) -> void:
+# This is a virtual function to be implemented by child observers.
+# It's called by the scene director (node_2d.gd) to pass the initial world state.
+func initialize(state: Dictionary) -> void:
 	pass
 
 func _on_dynamic_state(state: Dictionary) -> void:

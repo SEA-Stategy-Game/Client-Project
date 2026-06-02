@@ -1,8 +1,5 @@
 extends Camera2D
 
-var _units_ready: bool = false
-var _player_ready: bool = false
-
 @export var CamSpeed = 20.0
 @export var ZoomSpeed = 20.0
 @export var ZoomMargin = 0.1
@@ -25,31 +22,32 @@ func _ready():
 	limit_bottom = 10000000
 	terrain_manager.terrain_ready.connect(update_map_bounds)
 	unit_observer.units_ready.connect(_on_units_ready)
-	PlayerManager.player_id_ready.connect(_on_player_ready)
-	
 	
 func _on_units_ready() -> void:
-	_units_ready = true
-	_try_spawn()
-	
-func _on_player_ready() -> void:
-	_player_ready = true
-	_try_spawn()
-
-func _try_spawn() -> void:
-	if _units_ready and _player_ready:
-		_spawn_on_player_unit()
+	_spawn_on_player_unit()
 
 func _spawn_on_player_unit() -> void:
-	if PlayerManager.player_local_id == null:
+	if str(PlayerManager.player_local_id) == "-1" or str(PlayerManager.player_local_id) == "":
 		return
-	var player_units = unit_observer._units.values().filter(
-		func(u): return u.player_id == PlayerManager.player_local_id
+		
+	var all_units = unit_observer._units.values()
+	var player_units = all_units.filter(func(u):
+		var uid = u.player_id if "player_id" in u else null
+		return str(uid) == str(PlayerManager.player_local_id)
 	)
+	
 	if player_units.is_empty():
 		return
+		
 	var target = player_units[randi() % player_units.size()]
+	
+	# Ensure this camera is the active one in the main viewport
+	make_current()
+	
+	# Snap to the target unit
+	zoom = Vector2(3.0, 3.0)
 	global_position = target.global_position
+	
 
 func update_map_bounds():
 	var used = tilemap.get_used_rect()

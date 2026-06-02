@@ -1,11 +1,14 @@
 extends Node
 
 # Signals for static and dynamic states. Subsribed to by Managers
-signal static_state_received(state: Dictionary)
 signal dynamic_state_received(state: Dictionary)
+signal game_load_ready
 
 ## Client-side network gateway. Manages the connection to the authoritative
 ## server and handles receiving and deserialising state updates.
+
+## Caches the static state received from the server until the game scene requests it.
+var static_state_cache: Dictionary = {}
 
 func _ready():
 	return
@@ -13,14 +16,7 @@ func _ready():
 
 ## Initialises the ENet client and connects to a specific server
 ## Binds connection lifecycle signals for logging and post-connect logic.
-func connect_to_server():
-	if LobbyClient.selected_room == null:
-		print("Error: No room selected. Returning to menu.")
-		return
-
-	var address = LobbyClient.selected_room.address
-	var port = LobbyClient.selected_room.port
-
+func connect_to_server(address: String, port: int):
 	var peer = ENetMultiplayerPeer.new()
 	var err = peer.create_client(address, port)
 	print("create_client result: ", err)  # 0 = OK, anything else is an error
@@ -34,8 +30,7 @@ func connect_to_server():
 func _on_connected():
 	print("Connected to server. Sending Player ID: ", PlayerManager.player_uuid)
 	register_player(PlayerManager.player_uuid)
-	# Pass the local_player_id to the server
-	request_static_state()
+	
 
 
 # -----------------------------------------------------------------------
@@ -54,10 +49,13 @@ func request_static_state() -> void:
 
 
 @rpc("authority", "call_remote", "reliable")
-func receive_player_registration(player_local_id: int) -> void:
-	print("Player registered with local ID: ", player_local_id)
+func receive_player_registration(player_local_id: int, game_room_id: String) -> void:
+	print("Player registered with local ID: ", player_local_id, " in room: ", game_room_id)
 	# Emit the signal so other parts of your game can use the ID
 	PlayerManager.player_local_id = player_local_id
+	LobbyClient.game_room_id = game_room_id
+	request_static_state()
+
 # -----------------------------------------------------------------------
 # Receiving state from server
 # -----------------------------------------------------------------------
@@ -73,14 +71,24 @@ func receive_state(data: PackedByteArray):
 	
 ## Receives the compressed static world state from the 
 ## [param data] GZIP-compressed UTF-8 encoded JSON as a PackedByteArray.
-@rpc("authority", "call_remote", "unreliable")
+@rpc("authority", "call_remote", "reliable")
 func receive_static_state(data: PackedByteArray):
+	print("DEBUG: receive_static_state called.")
 	var decompressed = data.decompress_dynamic(-1, FileAccess.COMPRESSION_GZIP)
 	var state = JSON.parse_string(decompressed.get_string_from_utf8())
-	static_state_received.emit(state)
+
+	if state == null:
+		print("ERROR: Failed to parse static state JSON.")
+		return
+		
+	print("DEBUG: State decompressed and parsed. Caching in Networking node.")
+	static_state_cache = state
 	
-## Stubs: server-side handler for server functions
-## Never executed on the client — exists only so Godot can compute
+	print("DEBUG: Emitting game_load_ready to switch scenes.")
+	game_load_ready.emit()
+	
+## Stubs: server-side handler for server functions.
+## Never executed on the client — exists only so Godot can compute.
 ## a matching RPC checksum between client and server.
 
 @rpc("any_peer", "call_remote", "reliable")
@@ -90,4 +98,65 @@ func on_player_registered(player_uuid: String) -> void:
 
 @rpc("any_peer", "call_remote", "reliable")
 func on_static_state_requested() -> void:
+	pass
+
+#---- STUBS TO THE AI-SERVER CONNECITON ---- #
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_execute_plan(plan: Dictionary) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_move_unit(unit_id: int, x: float, y: float, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_move(unit_id: int, x: float, y: float, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_tree(unit_id: int, tree_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_nearest_tree(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_mine_stone(unit_id: int, stone_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_mine_nearest_stone(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_target(unit_id: int, target_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_attack_nearest(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_construct(unit_id: int, scene_path: String, x: float, y: float,
+		duration: float, pid: int) -> void:	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_chop_nearest_and_return(unit_id: int, pid: int) -> void:
+	pass
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_explode_at(unit_id: int, x: float, y: float,
+		radius: float, damage: int, pid: int) -> void:
+	pass
+
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_set_behavior(unit_id: int, rules: Array, pid: int) -> void:
+	pass
+	
+@rpc("any_peer", "call_remote", "reliable")
+func ai_clear_behavior(unit_id: int, pid: int) -> void:
 	pass

@@ -5,7 +5,7 @@ signal rooms_fetched(rooms: Array[GameRoom])
 signal request_failed(error_message: String)
 
 const BASE_URL = "http://localhost:8080"
-var selected_room: GameRoom
+var game_room_id: String
 
 # Internal HTTPRequest node
 var _http_request: HTTPRequest
@@ -58,11 +58,4 @@ func join_room(room: GameRoom):
 		print("Error: GameRoom has no valid port.")
 		return
 		
-	var peer = ENetMultiplayerPeer.new()
-	var err = peer.create_client(room.address, room.port)
-	
-	if err == OK:
-		multiplayer.multiplayer_peer = peer
-		print("Connecting to %s (%s:%d)..." % [room.name, room.address, room.port])
-	else:
-		print("Failed to create client: ", err)
+	Networking.connect_to_server(room.address, room.port)
