@@ -9,7 +9,7 @@ const SCHEMA_VERSION   := "1.0"
 const TAB_HEIGHT  := 32
 const OPEN_HEIGHT := 350
 
-const DSL_KEYWORDS := ["MoveTo", "Harvest", "Construct", "if", "END if", "END", "unit"]
+const DSL_KEYWORDS := ["MoveTo", "Harvest", "Attack", "Construct", "if", "else", "END if", "END", "unit"]
 
 # ── Plan state ───────────────────────────────────────────────────
 enum State { DRAFT, ACTIVE, HISTORY }
@@ -52,6 +52,8 @@ var _http_submit : HTTPRequest
 var _http_history: HTTPRequest
 var _http_version: HTTPRequest
 
+var _units_label: Label
+
 # ════════════════════════════════════════════════════════════════
 func _ready() -> void:
 	_http_submit  = _make_http()
@@ -72,9 +74,33 @@ func _ready() -> void:
 	terminal.text_changed.connect(_on_text_changed)
 	terminal.code_completion_enabled = true
 
+	_units_label = Label.new()
+	_units_label.add_theme_color_override("font_color", Color(0.5, 0.7, 1.0))
+	_units_label.add_theme_font_size_override("font_size", 11)
+	_units_label.text = ""
+	script_view.add_child(_units_label)
+	script_view.move_child(_units_label, 0)
+
+	if Networking.static_state_received.connect(_on_static_state_received) != OK:
+		push_warning("PlanEditor: could not connect to Networking.static_state_received")
+
 	_update_tab_style()
 	_update_state_chip()
 	_apply_open_state()
+
+func _on_static_state_received(state: Dictionary) -> void:
+	var my_id: int = PlayerManager.player_local_id
+	var my_units: Array = []
+	for u in state.get("units", []):
+		var meta = u.get("meta_values", {})
+		if int(meta.get("player_id", -1)) == my_id:
+			var eid = meta.get("entity_id", -1)
+			if int(eid) >= 0:
+				my_units.append(str(int(eid)))
+	if my_units.is_empty():
+		_units_label.text = "  Your units: (none)"
+	else:
+		_units_label.text = "  Your units (player %d): %s" % [my_id, ", ".join(my_units)]
 
 func _make_http() -> HTTPRequest:
 	var h := HTTPRequest.new()
