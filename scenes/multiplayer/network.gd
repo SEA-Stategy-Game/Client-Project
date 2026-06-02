@@ -150,3 +150,13 @@ func ai_chop_nearest_and_return(unit_id: int, pid: int) -> void:
 func ai_explode_at(unit_id: int, x: float, y: float,
 		radius: float, damage: int, pid: int) -> void:
 	pass
+
+
+
+@rpc("any_peer", "call_remote", "reliable")
+func ai_set_behavior(unit_id: int, rules: Array, pid: int) -> void:
+	pass
+	
+@rpc("any_peer", "call_remote", "reliable")
+func ai_clear_behavior(unit_id: int, pid: int) -> void:
+	pass
