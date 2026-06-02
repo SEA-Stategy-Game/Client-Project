@@ -22,5 +22,5 @@ func _on_colorblind_toggled(toggled_on: bool) -> void:
 	pass # Replace with function body.
 	
 func _on_back_pressed() -> void:
-	get_tree().change_scene_to_file("res://scenes/main_menu.tscn")
+	get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
 	pass # Replace with function body.
