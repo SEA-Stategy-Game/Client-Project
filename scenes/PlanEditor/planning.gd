@@ -101,6 +101,20 @@ func _ready() -> void:
 	_update_state_chip()
 	_apply_open_state()
 
+func _on_static_state_received(state: Dictionary) -> void:
+	var my_id: int = PlayerManager.player_local_id
+	var my_units: Array = []
+	for u in state.get("units", []):
+		var meta = u.get("meta_values", {})
+		if int(meta.get("player_id", -1)) == my_id:
+			var eid = meta.get("entity_id", -1)
+			if int(eid) >= 0:
+				my_units.append(str(int(eid)))
+	if my_units.is_empty():
+		_units_label.text = "  Your units: (none)"
+	else:
+		_units_label.text = "  Your units (player %d): %s" % [my_id, ", ".join(my_units)]
+
 func _make_http() -> HTTPRequest:
 	var h := HTTPRequest.new()
 	add_child(h)

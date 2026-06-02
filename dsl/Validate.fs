@@ -72,6 +72,9 @@ let pAttack =
         (preturn (Lang.Command.Action("Attack", mkParams [("mode","nearest")])))
     )
 
+let pAttack =
+    str "Attack" >>% Lang.Command.Action("Attack", mkParams [])
+
 let pActionCommand : Parser<Lang.Command, unit> =
     choice [
         attempt pMoveTo
