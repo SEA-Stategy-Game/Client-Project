@@ -81,8 +81,6 @@ func _ready() -> void:
 	script_view.add_child(_units_label)
 	script_view.move_child(_units_label, 0)
 
-	if Networking.static_state_received.connect(_on_static_state_received) != OK:
-		push_warning("PlanEditor: could not connect to Networking.static_state_received")
 
 	_update_tab_style()
 	_update_state_chip()
