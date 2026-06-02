@@ -35,7 +35,7 @@ type ResponseStep = {
     actionType : string
     parameters : Dictionary<string, string>
     body       : ResponseStep list
-    else_body  : ResponseStep list   // JSON key "else_body" — CamelCase leaves underscored names unchanged
+    elseBody   : ResponseStep list
 }
 
 type ResponseUnitPlan = {

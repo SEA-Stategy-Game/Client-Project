@@ -11,6 +11,22 @@ const OPEN_HEIGHT := 350
 
 const DSL_KEYWORDS := ["MoveTo", "Harvest", "Attack", "Construct", "if", "else", "END if", "END", "unit"]
 
+const DSL_CONDITIONS := [
+	"EnemyWithin 100", "NoEnemyWithin 100",
+	"idle", "busy",
+	"wood > stone", "stone > wood",
+	"wood > 50", "stone < 100",
+	"HpBelow 0.5", "HpAbove 0.5",
+	"always",
+]
+
+const DSL_ARG_HINTS: Dictionary = {
+	"Attack":    ["Attack nearest", "Attack move 300 400", "Attack 5"],
+	"Harvest":   ["Harvest Tree", "Harvest Stone", "Harvest Tree return"],
+	"MoveTo":    ["MoveTo 300 400"],
+	"Construct": ["Construct Barracks 300 400"],
+}
+
 # ── Plan state ───────────────────────────────────────────────────
 enum State { DRAFT, ACTIVE, HISTORY }
 var _state         := State.DRAFT
@@ -81,17 +97,21 @@ func _ready() -> void:
 	script_view.add_child(_units_label)
 	script_view.move_child(_units_label, 0)
 
-	if Networking.static_state_received.connect(_on_static_state_received) != OK:
-		push_warning("PlanEditor: could not connect to Networking.static_state_received")
-
 	_update_tab_style()
 	_update_state_chip()
 	_apply_open_state()
 
-func _on_static_state_received(state: Dictionary) -> void:
-	var my_id: int = PlayerManager.player_local_id
+func _make_http() -> HTTPRequest:
+	var h := HTTPRequest.new()
+	add_child(h)
+	return h
+
+func _on_game_load_ready() -> void:
+	_game_id   = LobbyClient.game_room_id
+	_player_id = PlayerManager.player_local_id
+	var my_id: int = _player_id
 	var my_units: Array = []
-	for u in state.get("units", []):
+	for u in Networking.static_state_cache.get("units", []):
 		var meta = u.get("meta_values", {})
 		if int(meta.get("player_id", -1)) == my_id:
 			var eid = meta.get("entity_id", -1)
@@ -101,15 +121,6 @@ func _on_static_state_received(state: Dictionary) -> void:
 		_units_label.text = "  Your units: (none)"
 	else:
 		_units_label.text = "  Your units (player %d): %s" % [my_id, ", ".join(my_units)]
-
-func _make_http() -> HTTPRequest:
-	var h := HTTPRequest.new()
-	add_child(h)
-	return h
-
-func _on_game_load_ready() -> void:
-	_game_id = LobbyClient.game_room_id
-	_player_id = PlayerManager.player_local_id
 
 # ── Toggle ───────────────────────────────────────────────────────
 func toggle() -> void:
@@ -167,19 +178,40 @@ func _on_text_changed() -> void:
 	_run_autocomplete()
 
 func _run_autocomplete() -> void:
-	var line   := terminal.get_caret_line()
-	var col    := terminal.get_caret_column()
-	var before := terminal.get_line(line).substr(0, col)
-	var word   := before.lstrip(" \t")
+	var line    := terminal.get_caret_line()
+	var col     := terminal.get_caret_column()
+	var before  := terminal.get_line(line).substr(0, col)
+	var trimmed := before.lstrip(" \t")
 
-	if word.begins_with("unit ") or word.begins_with("unit\t"):
+	# After "if " — suggest condition predicates filtered by what's typed so far
+	if trimmed.begins_with("if "):
+		var after_if := trimmed.substr(3)
+		for cond in DSL_CONDITIONS:
+			if cond.to_lower().begins_with(after_if.to_lower()):
+				terminal.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, cond, cond)
+		terminal.update_code_completion_options(false)
+		return
+
+	# After a known action + space — suggest only that action's argument variants.
+	# insert_text is just the argument part so the action name isn't duplicated.
+	if " " in trimmed or "\t" in trimmed:
+		for action in DSL_ARG_HINTS:
+			if trimmed.begins_with(action + " "):
+				for hint in DSL_ARG_HINTS[action]:
+					var insert: String = hint.substr((action as String).length() + 1)
+					terminal.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, hint, insert)
+				terminal.update_code_completion_options(false)
+				return
 		terminal.cancel_code_completion()
 		return
-	if word.is_empty() or " " in word or "\t" in word:
+
+	if trimmed.is_empty() or trimmed.begins_with("unit"):
 		terminal.cancel_code_completion()
 		return
+
+	# Start of line — match keyword prefixes
 	for kw in DSL_KEYWORDS:
-		if kw.to_lower().begins_with(word.to_lower()):
+		if kw.to_lower().begins_with(trimmed.to_lower()):
 			terminal.add_code_completion_option(CodeEdit.KIND_PLAIN_TEXT, kw, kw)
 	terminal.update_code_completion_options(false)
 
@@ -218,8 +250,12 @@ func _on_submit_done(result: int, code: int, _h: PackedStringArray, body: Packed
 
 # ── DSL runner ───────────────────────────────────────────────────
 func _build_header() -> String:
+	var gid := _game_id if not _game_id.is_empty() else LobbyClient.game_room_id
+	if gid.is_empty():
+		gid = "testgame"
+	var pid := _player_id if _player_id > 0 else PlayerManager.player_local_id
 	return "Schema version: %s\nGame Id: %s\nPlayer Id: %s\n\n" % [
-		SCHEMA_VERSION, _game_id, _player_id]
+		SCHEMA_VERSION, gid, pid]
 
 
 func _get_dotnet_path() -> String:
@@ -288,7 +324,9 @@ func _fetch_history() -> void:
 	history_status.text = "Loading…"
 	load_btn.disabled = true
 	_selected_ver = -1
-	var url := "%s/plan/%s/%s/history" % [BASE_URL, _game_id, _player_id]
+	var gid := _game_id if not _game_id.is_empty() else "testgame"
+	var pid := _player_id if _player_id > 0 else PlayerManager.player_local_id
+	var url := "%s/plan/%s/%s/history" % [BASE_URL, gid, pid]
 	_http_history.request(url)
 
 func _on_history_done(result: int, code: int, _h: PackedStringArray, body: PackedByteArray) -> void:
@@ -366,7 +404,9 @@ func _on_load_pressed() -> void:
 	_pending_ver_load = _selected_ver
 	history_status.text = "Loading v%d…" % _selected_ver
 	load_btn.disabled = true
-	var url := "%s/plan/%s/%s/version/%d" % [BASE_URL, _game_id, _player_id, _selected_ver]
+	var gid := _game_id if not _game_id.is_empty() else "testgame"
+	var pid := _player_id if _player_id > 0 else PlayerManager.player_local_id
+	var url := "%s/plan/%s/%s/version/%d" % [BASE_URL, gid, pid, _selected_ver]
 	_http_version.request(url)
 
 func _on_version_done(result: int, code: int, _h: PackedStringArray, body: PackedByteArray) -> void:

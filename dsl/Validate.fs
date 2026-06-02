@@ -39,22 +39,46 @@ let pMoveTo =
 
 let pHarvest =
     str "Harvest" >>. spaces1 >>. (
-        attempt (str "Tree"  >>% Lang.Command.Action("Harvest", mkParams [("resource_type", "tree")])) <|>
-        attempt (str "Stone" >>% Lang.Command.Action("Harvest", mkParams [("resource_type", "stone")])) <|>
-        (pint32 |>> fun id -> Lang.Command.Action("Harvest", mkParams [("target_id", string id)]))
+        attempt (str "Tree" >>. (
+            attempt (spaces1 >>. str "return" >>%
+                Lang.Command.Action("Harvest",
+                    mkParams [("resource_type","tree"); ("mode","return")])) <|>
+            (preturn (Lang.Command.Action("Harvest", mkParams [("resource_type","tree")]))))) <|>
+        attempt (str "Stone" >>%
+            Lang.Command.Action("Harvest", mkParams [("resource_type","stone")])) <|>
+        (pint32 |>> fun id ->
+            Lang.Command.Action("Harvest", mkParams [("target_id", string id)]))
     )
+
+let pBuildingName : Parser<string, unit> =
+    many1Chars (letter <|> digit)
 
 let pConstruct =
     str "Construct" >>. spaces1 >>.
-    pipe3 (alphanumeric .>> spaces1) (pfloat .>> spaces1) pfloat (fun scene x y ->
+    pipe3 (pBuildingName .>> spaces1) (pfloat .>> spaces1) pfloat (fun name x y ->
         Lang.Command.Action("Construct",
-            mkParams [("scene", scene); ("x", floatStr x); ("y", floatStr y)]))
+            mkParams [("scene", name); ("x", floatStr x); ("y", floatStr y)]))
 
 let pAttack =
-    str "Attack" >>% Lang.Command.Action("Attack", mkParams [])
+    str "Attack" >>. (
+        attempt (spaces1 >>. str "move" >>. spaces1 >>. pipe2 (pfloat .>> spaces1) pfloat
+            (fun x y ->
+                Lang.Command.Action("Attack",
+                    mkParams [("mode","move"); ("x", floatStr x); ("y", floatStr y)]))) <|>
+        attempt (spaces1 >>. str "nearest" >>%
+            Lang.Command.Action("Attack", mkParams [("mode","nearest")])) <|>
+        attempt (spaces1 >>. pint32 |>> fun id ->
+            Lang.Command.Action("Attack", mkParams [("mode","target"); ("target_id", string id)])) <|>
+        (preturn (Lang.Command.Action("Attack", mkParams [("mode","nearest")])))
+    )
 
 let pActionCommand : Parser<Lang.Command, unit> =
-    pMoveTo <|> pHarvest <|> pConstruct <|> pAttack
+    choice [
+        attempt pMoveTo
+        attempt pHarvest
+        attempt pConstruct
+        pAttack
+    ]
 
 // ---------- If / Unit commands ----------
 

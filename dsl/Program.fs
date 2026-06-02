@@ -10,19 +10,27 @@ let rec private decompileStep (indent: string) (step: Lang.ResponseStep) =
     match step.actionType with
     | "MoveTo"    -> sprintf "%sMoveTo %s %s" indent (get "x") (get "y")
     | "Harvest"   ->
-        let rt  = getStr "resource_type"
-        let tid = get "target_id"
+        let rt   = getStr "resource_type"
+        let mode = getStr "mode"
+        let tid  = get "target_id"
         if rt <> "" then
-            sprintf "%sHarvest %s" indent (System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower()))
+            let name = System.Globalization.CultureInfo.CurrentCulture.TextInfo.ToTitleCase(rt.ToLower())
+            if mode = "return" then sprintf "%sHarvest %s return" indent name
+            else sprintf "%sHarvest %s" indent name
         else sprintf "%sHarvest %s" indent tid
-    | "Attack"    -> sprintf "%sAttack" indent
-    | "Construct" -> sprintf "%sConstruct %s %s %s" indent (get "scene") (get "x") (get "y")
+    | "Attack"    ->
+        let mode = getStr "mode"
+        match mode with
+        | "move"   -> sprintf "%sAttack move %s %s" indent (get "x") (get "y")
+        | "target" -> sprintf "%sAttack %s"         indent (get "target_id")
+        | _        -> sprintf "%sAttack nearest"    indent
+    | "Construct" -> sprintf "%sConstruct %s %s %s" indent (getStr "scene") (get "x") (get "y")
     | "If"        ->
         let cond      = getStr "condition"
         let inner     = indent + "  "
         let thenBlock = step.body      |> List.map (decompileStep inner) |> String.concat "\n"
-        let elseBlock = step.else_body |> List.map (decompileStep inner) |> String.concat "\n"
-        if step.else_body.IsEmpty then
+        let elseBlock = step.elseBody |> List.map (decompileStep inner) |> String.concat "\n"
+        if step.elseBody.IsEmpty then
             sprintf "%sif %s\n%s\n%sEND if" indent cond thenBlock indent
         else
             sprintf "%sif %s\n%s\n%selse\n%s\n%sEND if" indent cond thenBlock indent elseBlock indent
