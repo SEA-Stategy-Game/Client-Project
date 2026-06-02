@@ -1,0 +1,125 @@
+[gd_scene format=3 uid="uid://b28jwi64t5gwk"]
+
+[ext_resource type="Script" uid="uid://cah1htkyl6onp" path="res://scenes/Menus/load_games.gd" id="1_o5nro"]
+[ext_resource type="PackedScene" uid="uid://c2o68vncckfyp" path="res://scenes/Menus/roomitems/room_item.tscn" id="2_pfuxj"]
+[ext_resource type="Texture2D" uid="uid://dd21g1povtjiy" path="res://assets/Title Screen.png" id="3_fp4e3"]
+[ext_resource type="Texture2D" uid="uid://kayaunqr75l5" path="res://assets/light.png" id="4_5wg0y"]
+[ext_resource type="FontFile" uid="uid://1jdlpvtvvc7e" path="res://assets/pixel_operator/PixelOperatorHB8.ttf" id="5_vvgvu"]
+[ext_resource type="Texture2D" uid="uid://cfg0xs3k53wxn" path="res://assets/container.png" id="6_gtudo"]
+[ext_resource type="Texture2D" uid="uid://b2dpd44o24alm" path="res://assets/divider.png" id="7_gtudo"]
+[ext_resource type="Texture2D" uid="uid://be7kyvwamcked" path="res://assets/button.png" id="7_ri4q2"]
+[ext_resource type="Texture2D" uid="uid://dx1xqcts50d8r" path="res://assets/pressed_button.png" id="8_xmw3n"]
+[ext_resource type="Texture2D" uid="uid://dyywbb1r4i5rm" path="res://assets/hover_button.png" id="9_4wgtj"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vvgvu"]
+texture = ExtResource("3_fp4e3")
+modulate_color = Color(0.32172796, 0.32172796, 0.32172796, 1)
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e01k5"]
+texture = ExtResource("6_gtudo")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7su83"]
+texture = ExtResource("7_ri4q2")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_lolwk"]
+texture = ExtResource("8_xmw3n")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_d4onf"]
+texture = ExtResource("9_4wgtj")
+
+[node name="LoadGames" type="Control" unique_id=1536383961]
+layout_mode = 3
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+script = ExtResource("1_o5nro")
+room_item_scene = ExtResource("2_pfuxj")
+
+[node name="Panel" type="Panel" parent="." unique_id=1603130122]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+scale = Vector2(1.0016651, 1.0024334)
+theme_override_styles/panel = SubResource("StyleBoxTexture_vvgvu")
+
+[node name="TextureRect" type="TextureRect" parent="Panel" unique_id=225487823]
+modulate = Color(0.601223, 0.601223, 0.60122293, 1)
+layout_mode = 0
+offset_left = -383.36166
+offset_right = 1147.09
+offset_bottom = 962.6574
+texture = ExtResource("4_5wg0y")
+expand_mode = 2
+
+[node name="VBoxContainer" type="VBoxContainer" parent="." unique_id=346393454]
+layout_mode = 1
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Header" type="Label" parent="VBoxContainer" unique_id=375056036]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("5_vvgvu")
+theme_override_font_sizes/font_size = 30
+text = "Load Games"
+horizontal_alignment = 1
+
+[node name="your_active_games" type="Label" parent="VBoxContainer" unique_id=611315161]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("5_vvgvu")
+text = "Your Active Games"
+horizontal_alignment = 1
+
+[node name="ActiveScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1769395837]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_e01k5")
+
+[node name="ActiveGames" type="VBoxContainer" parent="VBoxContainer/ActiveScroll" unique_id=1331996843]
+layout_mode = 2
+alignment = 1
+
+[node name="available_games" type="Label" parent="VBoxContainer" unique_id=1074298813]
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("5_vvgvu")
+text = "Available Rooms"
+horizontal_alignment = 1
+
+[node name="AvailableScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1628865493]
+custom_minimum_size = Vector2(0, 200)
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxTexture_e01k5")
+
+[node name="AvailableGames" type="VBoxContainer" parent="VBoxContainer/AvailableScroll" unique_id=927990585]
+layout_mode = 2
+alignment = 1
+
+[node name="Back" type="Button" parent="VBoxContainer" unique_id=593839835]
+custom_minimum_size = Vector2(250, 75)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+theme_override_constants/outline_size = 8
+theme_override_font_sizes/font_size = 35
+theme_override_styles/normal = SubResource("StyleBoxTexture_7su83")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_lolwk")
+theme_override_styles/hover = SubResource("StyleBoxTexture_d4onf")
+text = "Back"
+
+[node name="Divider5" type="Sprite2D" parent="." unique_id=1675741213]
+position = Vector2(576, 192)
+texture = ExtResource("7_gtudo")
+offset = Vector2(0, -152)
+
+[connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]

@@ -1,0 +1,64 @@
+[gd_scene format=3 uid="uid://c2o68vncckfyp"]
+
+[ext_resource type="Texture2D" uid="uid://cfg0xs3k53wxn" path="res://assets/container.png" id="1_jdww7"]
+[ext_resource type="Script" uid="uid://blapii07mx67x" path="res://scenes/Menus/roomitems/room_item.gd" id="1_jw07f"]
+[ext_resource type="Texture2D" uid="uid://be7kyvwamcked" path="res://assets/button.png" id="2_b5q44"]
+[ext_resource type="FontFile" uid="uid://cnh6jkvtxag44" path="res://assets/pixel_operator/PixelOperator8-Bold.ttf" id="2_mc8hs"]
+[ext_resource type="Texture2D" uid="uid://dx1xqcts50d8r" path="res://assets/pressed_button.png" id="4_agpgg"]
+[ext_resource type="Texture2D" uid="uid://dyywbb1r4i5rm" path="res://assets/hover_button.png" id="5_jdww7"]
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_0ldhn"]
+content_margin_left = 8.0
+content_margin_top = 8.0
+content_margin_right = 8.0
+content_margin_bottom = 8.0
+texture = ExtResource("1_jdww7")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_mc8hs"]
+texture = ExtResource("2_b5q44")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_sd7fd"]
+texture = ExtResource("4_agpgg")
+
+[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_j6n18"]
+texture = ExtResource("5_jdww7")
+
+[node name="RoomItem" type="PanelContainer" unique_id=51754131]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
+size_flags_horizontal = 3
+theme_override_styles/panel = SubResource("StyleBoxTexture_0ldhn")
+script = ExtResource("1_jw07f")
+
+[node name="HBoxContainer" type="HBoxContainer" parent="." unique_id=391778894]
+layout_mode = 2
+
+[node name="RoomIdLabel" type="Label" parent="HBoxContainer" unique_id=464978906]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mc8hs")
+
+[node name="PlayersLabel" type="Label" parent="HBoxContainer" unique_id=1804399554]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mc8hs")
+
+[node name="TimeLabel" type="Label" parent="HBoxContainer" unique_id=468575826]
+layout_mode = 2
+theme_override_fonts/font = ExtResource("2_mc8hs")
+
+[node name="Control" type="Control" parent="HBoxContainer" unique_id=637656046]
+layout_mode = 2
+size_flags_horizontal = 3
+
+[node name="JoinButton" type="Button" parent="HBoxContainer" unique_id=2108152091]
+custom_minimum_size = Vector2(145, 30)
+layout_mode = 2
+theme_override_constants/outline_size = 8
+theme_override_fonts/font = ExtResource("2_mc8hs")
+theme_override_styles/normal = SubResource("StyleBoxTexture_mc8hs")
+theme_override_styles/pressed = SubResource("StyleBoxTexture_sd7fd")
+theme_override_styles/hover = SubResource("StyleBoxTexture_j6n18")
+
+[connection signal="pressed" from="HBoxContainer/JoinButton" to="." method="_on_joinbutton_pressed"]
