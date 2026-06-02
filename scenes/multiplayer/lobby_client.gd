@@ -16,9 +16,21 @@ func _ready():
 	add_child(_http_request)
 	_http_request.request_completed.connect(_on_request_completed)
 
-## Calls /rooms to get the list of available rooms
-func list_game_rooms():
+## Calls /rooms to get the list of all available rooms.
+func list_all_game_rooms():
+	_fetch_rooms()
+
+
+## Internal function to fetch rooms with optional query parameters.
+func _fetch_rooms(query_params: Dictionary = {}):
 	var url = BASE_URL + "/rooms"
+	if not query_params.is_empty():
+		var query_string_parts: Array[String] = []
+		for key in query_params:
+			var value = query_params[key]
+			query_string_parts.append("%s=%s" % [String(key).uri_encode(), String(value).uri_encode()])
+		url += "?" + "&".join(query_string_parts)
+
 	var err = _http_request.request(url)
 	if err != OK:
 		request_failed.emit("Failed to initiate HTTP request to GameRoomManager.")
@@ -59,3 +71,11 @@ func join_room(room: GameRoom):
 		return
 		
 	Networking.connect_to_server(room.address, room.port)
+
+## Calls /rooms?player_id={player_id} to get the list of available rooms for a player
+func list_rooms_by_player_id(player_id: String):
+	_fetch_rooms({"player_id": player_id})
+
+## Calls /rooms?status={status} to get the list of available rooms with a certain status
+func list_rooms_by_status(status: String):
+	_fetch_rooms({"status": status})
