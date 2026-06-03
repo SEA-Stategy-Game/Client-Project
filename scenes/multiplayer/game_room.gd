@@ -22,7 +22,7 @@ static func from_dict(data: Dictionary) -> GameRoom:
 	room.port = int(data.get("port", 0))
 	if data.has("players") and data["players"] is Array:
 		room.players.assign(data["players"])
-	room.max_number_of_player = int(data.get("maxNumberOfPlayer", 0))
+	room.max_number_of_player = int(data.get("maxNumberOfPlayers", 0))
 	room.winner = data.get("winner", "")
 	room.started_at = data.get("startedAt", "")
 	room.ended_at = data.get("endedAt", "")
