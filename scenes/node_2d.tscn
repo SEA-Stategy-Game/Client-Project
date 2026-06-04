@@ -23,6 +23,7 @@ glow_levels/4 = 1.0
 glow_levels/5 = 1.0
 glow_levels/6 = 1.0
 glow_levels/7 = 1.0
+adjustment_enabled = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_08kqv"]
 texture = ExtResource("8_f6ptj")
@@ -414,6 +415,7 @@ tilemap = NodePath("../../Terrain/tilemap")
 script = ExtResource("12_f6ptj")
 
 [node name="soundtrackmus" type="AudioStreamPlayer" parent="." unique_id=628626579]
+unique_name_in_owner = true
 stream = ExtResource("11_f6ptj")
 autoplay = true
 

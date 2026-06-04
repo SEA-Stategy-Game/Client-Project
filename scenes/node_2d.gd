@@ -1,7 +1,7 @@
 extends Node2D
 
 # The % symbol tells Godot to look for the Unique Name
-@onready var soundtrack = %SoundTrack
+@onready var soundtrack = %soundtrackmus
 
 @onready var unit_observer = $Observers/UnitObserver
 @onready var buildings_observer = $Observers/BuildingsObserver
