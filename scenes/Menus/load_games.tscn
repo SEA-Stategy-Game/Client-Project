@@ -5,7 +5,6 @@
 [ext_resource type="Texture2D" uid="uid://dd21g1povtjiy" path="res://assets/Title Screen.png" id="3_fp4e3"]
 [ext_resource type="Texture2D" uid="uid://kayaunqr75l5" path="res://assets/light.png" id="4_5wg0y"]
 [ext_resource type="FontFile" uid="uid://1jdlpvtvvc7e" path="res://assets/pixel_operator/PixelOperatorHB8.ttf" id="5_vvgvu"]
-[ext_resource type="Texture2D" uid="uid://cfg0xs3k53wxn" path="res://assets/container.png" id="6_gtudo"]
 [ext_resource type="Texture2D" uid="uid://b2dpd44o24alm" path="res://assets/divider.png" id="7_gtudo"]
 [ext_resource type="Texture2D" uid="uid://be7kyvwamcked" path="res://assets/button.png" id="7_ri4q2"]
 [ext_resource type="Texture2D" uid="uid://dx1xqcts50d8r" path="res://assets/pressed_button.png" id="8_xmw3n"]
@@ -14,9 +13,6 @@
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_vvgvu"]
 texture = ExtResource("3_fp4e3")
 modulate_color = Color(0.32172796, 0.32172796, 0.32172796, 1)
-
-[sub_resource type="StyleBoxTexture" id="StyleBoxTexture_e01k5"]
-texture = ExtResource("6_gtudo")
 
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7su83"]
 texture = ExtResource("7_ri4q2")
@@ -50,9 +46,10 @@ theme_override_styles/panel = SubResource("StyleBoxTexture_vvgvu")
 [node name="TextureRect" type="TextureRect" parent="Panel" unique_id=225487823]
 modulate = Color(0.601223, 0.601223, 0.60122293, 1)
 layout_mode = 0
-offset_left = -383.36166
-offset_right = 1147.09
-offset_bottom = 962.6574
+offset_left = 1.9966736
+offset_top = 3.9902878
+offset_right = 1148.0883
+offset_bottom = 645.4294
 texture = ExtResource("4_5wg0y")
 expand_mode = 2
 
@@ -61,53 +58,58 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_top = 95.0
+offset_bottom = -132.0
 grow_horizontal = 2
 grow_vertical = 2
 
-[node name="Header" type="Label" parent="VBoxContainer" unique_id=375056036]
-custom_minimum_size = Vector2(0, 50)
+[node name="RoomsScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1081055515]
+custom_minimum_size = Vector2(300, 420)
 layout_mode = 2
+
+[node name="RoomsList" type="VBoxContainer" parent="VBoxContainer/RoomsScroll" unique_id=442573764]
+custom_minimum_size = Vector2(1100, 400)
+layout_mode = 2
+size_flags_horizontal = 4
+size_flags_vertical = 6
+
+[node name="Header" type="Label" parent="." unique_id=375056036]
+custom_minimum_size = Vector2(0, 50)
+layout_mode = 0
+offset_left = -5.0
+offset_top = 16.0
+offset_right = 1147.0
+offset_bottom = 66.0
+size_flags_vertical = 8
 theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("5_vvgvu")
 theme_override_font_sizes/font_size = 30
 text = "Load Games"
 horizontal_alignment = 1
 
-[node name="your_active_games" type="Label" parent="VBoxContainer" unique_id=611315161]
-layout_mode = 2
-theme_override_constants/outline_size = 8
-theme_override_fonts/font = ExtResource("5_vvgvu")
-text = "Your Active Games"
-horizontal_alignment = 1
-
-[node name="ActiveScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1769395837]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_e01k5")
-
-[node name="ActiveGames" type="VBoxContainer" parent="VBoxContainer/ActiveScroll" unique_id=1331996843]
-layout_mode = 2
-alignment = 1
-
-[node name="available_games" type="Label" parent="VBoxContainer" unique_id=1074298813]
-layout_mode = 2
+[node name="available_games" type="Label" parent="." unique_id=1074298813]
+layout_mode = 0
+offset_left = -16.0
+offset_top = 66.0
+offset_right = 1136.0
+offset_bottom = 92.0
 theme_override_constants/outline_size = 8
 theme_override_fonts/font = ExtResource("5_vvgvu")
 text = "Available Rooms"
 horizontal_alignment = 1
 
-[node name="AvailableScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1628865493]
-custom_minimum_size = Vector2(0, 200)
-layout_mode = 2
-theme_override_styles/panel = SubResource("StyleBoxTexture_e01k5")
-
-[node name="AvailableGames" type="VBoxContainer" parent="VBoxContainer/AvailableScroll" unique_id=927990585]
-layout_mode = 2
-alignment = 1
-
-[node name="Back" type="Button" parent="VBoxContainer" unique_id=593839835]
-custom_minimum_size = Vector2(250, 75)
-layout_mode = 2
+[node name="Back" type="Button" parent="." unique_id=593839835]
+custom_minimum_size = Vector2(200, 60)
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.9557292
+anchor_top = 0.94753087
+anchor_right = 0.9557292
+anchor_bottom = 0.94753087
+offset_left = -200.0
+offset_top = -60.0
+grow_horizontal = 0
+grow_vertical = 0
 size_flags_horizontal = 4
 size_flags_vertical = 6
 theme_override_constants/outline_size = 8
@@ -116,10 +118,11 @@ theme_override_styles/normal = SubResource("StyleBoxTexture_7su83")
 theme_override_styles/pressed = SubResource("StyleBoxTexture_lolwk")
 theme_override_styles/hover = SubResource("StyleBoxTexture_d4onf")
 text = "Back"
+metadata/_edit_use_anchors_ = true
 
 [node name="Divider5" type="Sprite2D" parent="." unique_id=1675741213]
-position = Vector2(576, 192)
+position = Vector2(559, 206)
 texture = ExtResource("7_gtudo")
 offset = Vector2(0, -152)
 
-[connection signal="pressed" from="VBoxContainer/Back" to="." method="_on_back_pressed"]
+[connection signal="pressed" from="Back" to="." method="_on_back_pressed"]
