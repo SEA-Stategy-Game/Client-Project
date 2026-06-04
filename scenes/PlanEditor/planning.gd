@@ -40,6 +40,7 @@ var _open          := false
 # ── Cache ────────────────────────────────────────────────────────
 var _game_id       := ""
 var _player_id     := 0
+var _my_unit_ids   : Array = []
 
 # ── History ──────────────────────────────────────────────────────
 var _history_data    : Array  = []
@@ -79,6 +80,7 @@ func _ready() -> void:
 	_http_history.request_completed.connect(_on_history_done)
 	_http_version.request_completed.connect(_on_version_done)
 	Networking.game_load_ready.connect(_on_game_load_ready)
+	Networking.dynamic_state_received.connect(_on_dynamic_state_received)
 
 
 	script_tab_btn.pressed.connect(func(): _switch_tab(0))
@@ -110,6 +112,7 @@ func _on_static_state_received(state: Dictionary) -> void:
 			var eid = meta.get("entity_id", -1)
 			if int(eid) >= 0:
 				my_units.append(str(int(eid)))
+	_my_unit_ids = my_units
 	if my_units.is_empty():
 		_units_label.text = "  Your units: (none)"
 	else:
@@ -123,18 +126,27 @@ func _make_http() -> HTTPRequest:
 func _on_game_load_ready() -> void:
 	_game_id   = LobbyClient.game_room_id
 	_player_id = PlayerManager.player_local_id
-	var my_id: int = _player_id
-	var my_units: Array = []
-	for u in Networking.static_state_cache.get("units", []):
+	_on_static_state_received(Networking.static_state_cache)
+
+func _on_dynamic_state_received(state: Dictionary) -> void:
+	if _player_id <= 0:
+		return
+	var new_ids: Array = []
+	for u in state.get("units", []):
 		var meta = u.get("meta_values", {})
-		if int(meta.get("player_id", -1)) == my_id:
+		if int(meta.get("player_id", -1)) == _player_id:
 			var eid = meta.get("entity_id", -1)
 			if int(eid) >= 0:
-				my_units.append(str(int(eid)))
-	if my_units.is_empty():
-		_units_label.text = "  Your units: (none)"
-	else:
-		_units_label.text = "  Your units (player %d): %s" % [my_id, ", ".join(my_units)]
+				new_ids.append(str(int(eid)))
+	new_ids.sort()
+	var cur: Array = _my_unit_ids.duplicate()
+	cur.sort()
+	if new_ids != cur:
+		_my_unit_ids = new_ids
+		if new_ids.is_empty():
+			_units_label.text = "  Your units: (none)"
+		else:
+			_units_label.text = "  Your units (player %d): %s" % [_player_id, ", ".join(new_ids)]
 
 # ── Toggle ───────────────────────────────────────────────────────
 func toggle() -> void:

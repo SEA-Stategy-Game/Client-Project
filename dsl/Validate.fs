@@ -25,10 +25,10 @@ let pVersion : Parser<string, unit> =
     str "Schema version:" >>. spaces1 >>. (many1Chars (digit <|> pchar '.')) .>> ws
 
 let pGameId : Parser<string, unit> =
-    str "Game Id:" >>. spaces1 >>. alphanumeric .>> ws
+    str "Game Id:" >>. spaces1 >>. many1Chars (noneOf " \t\r\n") .>> ws
 
 let pPlayerId : Parser<string, unit> =
-    str "Player Id:" >>. spaces1 >>. alphanumeric .>> ws
+    str "Player Id:" >>. spaces1 >>. many1Chars (noneOf " \t\r\n") .>> ws
 
 // ---------- Per-action parsers (match ActionSpec.cs exactly) ----------
 
