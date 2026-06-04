@@ -99,6 +99,7 @@ func _ready() -> void:
 	script_view.add_child(_units_label)
 	script_view.move_child(_units_label, 0)
 
+
 	_update_tab_style()
 	_update_state_chip()
 	_apply_open_state()

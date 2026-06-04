@@ -32,6 +32,9 @@ func _on_connected():
 	register_player(PlayerManager.player_uuid)
 	
 
+@rpc("authority", "call_remote", "reliable")
+func connection_rejected(reason: String) -> void:
+	pass
 
 # -----------------------------------------------------------------------
 # Static state sync
