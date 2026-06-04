@@ -40,3 +40,8 @@ func _on_game_load_ready() -> void:
 
 func _on_rooms_failed(error_message: String):
 	print("Main Menu: Error fetching rooms -> ", error_message)
+
+
+func _on_loadgames_pressed() -> void:
+	get_tree().change_scene_to_file("res://scenes/Menus/load_games.tscn")
+	pass # Replace with function body.
