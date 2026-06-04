@@ -33,17 +33,23 @@ layout_mode = 2
 theme_override_constants/separation = 20
 
 [node name="RoomIdLabel" type="Label" parent="HBoxContainer" unique_id=464978906]
+custom_minimum_size = Vector2(150, 0)
 layout_mode = 2
 theme_override_fonts/font = ExtResource("2_mc8hs")
 
 [node name="PlayersLabel" type="Label" parent="HBoxContainer" unique_id=1804399554]
-layout_mode = 2
-theme_override_fonts/font = ExtResource("2_mc8hs")
-
-[node name="TimeLabel" type="Label" parent="HBoxContainer" unique_id=468575826]
+custom_minimum_size = Vector2(400, 0)
 layout_mode = 2
 size_flags_horizontal = 3
 theme_override_fonts/font = ExtResource("2_mc8hs")
+text_overrun_behavior = 3
+
+[node name="TimeLabel" type="Label" parent="HBoxContainer" unique_id=468575826]
+custom_minimum_size = Vector2(200, 0)
+layout_mode = 2
+size_flags_horizontal = 10
+theme_override_fonts/font = ExtResource("2_mc8hs")
+horizontal_alignment = 2
 
 [node name="Control" type="Control" parent="HBoxContainer" unique_id=637656046]
 layout_mode = 2

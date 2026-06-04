@@ -10,20 +10,28 @@ signal join_requested(room_id: String)
 
 var current_room_id: String = ""
 
-# The other dev will pass the data into this setup function
-func setup(room_id: String, player_count: int, start_time: String, is_active: bool) -> void:
+# Setup function called by the parent to populate the row
+func setup(room_id: String, players: Array, max_players: int, start_time: String, is_active: bool) -> void:
 	current_room_id = room_id
-	room_id_label.text = "Room: " + room_id
-	players_label.text = "Players: " + str(player_count)
-	time_label.text = "Started: " + start_time
+	
+	# Set labels without prefixes for table format
+	room_id_label.text = room_id
+	
+	# Join the array names into a single comma-separated string
+	var player_names_string = ", ".join(PackedStringArray(players))
+	if players.size() == 0:
+		player_names_string = "Empty"
+		
+	# Format the text: e.g., "2/4 (Thomas, Martin)"
+	players_label.text = "%d/%d (%s)" % [players.size(), max_players, player_names_string]
+	
+	time_label.text = start_time
 	
 	if is_active:
 		join_button.text = "Rejoin"
 	else:
 		join_button.text = "Join"
 
-# Connect this to the JoinButton's 'pressed' signal in the edito
-	
-
+# Handles the join button press
 func _on_joinbutton_pressed() -> void:
 	join_requested.emit(current_room_id)

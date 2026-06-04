@@ -14,6 +14,13 @@
 texture = ExtResource("3_fp4e3")
 modulate_color = Color(0.32172796, 0.32172796, 0.32172796, 1)
 
+[sub_resource type="StyleBoxFlat" id="StyleBoxFlat_cs0cp"]
+bg_color = Color(0.11764706, 0.23921569, 0.2, 0.827451)
+corner_radius_top_left = 8
+corner_radius_top_right = 8
+corner_radius_bottom_right = 8
+corner_radius_bottom_left = 8
+
 [sub_resource type="StyleBoxTexture" id="StyleBoxTexture_7su83"]
 texture = ExtResource("7_ri4q2")
 
@@ -58,13 +65,41 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
-offset_top = 95.0
-offset_bottom = -132.0
+offset_top = 107.0
+offset_right = -3.0
+offset_bottom = -116.0
 grow_horizontal = 2
 grow_vertical = 2
 
+[node name="HeaderBackground" type="PanelContainer" parent="VBoxContainer" unique_id=247714732]
+layout_mode = 2
+theme_override_styles/panel = SubResource("StyleBoxFlat_cs0cp")
+
+[node name="TableHeader" type="HBoxContainer" parent="VBoxContainer/HeaderBackground" unique_id=1501371832]
+layout_mode = 2
+
+[node name="Room ID" type="Label" parent="VBoxContainer/HeaderBackground/TableHeader" unique_id=1576012356]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+text = "Room ID"
+
+[node name="Players" type="Label" parent="VBoxContainer/HeaderBackground/TableHeader" unique_id=204660767]
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Players"
+
+[node name="Time" type="Label" parent="VBoxContainer/HeaderBackground/TableHeader" unique_id=1464021534]
+custom_minimum_size = Vector2(170, 0)
+layout_mode = 2
+size_flags_horizontal = 3
+text = "Time"
+
+[node name="Control" type="Control" parent="VBoxContainer/HeaderBackground/TableHeader" unique_id=519559511]
+custom_minimum_size = Vector2(165, 0)
+layout_mode = 2
+
 [node name="RoomsScroll" type="ScrollContainer" parent="VBoxContainer" unique_id=1081055515]
-custom_minimum_size = Vector2(300, 420)
+custom_minimum_size = Vector2(270, 390)
 layout_mode = 2
 
 [node name="RoomsList" type="VBoxContainer" parent="VBoxContainer/RoomsScroll" unique_id=442573764]
