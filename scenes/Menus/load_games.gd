@@ -17,17 +17,22 @@ func _ready() -> void:
 func _on_rooms_received(rooms: Array) -> void:
 	_rooms_by_id.clear()
 
-	# Only READY and RUNNING rooms are joinable, so only those are cached
-	var active_rooms: Array = []
-	var available_rooms: Array = []
+	var me := PlayerManager.player_uuid
+	var active_rooms: Array = []      
+	var available_rooms: Array = []   
 	for room in rooms:
-		match room.state:
-			"running":
-				_rooms_by_id[room.room_id] = room
-				active_rooms.append(_room_to_dict(room))
-			"ready":
-				_rooms_by_id[room.room_id] = room
-				available_rooms.append(_room_to_dict(room))
+		if room.state != "ready" and room.state != "running":
+			continue
+
+		var i_am_in: bool = me != "" and me in room.players
+
+		if i_am_in:
+			_rooms_by_id[room.room_id] = room
+			active_rooms.append(_room_to_dict(room))
+
+		elif not _is_full(room):
+			_rooms_by_id[room.room_id] = room
+			available_rooms.append(_room_to_dict(room))
 
 	update_room_lists(active_rooms, available_rooms)
 
@@ -45,6 +50,9 @@ func _room_to_dict(room: GameRoom) -> Dictionary:
 		"startedAt": room.started_at,
 		"createdAt": room.created_at,
 	}
+
+func _is_full(room: GameRoom) -> bool:
+	return room.players.size() >= room.max_number_of_player
 
 # ---------------------------------------------------------
 # PUBLIC API FOR THE OTHER DEV
