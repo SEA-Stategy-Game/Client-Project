@@ -5,6 +5,8 @@ signal rooms_fetched(rooms: Array[GameRoom])
 signal request_failed(error_message: String)
 
 const BASE_URL = "http://localhost:8080"
+const POLL_INTERVAL = 5.0 # seconds
+
 var game_room_id: String
 
 # Internal HTTPRequest node
@@ -79,3 +81,40 @@ func list_rooms_by_player_id(player_id: String):
 ## Calls /rooms?status={status} to get the list of available rooms with a certain status
 func list_rooms_by_status(status: String):
 	_fetch_rooms({"status": status})
+
+func create_and_join_room(max_players: int = 32) -> void:
+	var room_id = await _create_room(max_players)
+	if room_id == "":
+		print("Failed to create room.")
+		return
+	while true:
+		var room = await _get_room(room_id)
+		if room != null and room.state == "ready":
+			join_room(room)
+			return
+		await get_tree().create_timer(POLL_INTERVAL).timeout
+
+func _create_room(max_players: int) -> String:
+	var http := HTTPRequest.new()
+	add_child(http)
+	var body = JSON.stringify({"maxNumberOfPlayers": max_players})
+	http.request(BASE_URL + "/rooms/create", ["Content-Type: application/json"], HTTPClient.METHOD_POST, body)
+	var result = await http.request_completed
+	http.queue_free()
+	var data = JSON.parse_string(result[3].get_string_from_utf8())
+	if data == null:
+		push_error("create_room failed, GRM code: %d" % result[1])
+		return ""
+	return data.get("roomId", "")
+
+func _get_room(room_id: String) -> GameRoom:
+	var http := HTTPRequest.new()
+	add_child(http)
+	http.request(BASE_URL + "/room/" + room_id)
+	var result = await http.request_completed
+	http.queue_free()
+	var data = JSON.parse_string(result[3].get_string_from_utf8())
+	if data == null:
+		push_error("get_room failed, GRM code: %d" % result[1])
+		return null
+	return GameRoom.from_dict(data)
