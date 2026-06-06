@@ -4,16 +4,55 @@ extends Control
 
 @onready var rooms_list = $VBoxContainer/RoomsScroll/RoomsList
 
+var _rooms_by_id: Dictionary = {}
+var _joining: bool = false
+
 func _ready() -> void:
-	# MOCK DATA FOR UI TESTING
-	var mock_active = [
-		{"roomId": "game-123", "players": ["Davide", "Flavia"], "maxNumberOfPlayers": 4, "startedAt": "10 mins ago", "createdAt": "20 mins ago"}
-	]
-	var mock_available = [
-		{"roomId": "game-456", "players": ["Thomas"], "maxNumberOfPlayers": 2, "startedAt": "", "createdAt": "Just now"},
-		{"roomId": "game-789", "players": ["Martin", "Gustav", "Magnus"], "maxNumberOfPlayers": 8, "startedAt": "2 hrs ago", "createdAt": "3 hrs ago"}
-	]
-	update_room_lists(mock_active, mock_available)
+	#Listen for fetch and erros
+	LobbyClient.rooms_fetched.connect(_on_rooms_received)
+	LobbyClient.request_failed.connect(_on_rooms_failed)
+	Networking.game_load_ready.connect(_on_game_load_ready)
+	LobbyClient.list_all_game_rooms()
+
+func _on_rooms_received(rooms: Array) -> void:
+	_rooms_by_id.clear()
+
+	var me := PlayerManager.player_uuid
+	var active_rooms: Array = []      
+	var available_rooms: Array = []   
+	for room in rooms:
+		if room.state != "ready" and room.state != "running":
+			continue
+
+		var i_am_in: bool = me != "" and me in room.players
+
+		if i_am_in:
+			_rooms_by_id[room.room_id] = room
+			active_rooms.append(_room_to_dict(room))
+
+		elif not _is_full(room):
+			_rooms_by_id[room.room_id] = room
+			available_rooms.append(_room_to_dict(room))
+
+	update_room_lists(active_rooms, available_rooms)
+
+func _on_rooms_failed(error_message: String) -> void:
+	push_error("Failed to fetch rooms: " + error_message)
+	_rooms_by_id.clear()
+	update_room_lists([], [])
+
+
+func _room_to_dict(room: GameRoom) -> Dictionary:
+	return {
+		"roomId": room.room_id,
+		"players": room.players,
+		"maxNumberOfPlayers": room.max_number_of_player,
+		"startedAt": room.started_at,
+		"createdAt": room.created_at,
+	}
+
+func _is_full(room: GameRoom) -> bool:
+	return room.players.size() >= room.max_number_of_player
 
 # ---------------------------------------------------------
 # PUBLIC API FOR THE OTHER DEV
@@ -58,8 +97,21 @@ func _clear_list(container: Control) -> void:
 
 # Handles the signal emitted from the room_item.tscn
 func _on_join_requested(room_id: String) -> void:
+	if _joining:
+		return  
 	print("User requested to join room: ", room_id)
-	# LobbyClient.join_room(room_id)
+	var room: GameRoom = _rooms_by_id.get(room_id)
+	if room == null:
+		push_error("Cannot join: no cached GameRoom for id " + room_id)
+		return
+	if room.state != "ready" and room.state != "running":
+		push_error("Cannot join room in state '%s' (only ready/running)" % room.state)
+		return
+	_joining = true
+	LobbyClient.join_room(room)
+
+func _on_game_load_ready() -> void:
+	get_tree().change_scene_to_file("res://scenes/node_2d.tscn")
 
 # Connect this to the BackButton's 'pressed' signal in the editor
 func _on_back_pressed() -> void:
