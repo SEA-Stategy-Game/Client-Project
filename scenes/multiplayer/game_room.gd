@@ -11,6 +11,7 @@ var players: Array[String] = []
 var max_number_of_player: int
 var winner: String
 var started_at: String
+var created_at: String
 var ended_at: String
 
 # Factory method to create a Room object from the Server's Dictionary
@@ -25,6 +26,7 @@ static func from_dict(data: Dictionary) -> GameRoom:
 	room.max_number_of_player = int(data.get("maxNumberOfPlayers", 0))
 	room.winner = data.get("winner", "")
 	room.started_at = data.get("startedAt", "")
+	room.created_at = data.get("createdAt", "")
 	room.ended_at = data.get("endedAt", "")
 
 	return room
