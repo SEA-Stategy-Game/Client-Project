@@ -2,34 +2,34 @@ version: "3.9"
 
 services:
   game-room-manager:
-    image: flapezoti/sea-game-room-manager:v1.0
-    ports:
-      - "8080:8080"
-    volumes:
-      # Expose the host Docker socket so the game-room-manager can start containers.
-      - /var/run/docker.sock:/var/run/docker.sock
-    environment:
-      - DB_PATH=/data/manager.db
-      - RUNNING_IN_DOCKER=true
-    restart: unless-stopped
+	image: flapezoti/sea-game-room-manager:v1.0
+	ports:
+	  - "8080:8080"
+	volumes:
+	  # Expose the host Docker socket so the game-room-manager can start containers.
+	  - /var/run/docker.sock:/var/run/docker.sock
+	environment:
+	  - DB_PATH=/data/manager.db
+	  - RUNNING_IN_DOCKER=true
+	restart: unless-stopped
 
   planbackend:
-    image: flapezoti/sea-planning:v1.0
-    ports:
-      - "5000:8080"
-    environment:
-      - "ConnectionStrings__DefaultConnection=Data Source=/app/data/plans.db"
-      - UseRedis=true
-      - RedisConnection=redis:6379
-    volumes:
-      # Persist plan database locally. Adjust this path if you have a different host folder.
-      - ./data:/app/data
-    depends_on:
-      - redis
-    restart: unless-stopped
+	image: flapezoti/sea-planning:v1.0
+	ports:
+	  - "5000:8080"
+	environment:
+	  - "ConnectionStrings__DefaultConnection=Data Source=/app/data/plans.db"
+	  - UseRedis=true
+	  - RedisConnection=redis:6379
+	volumes:
+	  # Persist plan database locally. Adjust this path if you have a different host folder.
+	  - ./data:/app/data
+	depends_on:
+	  - redis
+	restart: unless-stopped
 
   redis:
-    image: redis:alpine
-    ports:
-      - "6379:6379"
-    restart: unless-stopped
+	image: redis:alpine
+	ports:
+	  - "6379:6379"
+	restart: unless-stopped
