@@ -11,6 +11,8 @@ services:
 	environment:
 	  - DB_PATH=/data/manager.db
 	  - RUNNING_IN_DOCKER=true
+	depends_on:
+	  - redis
 	restart: unless-stopped
 
   planbackend:
@@ -26,6 +28,23 @@ services:
 	  - ./data:/app/data
 	depends_on:
 	  - redis
+	restart: unless-stopped
+
+  game-room:
+	image: flapezoti/sea-game-room:v1.1
+	ports:
+	  - "12345:12345/udp"
+	environment:
+	  - USE_REDIS=true
+	  - REDIS_HOST=host.docker.internal
+	  - REDIS_PORT=6379
+	  - MAX_PLAYERS=4
+	  - GAME_ROOM_MANAGER_URL=http://host.docker.internal:8080
+	  - PLANNING_URL=http://host.docker.internal:5000
+	depends_on:
+	  - redis
+	  - game-room-manager
+	  - planbackend
 	restart: unless-stopped
 
   redis:
