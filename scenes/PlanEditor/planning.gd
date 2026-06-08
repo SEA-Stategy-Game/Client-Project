@@ -2,9 +2,11 @@ extends Control
 
 # ── Configuration ────────────────────────────────────────────────
 const BASE_URL              := "http://127.0.0.1:5000"
-const DSL_DLL_RELATIVE      := "dsl/bin/Release/net10.0/publish/dsl.dll"
-const DSL_PUBLISH_RELATIVE  := "dsl/bin/Release/net10.0/publish"
 const DSL_PUBLISH_USER      := "user://dsl_publish"
+
+# Platform-specific DSL paths (set dynamically in _ready)
+var _dsl_dll_relative       : String
+var _dsl_publish_relative   : String
 
 const SCHEMA_VERSION        := "1.0"
 
@@ -74,7 +76,30 @@ var _http_version: HTTPRequest
 var _units_label: Label
 
 # ════════════════════════════════════════════════════════════════
+func _init_dsl_paths() -> void:
+	# Set platform-specific paths for DSL publish folder
+	var base_path := "dsl/bin/Release/net10.0"
+	var fallback := base_path + "/publish"
+	match OS.get_name():
+		"Windows":
+			_dsl_publish_relative = base_path + "/win-x64/publish"
+			if DirAccess.open("res://" + _dsl_publish_relative) == null:
+				_dsl_publish_relative = base_path + "/publish"
+		"OSX":
+			_dsl_publish_relative = base_path + "/osx-x64/publish"
+			if DirAccess.open("res://" + _dsl_publish_relative) == null:
+				_dsl_publish_relative = fallback
+		"Linux":
+			_dsl_publish_relative = base_path + "/linux-x64/publish"
+			if DirAccess.open("res://" + _dsl_publish_relative) == null:
+				_dsl_publish_relative = fallback
+		_:
+			_dsl_publish_relative = fallback
+	
+	_dsl_dll_relative = _dsl_publish_relative + "/dsl.dll"
+
 func _ready() -> void:
+	_init_dsl_paths()
 	_http_submit  = _make_http()
 	_http_history = _make_http()
 	_http_version = _make_http()
@@ -368,10 +393,11 @@ func _copy_resource_dir(src_dir: String, dst_dir: String) -> bool:
 
 func _ensure_dsl_binary() -> String:
 	var user_dir := _get_dsl_user_dir()
-	var dll_path := user_dir + "/dsl.dll"
-	if FileAccess.file_exists(dll_path):
-		return dll_path
-	var res_dir := "res://" + DSL_PUBLISH_RELATIVE
+	var exe_name := "dsl.exe" if OS.get_name() == "Windows" else "dsl.dll"
+	var binary_path := user_dir + "/" + exe_name
+	if FileAccess.file_exists(binary_path):
+		return binary_path
+	var res_dir := "res://" + _dsl_publish_relative
 	var res_dir_access := DirAccess.open(res_dir)
 	if res_dir_access == null:
 		_show_error("[color=red]Missing DSL publish folder in export: %s[/color]" % res_dir)
@@ -385,13 +411,13 @@ func _ensure_dsl_binary() -> String:
 		return ""
 	if not _copy_resource_dir(res_dir, user_dir):
 		return ""
-	return dll_path
+	return binary_path
 
 func _run_dsl(full_source: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_input.txt")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_output.json")
-	var dll_abs    := _ensure_dsl_binary()
-	if dll_abs.is_empty():
+	var dsl_bin    := _ensure_dsl_binary()
+	if dsl_bin.is_empty():
 		return ""
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
@@ -402,8 +428,13 @@ func _run_dsl(full_source: String) -> String:
 	f.close()
 
 	var out: Array = []
-	var dotnet := _get_dotnet_path()
-	var exit := OS.execute(dotnet, [dll_abs, input_abs, output_abs], out, true)
+	var exit: int
+	if OS.get_name() == "Windows":
+		exit = OS.execute(dsl_bin, [input_abs, output_abs], out, true)
+	else:
+		var dotnet := _get_dotnet_path()
+		exit = OS.execute(dotnet, [dsl_bin, input_abs, output_abs], out, true)
+	
 	if exit != 0:
 		_show_error("[color=red]DSL parse error:[/color]\n" + "\n".join(out))
 		return ""
@@ -554,8 +585,12 @@ func _decompile_plan(json: String) -> String:
 	f.close()
 
 	var out: Array = []
-	var dotnet := _get_dotnet_path()
-	var exit := OS.execute(dotnet, [dll_abs, "--decompile", input_abs, output_abs], out, true)
+	var exit: int
+	if OS.get_name() == "Windows":
+		exit = OS.execute(dll_abs, ["--decompile", input_abs, output_abs], out, true)
+	else:
+		var dotnet := _get_dotnet_path()
+		exit = OS.execute(dotnet, [dll_abs, "--decompile", input_abs, output_abs], out, true)
 	if exit != 0:
 		_show_error("[color=red]Decompile error:[/color]\n" + "\n".join(out))
 		return ""
