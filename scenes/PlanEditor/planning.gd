@@ -1,10 +1,12 @@
 extends Control
 
 # ── Configuration ────────────────────────────────────────────────
-const BASE_URL         := "http://127.0.0.1:5000"
-const DSL_DLL_RELATIVE := "dsl/bin/Release/net10.0/publish/dsl.dll"
+const BASE_URL              := "http://127.0.0.1:5000"
+const DSL_DLL_RELATIVE      := "dsl/bin/Release/net10.0/publish/dsl.dll"
+const DSL_PUBLISH_RELATIVE  := "dsl/bin/Release/net10.0/publish"
+const DSL_PUBLISH_USER      := "user://dsl_publish"
 
-const SCHEMA_VERSION   := "1.0"
+const SCHEMA_VERSION        := "1.0"
 
 const TAB_HEIGHT  := 32
 const OPEN_HEIGHT := 350
@@ -317,12 +319,80 @@ func _get_dotnet_path() -> String:
 			if FileAccess.file_exists(path):
 				return path
 	return "dotnet"
-	
+
+func _get_dsl_user_dir() -> String:
+	return ProjectSettings.globalize_path(DSL_PUBLISH_USER).simplify_path()
+
+func _copy_resource_dir(src_dir: String, dst_dir: String) -> bool:
+	var src := DirAccess.open(src_dir)
+	if src == null:
+		_show_error("[color=red]Cannot open resource directory: %s[/color]" % src_dir)
+		return false
+	var dst := DirAccess.open("user://")
+	if dst == null:
+		_show_error("[color=red]Cannot open user directory for DSL cache.[/color]")
+		return false
+	if dst.make_dir_recursive(dst_dir) != OK:
+		_show_error("[color=red]Cannot create destination directory: %s[/color]" % dst_dir)
+		return false
+	src.list_dir_begin()
+	while true:
+		var name := src.get_next()
+		if name == "":
+			break
+		if name == "." or name == "..":
+			continue
+		var src_path := src_dir + "/" + name
+		var dst_path := dst_dir + "/" + name
+		if src.current_is_dir():
+			if not _copy_resource_dir(src_path, dst_path):
+				src.list_dir_end()
+				return false
+			continue
+		var f := FileAccess.open(src_path, FileAccess.READ)
+		if f == null:
+			_show_error("[color=red]Cannot open resource file: %s[/color]" % src_path)
+			src.list_dir_end()
+			return false
+		var data := f.get_buffer(f.get_length())
+		f.close()
+		var g := FileAccess.open(dst_path, FileAccess.WRITE)
+		if g == null:
+			_show_error("[color=red]Cannot write cached file: %s[/color]" % dst_path)
+			src.list_dir_end()
+			return false
+		g.store_buffer(data)
+		g.close()
+	src.list_dir_end()
+	return true
+
+func _ensure_dsl_binary() -> String:
+	var user_dir := _get_dsl_user_dir()
+	var dll_path := user_dir + "/dsl.dll"
+	if FileAccess.file_exists(dll_path):
+		return dll_path
+	var res_dir := "res://" + DSL_PUBLISH_RELATIVE
+	var res_dir_access := DirAccess.open(res_dir)
+	if res_dir_access == null:
+		_show_error("[color=red]Missing DSL publish folder in export: %s[/color]" % res_dir)
+		return ""
+	var dst := DirAccess.open("user://")
+	if dst == null:
+		_show_error("[color=red]Could not open user directory for DSL cache.[/color]")
+		return ""
+	if dst.make_dir_recursive(user_dir) != OK:
+		_show_error("[color=red]Could not create DSL cache directory: %s[/color]" % user_dir)
+		return ""
+	if not _copy_resource_dir(res_dir, user_dir):
+		return ""
+	return dll_path
+
 func _run_dsl(full_source: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_input.txt")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_output.json")
-	var dll_abs    := (ProjectSettings.globalize_path("res://") + DSL_DLL_RELATIVE).simplify_path()
-
+	var dll_abs    := _ensure_dsl_binary()
+	if dll_abs.is_empty():
+		return ""
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
 	if f == null:
@@ -472,7 +542,9 @@ func _on_version_done(result: int, code: int, _h: PackedStringArray, body: Packe
 func _decompile_plan(json: String) -> String:
 	var input_abs  := ProjectSettings.globalize_path("user://dsl_decompile_input.json")
 	var output_abs := ProjectSettings.globalize_path("user://dsl_decompile_output.txt")
-	var dll_abs    := (ProjectSettings.globalize_path("res://") + DSL_DLL_RELATIVE).simplify_path()
+	var dll_abs    := _ensure_dsl_binary()
+	if dll_abs.is_empty():
+		return ""
 
 	var f := FileAccess.open(input_abs, FileAccess.WRITE)
 	if f == null:

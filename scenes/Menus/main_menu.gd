@@ -14,9 +14,10 @@ func _process(delta: float) -> void:
 
 
 func _on_start_pressed() -> void:
-	LobbyClient.list_all_game_rooms()
-	print("Fetching rooms...")
-	print(PlayerManager.player_uuid)
+	LobbyClient.create_and_join_room(32)
+	# LobbyClient.list_all_game_rooms()
+	# print("Fetching rooms...")
+	# print(PlayerManager.player_uuid)
 
 	pass
 
