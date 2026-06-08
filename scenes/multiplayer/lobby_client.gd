@@ -5,7 +5,7 @@ signal rooms_fetched(rooms: Array[GameRoom])
 signal request_failed(error_message: String)
 
 const BASE_URL = "http://localhost:8080"
-const POLL_INTERVAL = 5.0 # seconds
+const POLL_INTERVAL = 0.5 # seconds
 
 var game_room_id: String
 
