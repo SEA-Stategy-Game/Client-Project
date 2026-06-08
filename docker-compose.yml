@@ -2,53 +2,51 @@ version: "3.9"
 
 services:
   game-room-manager:
-	image: flapezoti/sea-game-room-manager:v1.0
-	ports:
-	  - "8080:8080"
-	volumes:
-	  # Expose the host Docker socket so the game-room-manager can start containers.
-	  - /var/run/docker.sock:/var/run/docker.sock
-	environment:
-	  - DB_PATH=/data/manager.db
-	  - RUNNING_IN_DOCKER=true
-	depends_on:
-	  - redis
-	restart: unless-stopped
+    image: flapezoti/sea-game-room-manager:v1.0
+    ports:
+      - "8080:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - DB_PATH=/data/manager.db
+      - RUNNING_IN_DOCKER=true
+    depends_on:
+      - redis
+    restart: unless-stopped
 
   planbackend:
-	image: flapezoti/sea-planning:v1.0
-	ports:
-	  - "5000:8080"
-	environment:
-	  - "ConnectionStrings__DefaultConnection=Data Source=/app/data/plans.db"
-	  - UseRedis=true
-	  - RedisConnection=redis:6379
-	volumes:
-	  # Persist plan database locally. Adjust this path if you have a different host folder.
-	  - ./data:/app/data
-	depends_on:
-	  - redis
-	restart: unless-stopped
+    image: flapezoti/sea-planning:v1.0
+    ports:
+      - "5000:8080"
+    environment:
+      - "ConnectionStrings__DefaultConnection=Data Source=/app/data/plans.db"
+      - UseRedis=true
+      - RedisConnection=redis:6379
+    volumes:
+      - ./data:/app/data
+    depends_on:
+      - redis
+    restart: unless-stopped
 
   game-room:
-	image: flapezoti/sea-game-room:v1.1
-	ports:
-	  - "12345:12345/udp"
-	environment:
-	  - USE_REDIS=true
-	  - REDIS_HOST=host.docker.internal
-	  - REDIS_PORT=6379
-	  - MAX_PLAYERS=4
-	  - GAME_ROOM_MANAGER_URL=http://host.docker.internal:8080
-	  - PLANNING_URL=http://host.docker.internal:5000
-	depends_on:
-	  - redis
-	  - game-room-manager
-	  - planbackend
-	restart: unless-stopped
+    image: flapezoti/sea-game-room:v1.1
+    ports:
+      - "12345:12345/udp"
+    environment:
+      - USE_REDIS=true
+      - REDIS_HOST=host.docker.internal
+      - REDIS_PORT=6379
+      - MAX_PLAYERS=4
+      - GAME_ROOM_MANAGER_URL=http://host.docker.internal:8080
+      - PLANNING_URL=http://host.docker.internal:5000
+    depends_on:
+      - redis
+      - game-room-manager
+      - planbackend
+    restart: unless-stopped
 
   redis:
-	image: redis:alpine
-	ports:
-	  - "6379:6379"
-	restart: unless-stopped
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    restart: unless-stopped

@@ -416,6 +416,7 @@ script = ExtResource("12_f6ptj")
 [node name="soundtrackmus" type="AudioStreamPlayer" parent="." unique_id=628626579]
 stream = ExtResource("11_f6ptj")
 autoplay = true
+parameters/looping = true
 
 [node name="CanvasLayer" type="CanvasLayer" parent="." unique_id=549482427]
 
