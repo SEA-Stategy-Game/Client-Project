@@ -12,6 +12,8 @@ services:
       - DB_PATH=/data/manager.db
       - RUNNING_IN_DOCKER=true
     restart: unless-stopped
+    depends_on:
+      - redis
 
   planbackend:
     image: flapezoti/sea-planning:v1.0
