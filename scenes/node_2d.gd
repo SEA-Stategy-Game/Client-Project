@@ -11,7 +11,9 @@ extends Node2D
 func _ready() -> void:
 	_initialize_world_state()
 	apply_audio_settings()
-
+	Globalsettings.world_environment = $WorldEnvironment
+	Globalsettings.apply_settings()
+	
 func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed("ui_cancel"):
 		get_tree().change_scene_to_file("res://scenes/Menus/main_menu.tscn")
