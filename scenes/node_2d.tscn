@@ -23,6 +23,7 @@ glow_levels/4 = 1.0
 glow_levels/5 = 1.0
 glow_levels/6 = 1.0
 glow_levels/7 = 1.0
+adjustment_enabled = true
 
 [sub_resource type="TileSetAtlasSource" id="TileSetAtlasSource_08kqv"]
 texture = ExtResource("8_f6ptj")
