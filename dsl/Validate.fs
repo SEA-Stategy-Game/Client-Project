@@ -60,7 +60,17 @@ let pConstruct =
             mkParams [("scene", name); ("x", floatStr x); ("y", floatStr y)]))
 
 let pAttack =
-    str "Attack" >>% Lang.Command.Action("Attack", mkParams [])
+    str "Attack" >>. (
+        attempt (spaces1 >>. str "move" >>. spaces1 >>. pipe2 (pfloat .>> spaces1) pfloat
+            (fun x y ->
+                Lang.Command.Action("Attack",
+                    mkParams [("mode","move"); ("x", floatStr x); ("y", floatStr y)]))) <|>
+        attempt (spaces1 >>. str "nearest" >>%
+            Lang.Command.Action("Attack", mkParams [("mode","nearest")])) <|>
+        attempt (spaces1 >>. pint32 |>> fun id ->
+            Lang.Command.Action("Attack", mkParams [("mode","target"); ("target_id", string id)])) <|>
+        (preturn (Lang.Command.Action("Attack", mkParams [("mode","nearest")])))
+    )
 
 let pActionCommand : Parser<Lang.Command, unit> =
     choice [
